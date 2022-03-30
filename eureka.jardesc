@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="WINDOWS-1251" standalone="no"?>
+<jardesc>
+    <jar path="shells/lib/eureka.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/eureka/eureka.jardesc" exportErrors="false" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Flushes.java"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.mcts"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Deck.java"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Evaluator.java"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Values.java"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Unique5.java"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{HandRank.java"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{TestOfcEval.java"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.mcs"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.scoring"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Board.java"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Products.java"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{EvaluatorTester.java"/>
+    </selectedElements>
+</jardesc>
