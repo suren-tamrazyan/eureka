@@ -25,22 +25,22 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 	public GameMode gameMode;
 	private List<Card> deck;
 	public boolean isFirstRound;
-	private String heroName;
+	public String heroName;
 	
 	// common space
 	private EurekaRunner ownerClosure;
 	public EurekaRunner getOwnerClosure() {
 		return ownerClosure;
 	}
-	
-	public GameOfcMctsSimple(GameOfc source, EurekaRunner aOwnerClosure) {
-		boxFront.addAll(source.getPlayer(source.heroName).boxFront.toList());
-		boxMiddle.addAll(source.getPlayer(source.heroName).boxMiddle.toList());
-		boxBack.addAll(source.getPlayer(source.heroName).boxBack.toList());
-		cardsToBeBoxed.addAll(source.getPlayer(source.heroName).cardsToBeBoxed);
-		gameMode = source.gameMode;
-		isFirstRound = source.isFirstRound();
-		heroName = source.heroName;
+	public GameOfcMctsSimple(List<Card> front, List<Card> middle, List<Card> back, List<Card> toBeBoxed, List<Card> otherOpenedCard, 
+			GameMode aGameMode, boolean aIsFirstRound, String aHeroName, EurekaRunner aOwnerClosure) {
+		boxFront.addAll(front);
+		boxMiddle.addAll(middle);
+		boxBack.addAll(back);
+		cardsToBeBoxed.addAll(toBeBoxed);
+		this.gameMode = aGameMode;
+		this.isFirstRound = aIsFirstRound;
+		heroName = aHeroName;
 		
 		this.ownerClosure = aOwnerClosure;
 		
@@ -48,14 +48,27 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		deck = new ArrayList<>(deckSize);
 		for (int i = 0; i < deckSize; i++)
 			deck.add(Card.getCard(i));
+		deck.removeAll(otherOpenedCard);
+		deck.removeAll(front);
+		deck.removeAll(middle);
+		deck.removeAll(back);
+		deck.removeAll(toBeBoxed);
+	}
+	
+	public static List<Card> mergeToOther(GameOfc source) {
+		List<Card> other = new ArrayList<>();
 		for (PlayerOfc p : source.getPlayers()) {
-			deck.removeAll(p.boxBack.toList());
-			deck.removeAll(p.boxMiddle.toList());
-			deck.removeAll(p.boxFront.toList());
-			deck.removeAll(p.boxDead.toList());
-			deck.removeAll(p.cardsToBeBoxed);
+			other.addAll(p.boxBack.toList());
+			other.addAll(p.boxMiddle.toList());
+			other.addAll(p.boxFront.toList());
+			other.addAll(p.boxDead.toList());
+			other.addAll(p.cardsToBeBoxed);
 		}
-		
+		return other;
+	}
+	public GameOfcMctsSimple(GameOfc source, EurekaRunner aOwnerClosure) {
+		this(source.getPlayer(source.heroName).boxFront.toList(), source.getPlayer(source.heroName).boxMiddle.toList(), source.getPlayer(source.heroName).boxBack.toList(),
+				source.getPlayer(source.heroName).cardsToBeBoxed, mergeToOther(source), source.gameMode, source.isFirstRound(), source.heroName, aOwnerClosure);
 	}
 
 	public GameOfcMctsSimple() {

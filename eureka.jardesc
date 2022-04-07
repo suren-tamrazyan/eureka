@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="WINDOWS-1251" standalone="no"?>
 <jardesc>
-    <jar path="shells/lib/eureka.jar"/>
+    <jar path="eureka/eureka.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/eureka/eureka.jardesc" exportErrors="false" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
