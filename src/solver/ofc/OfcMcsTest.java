@@ -28,12 +28,12 @@ public class OfcMcsTest {
     	game.procEvent(ev);
     	System.out.println(game.toString());
     	
-    	
-    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game));
+    	Config cfg = new Config();
+    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
     	long timeBefore = Utils.getTime();
     	EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
     	System.out.println(Utils.getTime() - timeBefore);
-    	System.out.println(Config.RANDOM_DEAL_COUNT);
+    	System.out.println(cfg.RANDOM_DEAL_COUNT);
     	System.out.println(decision.toEventOfc(game.heroName).toString());
     	
     }
@@ -60,11 +60,12 @@ public class OfcMcsTest {
     	System.out.println(game.toString());
     	
 //    	Config.RANDOM_DEAL_COUNT = 20000;
-    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game));
+    	Config cfg = new Config();
+    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
     	long timeBefore = Utils.getTime();
     	EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
     	System.out.println(Utils.getTime() - timeBefore);
-    	System.out.println(Config.RANDOM_DEAL_COUNT);
+    	System.out.println(cfg.RANDOM_DEAL_COUNT);
     	System.out.println(decision.toEventOfc(game.heroName).toString());
     	
     }
@@ -94,12 +95,13 @@ public class OfcMcsTest {
     	
     	System.out.println(game.toString());
     	
-    	Config.RANDOM_DEAL_COUNT = Config.RANDOM_DEAL_COUNT * 10;
-    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game));
+    	Config cfg = new Config();
+    	cfg.RANDOM_DEAL_COUNT = cfg.RANDOM_DEAL_COUNT * 10;
+    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
     	long timeBefore = Utils.getTime();
     	EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
     	System.out.println(Utils.getTime() - timeBefore);
-    	System.out.println(Config.RANDOM_DEAL_COUNT);
+    	System.out.println(cfg.RANDOM_DEAL_COUNT);
     	System.out.println(decision.toEventOfc(game.heroName).toString());
     	
     }
@@ -133,7 +135,8 @@ public class OfcMcsTest {
     	
     	System.out.println(game.toString());
     	
-    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game));
+    	Config cfg = new Config();
+    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
     	long timeBefore = Utils.getTime();
     	EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
     	System.out.println(Utils.getTime() - timeBefore);
@@ -170,7 +173,8 @@ public class OfcMcsTest {
 //        	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game));
         	
         	
-        	EventOfc result = Mcs.monteCarloSimulation(new GameOfcMctsSimple(game, new EurekaRunner(game)), 0).toEventOfc(game.heroName);//EurekaRunner.run(game, 4000);
+        	Config cfg = new Config();
+        	EventOfc result = Mcs.monteCarloSimulation(new GameOfcMctsSimple(game, new EurekaRunner(game, cfg)), 0).toEventOfc(game.heroName);//EurekaRunner.run(game, 4000);
         	System.out.println(result.toString());
         	
         	

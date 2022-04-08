@@ -21,6 +21,7 @@ import solver.ofc.mcts.Mcts;
 
 public class EurekaRunner {
 	private GameOfcMctsSimple stateSimple;
+	private Config cfg;
 //	private GameOfc game;
 	private int mctsIterationsCount;
 	public int getMctsIterationsCount() {
@@ -31,7 +32,8 @@ public class EurekaRunner {
 	public Map<String, Integer> numberTakesOfNatureSimulations = new HashMap<>();
 
 	public EurekaRunner(List<Card> front, List<Card> middle, List<Card> back, List<Card> toBeBoxed, List<Card> otherOpenedCard, 
-			GameMode aGameMode, boolean aIsFirstRound, String aHeroName) {
+			GameMode aGameMode, boolean aIsFirstRound, String aHeroName, Config aCfg) {
+		cfg = aCfg;
     	stateSimple = new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aIsFirstRound, aHeroName, this);
     	
 		//initAvailableActionsForNature; one common space of samples for all state (node) because one deal over algorithm
@@ -43,11 +45,11 @@ public class EurekaRunner {
 		List<Card> availableCards = stateSimple.getAvailableCards();
 		int dealSize = 13 - (sizeFront + sizeMiddle + sizeBack + (sizeCardsToBeBoxed - (aIsFirstRound?0:1)));
 		BigInteger cntCombi = Utils.combinationCount(availableCards.size(), dealSize);
-		if (cntCombi.compareTo(BigInteger.valueOf(3 * Config.RANDOM_DEAL_COUNT)) > 0) {
-			this.natureSamples = new ArrayList<EventOfcMctsSimple>(Config.RANDOM_DEAL_COUNT);
-			Set<Set<Card>> checkDistinct = new HashSet<>(Config.RANDOM_DEAL_COUNT);
+		if (cntCombi.compareTo(BigInteger.valueOf(3 * cfg.RANDOM_DEAL_COUNT)) > 0) {
+			this.natureSamples = new ArrayList<EventOfcMctsSimple>(cfg.RANDOM_DEAL_COUNT);
+			Set<Set<Card>> checkDistinct = new HashSet<>(cfg.RANDOM_DEAL_COUNT);
 			int i = 0;
-			while (i < Config.RANDOM_DEAL_COUNT) {
+			while (i < cfg.RANDOM_DEAL_COUNT) {
 				Collections.shuffle(availableCards);
 				Set<Card> tmp = new HashSet<>(availableCards.subList(0, dealSize));
 				if (checkDistinct.add(tmp)) {
@@ -61,9 +63,9 @@ public class EurekaRunner {
 		this.numberTakesOfNatureSimulations.clear();
 	}
 	
-	public EurekaRunner(GameOfc game) {
+	public EurekaRunner(GameOfc game, Config aCfg) {
 		this(game.getPlayer(game.heroName).boxFront.toList(), game.getPlayer(game.heroName).boxMiddle.toList(), game.getPlayer(game.heroName).boxBack.toList(),
-				game.getPlayer(game.heroName).cardsToBeBoxed, GameOfcMctsSimple.mergeToOther(game), game.gameMode, game.isFirstRound(), game.heroName);
+				game.getPlayer(game.heroName).cardsToBeBoxed, GameOfcMctsSimple.mergeToOther(game), game.gameMode, game.isFirstRound(), game.heroName, aCfg);
 	}
 	
 	public EventOfc runMcts(long timeDurationMs) {
@@ -71,38 +73,42 @@ public class EurekaRunner {
 			return stateSimple.getCurrentAgent().getBiasedOrRandomActionFromStatesAvailableActions(stateSimple).toEventOfc(stateSimple.heroName);
 		}
 		
-    	Mcts<GameOfcMctsSimple, EventOfcMctsSimple, AgentOfcMctsSimple> mcts = Mcts.initializeIterations(Config.NUMBER_OF_ITERATIONS);
+    	Mcts<GameOfcMctsSimple, EventOfcMctsSimple, AgentOfcMctsSimple> mcts = Mcts.initializeIterations(cfg.NUMBER_OF_ITERATIONS);
     	mcts.dontClone(AgentOfcMcts.class, EurekaRunner.class);
-    	EventOfcMctsSimple decision = mcts.uctSearchWithExploration(stateSimple, Config.EXPLORATION_PARAMETER, timeDurationMs, Config.TIME_LIMIT_MS);
+    	EventOfcMctsSimple decision = mcts.uctSearchWithExploration(stateSimple, cfg.EXPLORATION_PARAMETER, timeDurationMs, cfg.TIME_LIMIT_MS);
     	System.out.println(String.format("mcts.iterationCount = %d", mcts.getIterationsCount()));
     	this.mctsIterationsCount = mcts.getIterationsCount();
     	return decision.toEventOfc(stateSimple.heroName);
 	}
 
 	public static EventOfc run(List<Card> front, List<Card> middle, List<Card> back, List<Card> toBeBoxed, List<Card> otherOpenedCard, 
-			GameMode aGameMode, int aRound, String aHeroName, long timeDurationMs) {
+			GameMode aGameMode, int aRound, String aHeroName, long timeDurationMs, long timeLimitMs) {
+		Config cfg = new Config();
+		cfg.TIME_LIMIT_MS = timeLimitMs;
 		if (aRound == 4) { // for 4 round can run MCS
-			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName)), 0).toEventOfc(aHeroName);
+			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg)), 0).toEventOfc(aHeroName);
 		} else {
-			if (aRound == 1) Config.EXPLORATION_PARAMETER = 7;
-			if (aRound == 2) Config.EXPLORATION_PARAMETER = 15;
-			if (aRound == 3) Config.EXPLORATION_PARAMETER = 20;
+			if (aRound == 1) cfg.EXPLORATION_PARAMETER = 7;
+			if (aRound == 2) cfg.EXPLORATION_PARAMETER = 15;
+			if (aRound == 3) cfg.EXPLORATION_PARAMETER = 20;
+			
 			if (aRound == 1) {
-				Config.NUMBER_OF_ITERATIONS = 10000;
-				Config.RANDOM_DEAL_COUNT = Config.NUMBER_OF_ITERATIONS;
+				cfg.NUMBER_OF_ITERATIONS = 10000;
+				cfg.RANDOM_DEAL_COUNT = cfg.NUMBER_OF_ITERATIONS;
 				timeDurationMs = 0;
 			}
-			EurekaRunner runner = new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName);
+			cfg.RANDOM_DEAL_COUNT = cfg.NUMBER_OF_ITERATIONS;
+			EurekaRunner runner = new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg);
 			return runner.runMcts(timeDurationMs);
 		}
 	}
 	
-	public static EventOfc run(GameOfc game, long timeDurationMs) {
+	public static EventOfc run(GameOfc game, long timeDurationMs, long timeLimitMs) {
 		return run(game.getPlayer(game.heroName).boxFront.toList(), game.getPlayer(game.heroName).boxMiddle.toList(), game.getPlayer(game.heroName).boxBack.toList(),
-				game.getPlayer(game.heroName).cardsToBeBoxed, GameOfcMctsSimple.mergeToOther(game), game.gameMode, game.getRound(), game.heroName, timeDurationMs);
+				game.getPlayer(game.heroName).cardsToBeBoxed, GameOfcMctsSimple.mergeToOther(game), game.gameMode, game.getRound(), game.heroName, timeDurationMs, timeLimitMs);
 	}
 	
 	public static EventOfc run(GameOfc game) {
-		return run(game, 0);
+		return run(game, 0, 17000);
 	}
 }

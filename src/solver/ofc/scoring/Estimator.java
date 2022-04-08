@@ -236,7 +236,7 @@ public class Estimator {
 		
     	long timeBefore = Utils.getTime();
 //    	EventOfc result = EurekaRunner.run(game);
-    	EventOfc result = EurekaRunner.run(game, delay(game.getRound()));
+    	EventOfc result = EurekaRunner.run(game, delay(game.getRound()), 17000);
     	System.out.println(String.format("MCTS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
 
     	return result;
