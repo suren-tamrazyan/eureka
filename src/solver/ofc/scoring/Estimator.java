@@ -139,6 +139,7 @@ public class Estimator {
 			game.initButtonName(dealerName);
 			game.gameMode = str2GameMode(hh.getString("rules"));
 			game.setSkipCheckFLCardCount();
+			game.setAllowEmptyDeadBox();
 		}
 		
 		Collections.sort(lstPlayers);

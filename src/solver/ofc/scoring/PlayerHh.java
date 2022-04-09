@@ -50,7 +50,8 @@ public class PlayerHh implements Comparable<PlayerHh> {
 		String strDead = jo.getString("dead");
 		String[] rows = jo.getString("rows").split("/");
 		
-		Arrays.stream(strDead.split("\\s")).forEach(s -> roundCards.get(getRound(s)).put(getCard(s), GameOfc.BOX_LEVEL_DEAD));
+		if (strDead != null && !"".equals(strDead))
+			Arrays.stream(strDead.split("\\s")).forEach(s -> roundCards.get(getRound(s)).put(getCard(s), GameOfc.BOX_LEVEL_DEAD));
 		Arrays.stream(rows[0].split("\\s")).forEach(s -> roundCards.get(getRound(s)).put(getCard(s), GameOfc.BOX_LEVEL_FRONT));
 		Arrays.stream(rows[1].split("\\s")).forEach(s -> roundCards.get(getRound(s)).put(getCard(s), GameOfc.BOX_LEVEL_MIDDLE));
 		Arrays.stream(rows[2].split("\\s")).forEach(s -> roundCards.get(getRound(s)).put(getCard(s), GameOfc.BOX_LEVEL_BACK));
