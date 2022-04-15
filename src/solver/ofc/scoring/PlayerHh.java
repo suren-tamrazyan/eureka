@@ -55,6 +55,9 @@ public class PlayerHh implements Comparable<PlayerHh> {
 		Arrays.stream(rows[0].split("\\s")).forEach(s -> roundCards.get(getRound(s)).put(getCard(s), GameOfc.BOX_LEVEL_FRONT));
 		Arrays.stream(rows[1].split("\\s")).forEach(s -> roundCards.get(getRound(s)).put(getCard(s), GameOfc.BOX_LEVEL_MIDDLE));
 		Arrays.stream(rows[2].split("\\s")).forEach(s -> roundCards.get(getRound(s)).put(getCard(s), GameOfc.BOX_LEVEL_BACK));
+		
+		if (roundCards.size() < 13)
+			throw new IllegalArgumentException(String.format("not enough cards, cards count is %d", roundCards.size()));
 	}
 	
 	private int getRound(String str) {
