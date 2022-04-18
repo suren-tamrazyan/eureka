@@ -364,7 +364,7 @@ public class Estimator {
 		String request = String.format("/bestmove?%s%s%s", makeMainParams(game, tableName, true, false), paramTimeLimit, paramFastObvious);
 		String response = httpRequestGet(request);
 		boolean respFastObvious = false;
-		String[] resps = response.split("/");
+		String[] resps = response.split("/", -1);
 		if (resps.length != 3)
 			throw new GameException("wrong response format from AI");
 		String strFront = resps[0].replaceAll("\\s", "");

@@ -48,7 +48,7 @@ public class PlayerHh implements Comparable<PlayerHh> {
 			for (int i = 1; i < 5; i++)
 				roundCards.add(new HashMap<>());
 		String strDead = jo.getString("dead");
-		String[] rows = jo.getString("rows").split("/");
+		String[] rows = jo.getString("rows").split("/", -1);
 		
 		if (strDead != null && !"".equals(strDead))
 			Arrays.stream(strDead.split("\\s")).forEach(s -> roundCards.get(getRound(s)).put(getCard(s), GameOfc.BOX_LEVEL_DEAD));
