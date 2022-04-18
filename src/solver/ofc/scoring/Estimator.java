@@ -2,10 +2,16 @@ package solver.ofc.scoring;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +22,9 @@ import java.util.stream.Stream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import game.Card;
 import game.EventOfc;
+import game.GameException;
 import game.Game.Nw;
 import game.GameOfc;
 import game.GameOfc.GameMode;
@@ -253,6 +261,137 @@ public class Estimator {
 		default:
 			return 0;
 		}
+	}
+
+	private String httpRequestGet(String params) throws Exception {
+		String url = "http://10.211.59.133:8089";
+		
+		url += params;
+        HttpURLConnection httpClient = (HttpURLConnection) new URL(url).openConnection();
+        httpClient.setRequestMethod("GET");
+        httpClient.setRequestProperty("Connection", "close");
+       	System.out.println("*** http (GET) request: " + url);
+        int responseCode = httpClient.getResponseCode();
+        if (responseCode >= 400)
+        	throw new Exception(String.format("Bad AI response (status %d) (%s)", responseCode, url));
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(httpClient.getInputStream()))) {
+            StringBuilder response = new StringBuilder();
+            String line;
+            boolean isFirst = true;
+            while ((line = in.readLine()) != null) {
+            	if (isFirst)
+            		response.append(line);
+            	else
+            		response.append("\n"+line);
+                isFirst = false;
+            }
+            String result = response.toString();
+           	System.out.println("*** http (GET) response: " + result);
+            return result;
+        }
+	}
+
+	private boolean unknownCoefSended = false;
+	private String makeMainParams(GameOfc game, String tableName, boolean includeButton, boolean expandFantasy) throws UnsupportedEncodingException {
+		String paramStakes = "stakes=" + URLEncoder.encode(String.format("%.2f", (double)100/100.0), "UTF-8");
+		String paramClubId = "clubId=123";
+		String curr = "1USD";
+		String paramPrice = "price=" + URLEncoder.encode(curr, "UTF-8");
+		
+		String paramHero = "hero=";
+		String paramNewCard = "newCards=";
+		String paramOpp = "opp=";
+		String paramDead = "dead=";
+		String paramButton = "button=";
+		String paramTable = "table=" + URLEncoder.encode(tableName, "UTF-8");
+		String paramGameMode = "rules=" + "classic";
+		String paramAccount = "account=" + URLEncoder.encode(game.heroName, "UTF-8");
+		String paramAppName = "appName=" + "Ppp";
+		String paramGameId = "gameId=" + URLEncoder.encode(game.id, "UTF-8");
+		String leftPlayer = "", rightPlayer = "";
+		boolean afterHero = game.getPlayerInd(game.heroName) == game.players.length - 1;
+		for (PlayerOfc p : game.getPlayers()) {
+			String strFront = p.boxFront.toList().stream().map(Object::toString).collect(Collectors.joining(" ")).replaceAll("[X].", "??");
+			String strMidlle = p.boxMiddle.toList().stream().map(Object::toString).collect(Collectors.joining(" ")).replaceAll("[X].", "??");
+			String strBack = p.boxBack.toList().stream().map(Object::toString).collect(Collectors.joining(" ")).replaceAll("[X].", "??");
+			if (p.isHero(game.heroName)) {
+				paramHero += URLEncoder.encode(String.format("%s/%s/%s", strFront, strMidlle, strBack), "UTF-8");
+				paramNewCard += URLEncoder.encode(p.cardsToBeBoxed.stream().map(Object::toString).collect(Collectors.joining(" ")).replaceAll("[X].", "??"), "UTF-8");
+				paramDead += URLEncoder.encode(p.boxDead.toList().stream().map(Object::toString).collect(Collectors.joining(" ")).replaceAll("[X].", "??"), "UTF-8");
+				afterHero = true;
+			} else {
+				String curOpp;
+				if (p.playFantasy && !expandFantasy)
+					curOpp = "fl" + (p.fantasyCardCount == -1 ? 14 : p.fantasyCardCount);
+				else
+					curOpp = URLEncoder.encode(String.format("%s/%s/%s", strFront, strMidlle, strBack), "UTF-8");
+				if (afterHero)
+					leftPlayer = curOpp;
+				else
+					rightPlayer = curOpp;
+				afterHero = false;
+			}
+		}
+		paramOpp += leftPlayer;
+		if (!"".equals(rightPlayer)) 
+			paramOpp += URLEncoder.encode("\t", "UTF-8") + rightPlayer;
+		
+		int indButton = game.getPlayerInd(game.buttonName);
+		int indHero = game.getPlayerInd(game.heroName);
+		if (indButton == indHero)
+			paramButton += "0";
+		else
+			if (game.players.length == 2) {
+				paramButton += "1";
+			} else {
+				if ((++indButton % game.players.length) == indHero)
+					paramButton += "2";
+				else
+					paramButton += "1";
+			}
+		
+		 
+		return String.format("%s&%s&%s&%s&%s&%s&%s&%s&%s&%s&%s&%s&%s", paramHero, paramNewCard, paramOpp, paramDead, includeButton?paramButton:"", paramTable, paramGameMode, paramAccount, paramAppName, paramClubId, paramStakes, paramPrice, paramGameId);
+	}
+
+	private EventOfc bestMoveEurekaServer(GameOfc game) throws Exception {
+		String tableName = "estimator"; int timeLimitSec = 18;
+		String paramTimeLimit = "";
+		if (timeLimitSec > 0)
+			paramTimeLimit = String.format("&timeLimit=%d", timeLimitSec);
+		String paramFastObvious = "";
+		
+		String request = String.format("/bestmove?%s%s%s", makeMainParams(game, tableName, true, false), paramTimeLimit, paramFastObvious);
+		String response = httpRequestGet(request);
+		boolean respFastObvious = false;
+		String[] resps = response.split("/");
+		if (resps.length != 3)
+			throw new GameException("wrong response format from AI");
+		String strFront = resps[0].replaceAll("\\s", "");
+		String strMiddle = resps[1].replaceAll("\\s", "");
+		String strBack = resps[2].replaceAll("\\s", "");
+		
+		
+		//AI sends the full state. must be subtract existing cards
+		List<Card> lstFront = new ArrayList<Card>(Arrays.asList(Card.str2Cards(strFront)));
+		List<Card> lstMiddle = new ArrayList<Card>(Arrays.asList(Card.str2Cards(strMiddle)));
+		List<Card> lstBack = new ArrayList<Card>(Arrays.asList(Card.str2Cards(strBack)));
+		lstFront.removeAll(game.getPlayer(game.heroName).boxFront.toList());
+		lstMiddle.removeAll(game.getPlayer(game.heroName).boxMiddle.toList());
+		lstBack.removeAll(game.getPlayer(game.heroName).boxBack.toList());
+		strFront = lstFront.stream().map(Object::toString).collect(Collectors.joining(""));
+		strMiddle = lstMiddle.stream().map(Object::toString).collect(Collectors.joining(""));
+		strBack = lstBack.stream().map(Object::toString).collect(Collectors.joining(""));
+		
+		
+		// detection dead cards
+		List<Card> deads = new ArrayList<Card>(game.getPlayer(game.heroName).cardsToBeBoxed);
+		deads.removeAll(Arrays.asList(Card.str2Cards(strFront + strMiddle + strBack)));
+		
+		int evType = EventOfc.PUT_CARDS_TO_BOXES;
+		if (game.getPlayer(game.heroName).playFantasy)
+			evType = EventOfc.FANTASY_CARDS_TO_BOXES;
+		return new EventOfc(evType, game.heroName, Card.cards2Mask(Card.str2Cards(strFront)), Card.cards2Mask(Card.str2Cards(strMiddle)), Card.cards2Mask(Card.str2Cards(strBack)), deads);
 	}
 
 	public static void main(String[] args) throws Exception {
