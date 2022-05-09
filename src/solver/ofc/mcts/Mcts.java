@@ -2,12 +2,6 @@ package solver.ofc.mcts;
 
 import com.rits.cloning.Cloner;
 
-//import util.Misc;
-
-//import java.util.Collections;
-//import java.util.List;
-//import java.util.Comparator;
-//import java.util.Set;
 
 public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent<StateT>> {
 
@@ -18,19 +12,24 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     private double explorationParameter;
     private final Cloner cloner;
     
+    private MctsCallback callback;
+    private MctsCallback callbackDebug;
+    
     public int getIterationsCount() {
     	return iterationsCount;
     }
 
     public static<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent<StateT>>
-        Mcts<StateT, ActionT, AgentT> initializeIterations(int numberOfIterations) {
+        Mcts<StateT, ActionT, AgentT> initializeIterations(int numberOfIterations, MctsCallback callback, MctsCallback callbackDebug) {
             Cloner cloner = new Cloner();
-            return new Mcts<>(numberOfIterations, cloner);
+            return new Mcts<>(numberOfIterations, cloner, callback, callbackDebug);
     }
 
-    private Mcts(int numberOfIterations, Cloner cloner) {
+    private Mcts(int numberOfIterations, Cloner cloner, MctsCallback callback, MctsCallback callbackDebug) {
         this.numberOfIterations = numberOfIterations;
         this.cloner = cloner;
+        this.callback = callback;
+        this.callbackDebug = callbackDebug;
     }
 
     public void dontClone(final Class<?>... classes) {
@@ -50,12 +49,20 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
             performMctsIteration(rootNode, state.getCurrentAgent());
             time = System.nanoTime() - timeStart;
             iterationsCount++;
+            
+            if (callback != null) callback.onIteration(iterationsCount, time, rootNode);
+            if (callbackDebug != null) callbackDebug.onIteration(iterationsCount, time, rootNode);
         }
-//      LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
-//      rootNode.getChildNodes().stream().sorted(Comparator.comparingInt(MctsTreeNode<StateT, ActionT, AgentT>::getVisitCount).reversed()).forEachOrdered(x -> sortedMap.put(((GameOfcMctsSimple)x.representedState).getStateStr(), x.getVisitCount()));
-//      for (Map.Entry<String, Integer> ent : sortedMap.entrySet()) {
-//      	System.out.println(String.format("%s: %d", ent.getKey(), ent.getValue()));
-//      }
+        if (callback != null) callback.onEndSearch(rootNode);
+        if (callbackDebug != null) callbackDebug.onEndSearch(rootNode);
+//        if (solver.ofc.Config.DEBUG_PRINT) {
+//            LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
+//            rootNode.getChildNodes().stream().sorted(Comparator.comparingInt(MctsTreeNode<StateT, ActionT, AgentT>::getVisitCount).reversed()).forEachOrdered(x -> sortedMap.put(((solver.ofc.GameOfcMctsSimple)x.representedState).getStateStr(), x.getVisitCount()));
+//            for (Map.Entry<String, Integer> ent : sortedMap.entrySet()) {
+//            	System.out.println(String.format("%s: %d", ent.getKey(), ent.getValue()));
+//            }
+//        }
+        
         return getNodesMostPromisingAction(rootNode);
     }
 

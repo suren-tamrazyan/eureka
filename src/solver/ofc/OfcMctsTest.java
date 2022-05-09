@@ -501,6 +501,24 @@ public class OfcMctsTest {
     	System.out.println(Utils.getTime() - timeBefore);
     	System.out.println(decision);
     }
+    
+    public void testNotLikeAI1() {
+//    	10 to middle
+//    	http://10.211.59.133:8089/bestmove?hero=Jd%2F2c+Tc+Td%2F6h+6d+6s&newCards=2h+8h+Ts&opp=Qh+3c%2F3d+3s+4d+4c%2F9h+9d+7s&dead=5h&button=0&table=43510531&rules=classic&account=pid7339538&appName=Ppp&clubId=3489347&stakes=0.10&price=1USD&gameId=220414023117-43510531-0000224-1&timeLimit=15&fastObvious&partner=crowneco-ufxfyajbxx
+//    	Jd / 2c Tc Td Ts / 6h 6d 6s 2h
+//
+//    	http://13.49.155.94:8000/bestmove?hero=Jd%2F2c+Tc+Td%2F6h+6d+6s&newCards=2h+8h+Ts&opp=Qh+3c%2F3d+3s+4d+4c%2F9h+9d+7s&dead=5h&button=0&table=test&rules=classic&account=pid7339538&appName=Ppp&clubId=3489347&stakes=0.10&price=1USD&gameId=220414023117-43510531-0000224-1&timeLimit=15&fastObvious&partner=crowneco-ufxfyajbxx
+//    	Jd / 2c Tc Td 2h / 6h 6d 6s 8h
+//
+//    	http://nsk.convexbytes.com:15273/bestmove?hero=Jd%2F2c+Tc+Td%2F6h+6d+6s&newCards=2h+8h+Ts&opp=Qh+3c%2F3d+3s+4d+4c%2F9h+9d+7s&dead=5h&button=0&table=test&rules=classic&account=pid7339538&appName=Ppp&clubId=3489347&stakes=0.10&price=1USD&gameId=220414023117-43510531-0000224-1&timeLimit=15&fastObvious&partner=0
+//    	Jd / 2c Tc Td 2h / 6h 6d 6s 8h
+    	
+    	System.out.println("start!");
+    	long timeBefore = Utils.getTime();
+    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Jd")), Arrays.asList(Card.str2Cards("2cTcTd")), Arrays.asList(Card.str2Cards("6h6d6s")), Arrays.asList(Card.str2Cards("2h8hTs")),  Arrays.asList(Card.str2Cards("Qh3c3d3s4d4c9h9d7s5h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/60*1000, 1700000);
+    	System.out.println(Utils.getTime() - timeBefore);
+    	System.out.println(decision.toString());
+    }
 
 	public static void main(String[] args) throws Exception {
 		OfcMctsTest test = new OfcMctsTest();
@@ -509,7 +527,8 @@ public class OfcMctsTest {
 //		Config.EXPLORATION_PARAMETER = 30;
 //		test.testXXXX();
 //		test.testMiddleMove1();
-		test.testFantasy();
+//		test.testFantasy();
+		test.testNotLikeAI1();
     	
 //    	LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
 //    	OfcMctsSimpleRunner.numberTakesOfNatureSimulations.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));

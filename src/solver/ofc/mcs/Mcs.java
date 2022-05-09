@@ -2,6 +2,7 @@ package solver.ofc.mcs;
 
 import java.util.List;
 
+import solver.ofc.Config;
 import solver.ofc.EvaluatorFacade;
 import solver.ofc.EventOfcMctsSimple;
 import solver.ofc.GameOfcMctsSimple;
@@ -22,7 +23,7 @@ public class Mcs {
 			GameOfcMctsSimple actStateClone = startState.clone();
 			actStateClone.performActionForCurrentAgent(act);
 			double reward = 0;
-//			int cnt = 0;
+			int cnt = 0;
 			for (EventOfcMctsSimple natureSamp : startState.getOwnerClosure().natureSamples) {
 				GameOfcMctsSimple natStateClone = actStateClone.clone();
 				natStateClone.performActionForCurrentAgent(natureSamp);
@@ -30,10 +31,13 @@ public class Mcs {
 				natStateClone.performActionForCurrentAgent(finalAct);
 				reward += EvaluatorFacade.evaluate(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, false);
 				i++;
-//				cnt++;
-//				System.out.println(String.format("%f %s", EvaluatorFacade.evaluate(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, false), natureSamp));
+				if (Config.DEBUG_PRINT) {
+					cnt++;
+					System.out.println(String.format("%f %s", EvaluatorFacade.evaluate(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, false), natureSamp));
+				}
 			}
-//			System.out.println(String.format("act = %s; count = %d reward = %f", act.toEventOfc("hero").toString(), cnt, reward));
+			if (Config.DEBUG_PRINT)
+				System.out.println(String.format("act = %s; count = %d reward = %f", act.toEventOfc("hero").toString(), cnt, reward));
 			if (reward > maxReward) {
 				maxReward = reward;
 				bestSolution = act;

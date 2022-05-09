@@ -18,6 +18,7 @@ import game.GameOfc;
 import game.GameOfc.GameMode;
 import solver.ofc.mcs.Mcs;
 import solver.ofc.mcts.Mcts;
+import solver.ofc.mcts.MctsCallback;
 
 public class EurekaRunner {
 	private GameOfcMctsSimple stateSimple;
@@ -73,7 +74,9 @@ public class EurekaRunner {
 			return stateSimple.getCurrentAgent().getBiasedOrRandomActionFromStatesAvailableActions(stateSimple).toEventOfc(stateSimple.heroName);
 		}
 		
-    	Mcts<GameOfcMctsSimple, EventOfcMctsSimple, AgentOfcMctsSimple> mcts = Mcts.initializeIterations(cfg.NUMBER_OF_ITERATIONS);
+		MctsCallback callback = null;
+		MctsCallback callbackDebug = Config.DEBUG_PRINT ? new DebugPrinter() : null;
+    	Mcts<GameOfcMctsSimple, EventOfcMctsSimple, AgentOfcMctsSimple> mcts = Mcts.initializeIterations(cfg.NUMBER_OF_ITERATIONS, callback, callbackDebug);
     	mcts.dontClone(AgentOfcMcts.class, EurekaRunner.class);
     	EventOfcMctsSimple decision = mcts.uctSearchWithExploration(stateSimple, cfg.EXPLORATION_PARAMETER, timeDurationMs, cfg.TIME_LIMIT_MS);
     	System.out.println(String.format("mcts.iterationCount = %d", mcts.getIterationsCount()));

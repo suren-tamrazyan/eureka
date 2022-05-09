@@ -1,6 +1,7 @@
 package solver.ofc;
 
 public class Config {
+	public static boolean DEBUG_PRINT = true;
 	public static boolean HEURISTIC_COMPLETE = true;
 	public static int DEPTH_OF_SEARCH = 10;
 	public static boolean DISTINCT_TREE = false; // on TRUE may be situation where completion not found isValid combination

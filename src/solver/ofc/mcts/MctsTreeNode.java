@@ -42,7 +42,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
         return incomingAction;
     }
 
-    protected int getVisitCount() {
+    public int getVisitCount() {
         return visitCount;
     }
 
@@ -50,7 +50,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
         return parentNode.getVisitCount();
     }
 
-    protected List<MctsTreeNode<StateT, ActionT, AgentT>> getChildNodes() {
+    public List<MctsTreeNode<StateT, ActionT, AgentT>> getChildNodes() {
         return childNodes;
     }
 
@@ -166,7 +166,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
         return representedStateClone;
     }
 
-    protected StateT getDeepCloneOfRepresentedState() {
+    public StateT getDeepCloneOfRepresentedState() {
 //    	return cloner.deepClone(representedState);
     	representedState.beforeCloning();
         return cloner.deepClone(representedState);
@@ -191,5 +191,9 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
     
     public boolean representedStateCurrentAgentActionsIsOrderedMode() {
     	return representedState.currentAgentActionsIsOrderedMode();
+    }
+    
+    public double getTotalReward() {
+    	return totalReward;
     }
 }
