@@ -515,9 +515,47 @@ public class OfcMctsTest {
     	
     	System.out.println("start!");
     	long timeBefore = Utils.getTime();
-    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Jd")), Arrays.asList(Card.str2Cards("2cTcTd")), Arrays.asList(Card.str2Cards("6h6d6s")), Arrays.asList(Card.str2Cards("2h8hTs")),  Arrays.asList(Card.str2Cards("Qh3c3d3s4d4c9h9d7s5h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/60*1000, 1700000);
+    	long tsec = 60;
+    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Jd")), Arrays.asList(Card.str2Cards("2cTcTd")), Arrays.asList(Card.str2Cards("6h6d6s")), Arrays.asList(Card.str2Cards("2h8hTs")),  Arrays.asList(Card.str2Cards("Qh3c3d3s4d4c9h9d7s5h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000);
     	System.out.println(Utils.getTime() - timeBefore);
     	System.out.println(decision.toString());
+    }
+    
+    public void testNotLikeAI2() {
+//    		http://10.211.59.133:8089/bestmove?hero=Qd%2F8c+Ks%2F6d+Jd+6c+6s&newCards=5s+8h+8d&opp=Td%2F8s+Js+7d%2FQh+Qc+Qs&dead=5h&button=1&table=test&rules=classic&account=pid7339538&appName=Ppp&clubId=3489347&stakes=0.10&price=1USD&gameId=220414023150-43510554-0000103-1&timeLimit=15&fastObvious&partner=crowneco-ufxfyajbxx
+//    		Qd / 8c Ks 8h 8d / 6d Jd 6c 6s
+//
+//    		http://13.49.155.94:8000/bestmove?hero=Qd%2F8c+Ks%2F6d+Jd+6c+6s&newCards=5s+8h+8d&opp=Td%2F8s+Js+7d%2FQh+Qc+Qs&dead=5h&button=1&table=test&rules=classic&account=pid7339538&appName=Ppp&clubId=3489347&stakes=0.10&price=1USD&gameId=220414023150-43510554-0000103-1&timeLimit=15&fastObvious&partner=crowneco-ufxfyajbxx
+//    		Qd / 8c Ks 5s 8h / 6d Jd 6c 6s
+//
+//    		http://nsk.convexbytes.com:15273/bestmove?hero=Qd%2F8c+Ks%2F6d+Jd+6c+6s&newCards=5s+8h+8d&opp=Td%2F8s+Js+7d%2FQh+Qc+Qs&dead=5h&button=1&table=test&rules=classic&account=pid7339538&appName=Ppp&clubId=3489347&stakes=0.10&price=1USD&gameId=220414023150-43510554-0000103-1&timeLimit=15&fastObvious&partner=0
+//    		Qd / 8c Ks 5s 8d / 6d Jd 6c 6s
+    	
+    	System.out.println("start!");
+    	long timeBefore = Utils.getTime();
+    	long tsec = 60;
+    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Qd")), Arrays.asList(Card.str2Cards("8cKs")), Arrays.asList(Card.str2Cards("6dJd6c6s")), Arrays.asList(Card.str2Cards("5s8h8d")),  Arrays.asList(Card.str2Cards("Td8sJs7dQhQcQs5h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000);
+    	System.out.println(Utils.getTime() - timeBefore);
+    	System.out.println(decision.toString());
+    }
+    
+    public void testNotLikeAI3() {
+//    		http://10.211.59.133:8089/bestmove?hero=Jc+Kd%2F3s+7c+7h%2F8h+8c+Td+4c&newCards=2d+7d+9h&opp=Kc+6c+9s%2F2s+Qs+Ac+Ks%2F5d+6d+Jd+3d&dead=5s+Ah&button=0&table=test&rules=classic&account=pid7339538&appName=Ppp&clubId=3489347&stakes=0.10&price=1USD&gameId=220414023117-43510531-0000140-1&timeLimit=15&fastObvious&partner=crowneco-ufxfyajbxx
+//    		Jc Kd / 3s 7c 7h 7d 9h / 8h 8c Td 4c
+//
+//    		http://13.49.155.94:8000/bestmove?hero=Jc+Kd%2F3s+7c+7h%2F8h+8c+Td+4c&newCards=2d+7d+9h&opp=Kc+6c+9s%2F2s+Qs+Ac+Ks%2F5d+6d+Jd+3d&dead=5s+Ah&button=0&table=test&rules=classic&account=pid7339538&appName=Ppp&clubId=3489347&stakes=0.10&price=1USD&gameId=220414023117-43510531-0000140-1&timeLimit=15&fastObvious&partner=crowneco-ufxfyajbxx
+//    		Jc Kd 9h / 3s 7c 7h 2d / 8h 8c Td 4c
+//
+//    		http://nsk.convexbytes.com:15273/bestmove?hero=Jc+Kd%2F3s+7c+7h%2F8h+8c+Td+4c&newCards=2d+7d+9h&opp=Kc+6c+9s%2F2s+Qs+Ac+Ks%2F5d+6d+Jd+3d&dead=5s+Ah&button=0&table=test&rules=classic&account=pid7339538&appName=Ppp&clubId=3489347&stakes=0.10&price=1USD&gameId=220414023117-43510531-0000140-1&timeLimit=15&fastObvious&partner=0
+//    		Jc Kd 9h / 3s 7c 7h 2d / 8h 8c Td 4c
+    	
+    	System.out.println("start!");
+    	long timeBefore = Utils.getTime();
+    	long tsec = 60;
+    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("JcKd")), Arrays.asList(Card.str2Cards("3s7c7h")), Arrays.asList(Card.str2Cards("8h8cTd4c")), Arrays.asList(Card.str2Cards("2d7d9h")),  Arrays.asList(Card.str2Cards("Kc6c9s2sQsAcKs5d6dJd3d5sAh")), GameMode.GAME_MODE_REGULAR, 4, "HeroName", /*60*/tsec*1000, 1700000);
+    	System.out.println(Utils.getTime() - timeBefore);
+    	System.out.println(decision.toString());
+    	
     }
 
 	public static void main(String[] args) throws Exception {
@@ -525,9 +563,6 @@ public class OfcMctsTest {
 //		Config.RANDOM_DEAL_COUNT = 10000;
 //		Config.NUMBER_OF_ITERATIONS = 20000;
 //		Config.EXPLORATION_PARAMETER = 30;
-//		test.testXXXX();
-//		test.testMiddleMove1();
-//		test.testFantasy();
 		test.testNotLikeAI1();
     	
 //    	LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();

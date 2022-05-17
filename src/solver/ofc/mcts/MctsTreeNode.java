@@ -120,6 +120,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
             	idx++;
             }
     	}
+    	System.out.println("the end");
     	return null;
     }
     protected Set<ActionT> getUntriedActionsForCurrentAgent() {
@@ -185,7 +186,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
         totalReward += rewardAddend;
     }
 
-    protected double getDomainTheoreticValue() {
+    public double getDomainTheoreticValue() {
         return totalReward / visitCount;
     }
     
@@ -193,7 +194,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
     	return representedState.currentAgentActionsIsOrderedMode();
     }
     
-    public double getTotalReward() {
-    	return totalReward;
-    }
+//    public double getTotalReward() {
+//    	return totalReward;
+//    }
 }
