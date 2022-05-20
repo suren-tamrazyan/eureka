@@ -58,9 +58,11 @@ public class EurekaRunner {
 					i++;
 				}
 			}
-		} else
+		} else {
 			this.natureSamples = Generator.combination(availableCards).simple(dealSize).stream().map(x -> new EventOfcMctsSimple(EventOfc.TYPE_DEAL_CARDS, x)).collect(Collectors.toList());
-		
+			Collections.shuffle(this.natureSamples); // very, very important
+		}
+
 		this.numberTakesOfNatureSimulations.clear();
 	}
 	
