@@ -212,10 +212,12 @@ public class OfcMcsTest {
         	System.out.println(game.toString());
         	
         	Config cfg = new Config();
-        	cfg.RANDOM_DEAL_COUNT = 10000;
+        	cfg.RANDOM_DEAL_COUNT = 12000;
         	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
         	long timeBefore = Utils.getTime();
-        	EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//			EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//			EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
+			EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
         	System.out.println(Utils.getTime() - timeBefore);
         	System.out.println(cfg.RANDOM_DEAL_COUNT);
         	System.out.println(decision.toEventOfc(game.heroName).toString());
