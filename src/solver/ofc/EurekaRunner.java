@@ -90,12 +90,13 @@ public class EurekaRunner {
 			GameMode aGameMode, int aRound, String aHeroName, long timeDurationMs, long timeLimitMs) {
 		Config cfg = new Config();
 		cfg.TIME_LIMIT_MS = timeLimitMs;
-		if (aRound == 4) { // for 4 round can run MCS
-			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg)), 0).toEventOfc(aHeroName);
+		if (aRound == 4 || aRound == 3) { // for 4 and 3 round can run MCS
+			Mcs mcs = new Mcs(Config.CPU_NUM);
+			return mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg)), timeDurationMs).toEventOfc(aHeroName);
 		} else {
 			if (aRound == 1) cfg.EXPLORATION_PARAMETER = 7;
 			if (aRound == 2) cfg.EXPLORATION_PARAMETER = 15;
-			if (aRound == 3) cfg.EXPLORATION_PARAMETER = 20;
+//			if (aRound == 3) cfg.EXPLORATION_PARAMETER = 20;
 			
 			if (aRound == 1) {
 				cfg.NUMBER_OF_ITERATIONS = 10000;

@@ -151,14 +151,18 @@ public class Estimator {
 		}
 		
 		Collections.sort(lstPlayers);
-		
+
 		System.out.println("gameAI");
 		// gameAI
+		String[] aiRounds = new String[5];
 		for (int round = 0; round < 5; round++) {
 			for (PlayerHh pl : lstPlayers) {
 				List<EventOfc> evs = pl.getEvents(round, true);
-				for (EventOfc ev : evs)
+				for (EventOfc ev : evs) {
 					gameAI.procEvent(ev);
+					if (pl.isHero() && (ev.type == EventOfc.PUT_CARDS_TO_BOXES || ev.type == EventOfc.FANTASY_CARDS_TO_BOXES))
+						aiRounds[round] = ev.toString();
+				}
 			}
 		}
 		for (PlayerHh pl : lstPlayers) {
@@ -181,6 +185,7 @@ public class Estimator {
 			// gameSolver
 			GameOfc gameSolver = gameSolverBase.clone();
 			long timeBefore = Utils.getTime();
+			String[] solverRounds = new String[5];
 			for (int round = 0; round < 5; round++) {
 				for (PlayerHh pl : lstPlayers) {
 					List<EventOfc> evs = pl.getEvents(round, false);
@@ -189,6 +194,7 @@ public class Estimator {
 					if (pl.isHero() && !evs.isEmpty()) {
 						EventOfc solverMove = bestMoveMctsSimple(gameSolver);
 						gameSolver.procEvent(solverMove);
+						solverRounds[round] = solverMove.toString();
 					}
 				}
 			}
@@ -206,7 +212,7 @@ public class Estimator {
 			distinctSolutions.add(strSolution);
 			System.out.println(strSolution);
 			System.out.println(String.format("Estimation of Solver %d: %f", num, valueSolver));
-			dbService.newHandEstimationExample(this.id, gameId, num, valueAI, valueSolver, timeExecExample, strSolution, gameAI.getPlayer(gameAI.heroName).toString());
+			dbService.newHandEstimationExample(this.id, gameId, num, valueAI, valueSolver, timeExecExample, strSolution, gameAI.getPlayer(gameAI.heroName).toString(), aiRounds, solverRounds);
 		}
 		dbService.newHandEstimation(this.id, gameId, valueAI, handValueSolverSum/REPEAT_COUNT, REPEAT_COUNT, distinctSolutions.size(), timeHandTimeSum/REPEAT_COUNT);
 		
@@ -395,7 +401,7 @@ public class Estimator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_upoker_yakov\\nojoker1", "baseline3 - local; Upoker-Yakov; FANTASY_SCORE = 17; RANDOMIZED!!!", GameFilter.WITHOUT_FANTASY);
+		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_upoker_yakov\\nojoker1", "baseline3 - local; Upoker-Yakov; FANTASY_SCORE = 15; RANDOMIZED!!!; 3rd round MCS", GameFilter.WITHOUT_FANTASY);
 		estimator.estimate();
 	}
 

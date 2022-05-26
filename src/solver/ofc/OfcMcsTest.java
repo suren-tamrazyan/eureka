@@ -401,8 +401,38 @@ public class OfcMcsTest {
 
 	}
 
+	public void testNotLikeAI9_1() throws Exception {
+		GameOfc game = new GameOfc(Nw.Ppp, 100);
+		game.id = "21177423-5";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.heroName = "hero";
+		game.initButtonName("hero");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("As")), Card.cards2Mask(Card.str2Cards("7h7d")), Card.cards2Mask(Card.str2Cards("8cJd")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("Qs7c4h4c9d"))));
+
+		System.out.println(game.toString());
+
+		Config cfg = new Config();
+		cfg.RANDOM_DEAL_COUNT = 10000;
+		Config.FANTASY_SCORE = 15;
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		long timeBefore = Utils.getTime();
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		System.out.println(Utils.getTime() - timeBefore);
+		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
+		System.out.println(decision.toEventOfc(game.heroName).toString());
+
+	}
+
 	public static void main(String[] args) throws Exception {
     	OfcMcsTest test = new OfcMcsTest();
-    	test.testNotLikeAI7();
+    	test.testNotLikeAI9_1();
     }
 }

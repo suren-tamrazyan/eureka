@@ -8,7 +8,8 @@ public class Config {
 	public static boolean INIT_HEURISTIC_PRUNING = true;
 	public static boolean NATURE_ORDERED_MODE = true;
 	public static boolean FANTASY_FAST_SOLVE = false; // FAST but not strict
-	public static int FANTASY_SCORE = 17;//20//10;//15;
+	public static int FANTASY_SCORE = 15;//20//10;//15;
+	public static int CPU_NUM = 4;
 
 	public int NUMBER_OF_ITERATIONS = 15000;
 	public int RANDOM_DEAL_COUNT = 15000; // == NUMBER_OF_ITERATIONS

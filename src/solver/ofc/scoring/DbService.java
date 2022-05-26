@@ -34,7 +34,7 @@ public class DbService {
 		}
 	}
 
-	public void newHandEstimationExample(long estid, String handId, int num, double valueAI, double valueSolver, long timeMs, String solutionSolver, String solutionAI) throws Exception {
+	public void newHandEstimationExample(long estid, String handId, int num, double valueAI, double valueSolver, long timeMs, String solutionSolver, String solutionAI, String[] aiRounds, String[] solverRounds) throws Exception {
 		try (PreparedStatement stmt = con.prepareStatement("insert into hand_estimation_example (handId, estimationId, exampleNumber, valueAI, valueSolver, timeMs, solutionSolver, solutionAI) values (?, ?, ?, ?, ?, ?, ?, ?)");) {
 			stmt.setString(1, handId);
 			stmt.setLong(2, estid);
@@ -45,6 +45,17 @@ public class DbService {
 			stmt.setString(7, solutionSolver);
 			stmt.setString(8, solutionAI);
 			stmt.executeUpdate();
+		}
+		try (PreparedStatement stmt = con.prepareStatement("insert into hand_estimation_example_move (handId, estimationId, exampleNumber, round, moveAI, moveSolver) values (?, ?, ?, ?, ?, ?)");) {
+			for (int round = 0; round < 5; round++) {
+				stmt.setString(1, handId);
+				stmt.setLong(2, estid);
+				stmt.setInt(3, num);
+				stmt.setInt(4, round + 1);
+				stmt.setString(5, aiRounds[round]);
+				stmt.setString(6, solverRounds[round]);
+				stmt.executeUpdate();
+			}
 		}
 	}
 	

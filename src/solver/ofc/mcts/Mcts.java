@@ -55,14 +55,7 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
         }
         if (callback != null) callback.onEndSearch(rootNode);
         if (callbackDebug != null) callbackDebug.onEndSearch(rootNode);
-//        if (solver.ofc.Config.DEBUG_PRINT) {
-//            LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
-//            rootNode.getChildNodes().stream().sorted(Comparator.comparingInt(MctsTreeNode<StateT, ActionT, AgentT>::getVisitCount).reversed()).forEachOrdered(x -> sortedMap.put(((solver.ofc.GameOfcMctsSimple)x.representedState).getStateStr(), x.getVisitCount()));
-//            for (Map.Entry<String, Integer> ent : sortedMap.entrySet()) {
-//            	System.out.println(String.format("%s: %d", ent.getKey(), ent.getValue()));
-//            }
-//        }
-        
+
         return getNodesMostPromisingAction(rootNode);
     }
 
