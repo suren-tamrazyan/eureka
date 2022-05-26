@@ -395,7 +395,7 @@ public class Estimator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline3; FANTASY_SCORE = 17", GameFilter.WITHOUT_FANTASY);
+		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_upoker_yakov\\nojoker1", "baseline3 - local; Upoker-Yakov; FANTASY_SCORE = 17; RANDOMIZED!!!", GameFilter.WITHOUT_FANTASY);
 		estimator.estimate();
 	}
 

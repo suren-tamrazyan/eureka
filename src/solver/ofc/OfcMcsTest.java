@@ -223,9 +223,186 @@ public class OfcMcsTest {
         	System.out.println(decision.toEventOfc(game.heroName).toString());
         	
         }
-        
-    public static void main(String[] args) throws Exception {
+
+	public void testNotLikeAI2() throws Exception {
+		GameOfc game = new GameOfc(Nw.Ppp, 100);
+		game.id = "220414023150-43510554-0000103-1";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.heroName = "hero";
+		game.initButtonName("opp1");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("Qd8cKs6dJd"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("Qd")), Card.cards2Mask(Card.str2Cards("8cKs")), Card.cards2Mask(Card.str2Cards("6dJd")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("Td")), Card.cards2Mask(Card.str2Cards("8sJs7d")), Card.cards2Mask(Card.str2Cards("Qh")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("6c6s5h"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6c6s")), new ArrayList<>(Arrays.asList(Card.str2Cards("5h")))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), 0, Card.cards2Mask(Card.str2Cards("QcQs")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("5s8h8d"))));
+
+		System.out.println(game.toString());
+
+		Config cfg = new Config();
+		cfg.RANDOM_DEAL_COUNT = 20000;
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		long timeBefore = Utils.getTime();
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		System.out.println(Utils.getTime() - timeBefore);
+		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
+		System.out.println(decision.toEventOfc(game.heroName).toString());
+
+	}
+
+	public void testNotLikeAI4() throws Exception {
+		GameOfc game = new GameOfc(Nw.Ppp, 100);
+		game.id = "220425211628-44015685-0000031-1";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.heroName = "hero";
+		game.initButtonName("opp1");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("4hAdAc5c8c"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("4hAdAc")), Card.cards2Mask(Card.str2Cards("5c8c")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("Ah")), Card.cards2Mask(Card.str2Cards("5h7h")), Card.cards2Mask(Card.str2Cards("4sJs")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("3c8sKh"))));
+
+		System.out.println(game.toString());
+
+		Config cfg = new Config();
+		cfg.RANDOM_DEAL_COUNT = 10000;
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		long timeBefore = Utils.getTime();
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		System.out.println(Utils.getTime() - timeBefore);
+		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
+		System.out.println(decision.toEventOfc(game.heroName).toString());
+
+	}
+
+	public void testNotLikeAI5() throws Exception {
+		GameOfc game = new GameOfc(Nw.Ppp, 100);
+		game.id = "220429010803-44153974-0000031-1";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.heroName = "hero";
+		game.initButtonName("hero");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("AcQd")), Card.cards2Mask(Card.str2Cards("3d4h6c")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("8cQs8s2s4c"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("8cQs8s")), Card.cards2Mask(Card.str2Cards("2s4c")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("2d")), Card.cards2Mask(Card.str2Cards("7s")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("3c6d3s"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("3c")), Card.cards2Mask(Card.str2Cards("6d")), new ArrayList<>(Arrays.asList(Card.str2Cards("3s")))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), 0, Card.cards2Mask(Card.str2Cards("TsJs")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("9d6hAs"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("9d6h")), new ArrayList<>(Arrays.asList(Card.str2Cards("As")))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), 0, Card.cards2Mask(Card.str2Cards("4s5s")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("3h5dAh"))));
+
+		System.out.println(game.toString());
+
+		Config cfg = new Config();
+		cfg.RANDOM_DEAL_COUNT = 20000;
+		Config.FANTASY_SCORE = 15;
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		long timeBefore = Utils.getTime();
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		System.out.println(Utils.getTime() - timeBefore);
+		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
+		System.out.println(decision.toEventOfc(game.heroName).toString());
+
+	}
+
+	public void testNotLikeAI6() throws Exception {
+		GameOfc game = new GameOfc(Nw.Ppp, 100);
+		game.id = "220505003911-44411055-0000004-1";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("opp2", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.heroName = "hero";
+		game.initButtonName("opp2");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("QsKc3dAc8h"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("QsKc")), Card.cards2Mask(Card.str2Cards("3dAc8")), Card.cards2Mask(Card.str2Cards("8h")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("As")), Card.cards2Mask(Card.str2Cards("7d8c7h")), Card.cards2Mask(Card.str2Cards("4s")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp2", Card.cards2Mask(Card.str2Cards("QhQd")), Card.cards2Mask(Card.str2Cards("6sAdKh")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("4hTh9s"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("4hTh")), new ArrayList<>(Arrays.asList(Card.str2Cards("9s")))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("JdJs")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp2", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("2d9d")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("2c5h9h"))));
+
+		System.out.println(game.toString());
+
+		Config cfg = new Config();
+		cfg.RANDOM_DEAL_COUNT = 15000;
+		Config.FANTASY_SCORE = 15;
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		long timeBefore = Utils.getTime();
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		System.out.println(Utils.getTime() - timeBefore);
+		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
+		System.out.println(decision.toEventOfc(game.heroName).toString());
+
+	}
+
+	public void testNotLikeAI7() throws Exception {
+		GameOfc game = new GameOfc(Nw.Ppp, 100);
+		game.id = "220505095551-44429199-0000035-1";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.heroName = "hero";
+		game.initButtonName("opp1");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("6hTh4h2h2d"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6hTh4h")), Card.cards2Mask(Card.str2Cards("2h2d")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6s8h6c")), Card.cards2Mask(Card.str2Cards("5dJd")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("2c2s4c"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("2c2s")), new ArrayList<>(Arrays.asList(Card.str2Cards("4c")))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), 0, Card.cards2Mask(Card.str2Cards("Kd8d")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("3c9dKs"))));
+
+		System.out.println(game.toString());
+
+		Config cfg = new Config();
+		cfg.RANDOM_DEAL_COUNT = 20000;
+		Config.FANTASY_SCORE = 15;
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		long timeBefore = Utils.getTime();
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		System.out.println(Utils.getTime() - timeBefore);
+		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
+		System.out.println(decision.toEventOfc(game.heroName).toString());
+
+	}
+
+	public static void main(String[] args) throws Exception {
     	OfcMcsTest test = new OfcMcsTest();
-    	test.testNotLikeAI1();
+    	test.testNotLikeAI7();
     }
 }

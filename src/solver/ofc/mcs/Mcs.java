@@ -117,24 +117,25 @@ public class Mcs {
 		for (EventOfcMctsSimple act : actions) {
 			GameOfcMctsSimple actStateClone = startState.clone();
 			actStateClone.performActionForCurrentAgent(act);
-			double reward = 0;
+			double rewardAcc = 0;
 			int cnt = 0;
 			for (EventOfcMctsSimple natureSamp : startState.getOwnerClosure().natureSamples) {
 				GameOfcMctsSimple natStateClone = actStateClone.clone();
 				natStateClone.performActionForCurrentAgent(natureSamp);
 				EventOfcMctsSimple finalAct = Heuristics.completion(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, natStateClone.cardsToBeBoxed);
 				natStateClone.performActionForCurrentAgent(finalAct);
-				reward += EvaluatorFacade.evaluate(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, false);
+				double rwrd = EvaluatorFacade.evaluate(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, false);
+				rewardAcc += rwrd;
 				i++;
 				if (Config.DEBUG_PRINT) {
 					cnt++;
-					debugOnEstimateSample(act, natStateClone, natureSamp, cnt, reward);
+					debugOnEstimateSample(act, natStateClone, natureSamp, cnt, rewardAcc, rwrd);
 				}
 			}
 			if (Config.DEBUG_PRINT)
-				System.out.println(String.format("act = %s; count = %d reward = %f", act.toEventOfc("hero").toString(), cnt, reward));
-			if (reward > maxReward) {
-				maxReward = reward;
+				System.out.println(String.format("act = %s; count = %d rewardAcc = %f", act.toEventOfc("hero").toString(), cnt, rewardAcc));
+			if (rewardAcc > maxReward) {
+				maxReward = rewardAcc;
 				bestSolution = act;
 			}
 		}
@@ -165,12 +166,13 @@ public class Mcs {
 				actStateClone.performActionForCurrentAgent(natureSamp);
 				EventOfcMctsSimple finalAct = Heuristics.completion(actStateClone.boxFront, actStateClone.boxMiddle, actStateClone.boxBack, actStateClone.cardsToBeBoxed);
 				actStateClone.performActionForCurrentAgent(finalAct);
-				double reward = rewards.get(act) + EvaluatorFacade.evaluate(actStateClone.boxFront, actStateClone.boxMiddle, actStateClone.boxBack, false);
-				rewards.put(act, reward);
+				double rwrd = EvaluatorFacade.evaluate(actStateClone.boxFront, actStateClone.boxMiddle, actStateClone.boxBack, false);
+				double rewardAcc = rewards.get(act) + rwrd;
+				rewards.put(act, rewardAcc);
 				i++;
 
 				if (Config.DEBUG_PRINT) {
-					debugOnEstimateSample(act, actStateClone, natureSamp, epoch, reward);
+					debugOnEstimateSample(act, actStateClone, natureSamp, epoch, rewardAcc, rwrd);
 				}
 			}
 		}
@@ -182,12 +184,12 @@ public class Mcs {
 		return maxEntry.getKey();
 	}
 
-	protected static void debugOnEstimateSample(EventOfcMctsSimple action, GameOfcMctsSimple state, EventOfcMctsSimple sample, int actionIterNum, double actionReward) {
+	protected static void debugOnEstimateSample(EventOfcMctsSimple action, GameOfcMctsSimple state, EventOfcMctsSimple sample, int actionIterNum, double actionRewardAcc, double actionReward) {
 //		System.out.println(String.format("%f %s", EvaluatorFacade.evaluate(state.boxFront, state.boxMiddle, state.boxBack, false), sample));
 		if (actionIterNum % 100 == 0) {
 			if (csv.isEmpty())
-				csv.add("epoch;branch;reward");
-			csv.add(String.format(java.util.Locale.US, "%d;%s;%.2f", actionIterNum, action.toString().replaceAll(";", ""), actionReward));
+				csv.add("epoch;branch;rewardAcc;state;reward");
+			csv.add(String.format(java.util.Locale.US, "%d;%s;%.4f;%s;%.4f", actionIterNum, action.toString().replaceAll(";", ""), actionRewardAcc, state.getStateStr().replaceAll(";", ""), actionReward));
 		}
 	}
 
