@@ -343,7 +343,7 @@ public class EvaluatorFacade {
 
         // fouled
         if (evals[0] < evals[1] || evals[1] < evals[2])
-        	return 0;
+        	return Config.FAIL_PENALTY;//return 0;
         
         double bonus = (double)(bonuses[0] + bonuses[1] + bonuses[2]);
         return bonus + (norm_eval_kicker0 + norm_eval_kicker1 + norm_eval_kicker2)/REGULARIZATION_PARAM;

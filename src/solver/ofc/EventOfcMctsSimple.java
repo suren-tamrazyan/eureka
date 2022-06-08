@@ -36,14 +36,14 @@ public class EventOfcMctsSimple {
 		return new EventOfc(type, hero, Card.cards2Mask(front.toArray(new Card[0])), Card.cards2Mask(middle.toArray(new Card[0])), Card.cards2Mask(back.toArray(new Card[0])), dead);
 	}
 	
-//	@Override
-//	public String toString() {
-//		if (type == EventOfc.PUT_CARDS_TO_BOXES)
-//			return String.format("F: %s; M: %s; B: %s; D: %s", front, middle, back, dead);
-//		if (type == EventOfc.TYPE_DEAL_CARDS)
-//			return String.format("DEAL: %s", cardsToBeBoxed);
-//		return "";
-//	}
+	@Override
+	public String toString() {
+		if (type == EventOfc.PUT_CARDS_TO_BOXES)
+			return String.format("F: %s; M: %s; B: %s; D: %s", front, middle, back, dead);
+		if (type == EventOfc.TYPE_DEAL_CARDS)
+			return String.format("DEAL: %s", cardsToBeBoxed);
+		return "";
+	}
 
 
 	@Override

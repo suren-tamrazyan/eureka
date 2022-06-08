@@ -91,8 +91,7 @@ public class EurekaRunner {
 		Config cfg = new Config();
 		cfg.TIME_LIMIT_MS = timeLimitMs;
 		if (aRound == 4 || aRound == 3) { // for 4 and 3 round can run MCS
-			Mcs mcs = new Mcs(Config.CPU_NUM);
-			return mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg)), timeDurationMs).toEventOfc(aHeroName);
+			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg)), timeDurationMs > 0 ? timeDurationMs : cfg.TIME_LIMIT_MS, Config.CPU_NUM).toEventOfc(aHeroName);
 		} else {
 			if (aRound == 1) cfg.EXPLORATION_PARAMETER = 7;
 			if (aRound == 2) cfg.EXPLORATION_PARAMETER = 15;
