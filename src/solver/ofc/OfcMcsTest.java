@@ -459,6 +459,7 @@ public class OfcMcsTest {
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
+		Config.FAIL_PENALTY = -1;
 		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
@@ -550,8 +551,55 @@ public class OfcMcsTest {
 
 	}
 
+	public void testNotLikeAI14() throws Exception {
+//		http://10.211.59.133:8089/bestmove?hero=6s%2F9c+8c+Ts+Qs%2F7d+8d+Td+Ad&newCards=2s+7c+Kc&opp=Ks+2h+9d%2F3d+Jd+As+6d%2F2c+3c+6c+4c&dead=3s+Ac&button=0&table=47033135&rules=progressive16_refant14_nojokers&account=pid7568880&appName=Ppp&clubId=3109882&stakes=0.50&price=1USD&gameId=220703065557-47033135-0000027-1&timeLimit=15&fastObvious&partner=crowneco-ufxfyajbxx
+//		6s 2s / 9c 8c Ts Qs Kc / 7d 8d Td Ad
+//		http://13.49.155.94:8000/bestmove?hero=6s%2F9c+8c+Ts+Qs%2F7d+8d+Td+Ad&newCards=2s+7c+Kc&opp=Ks+2h+9d%2F3d+Jd+As+6d%2F2c+3c+6c+4c&dead=3s+Ac&button=0&table=test&rules=progressive16_refant14_nojokers&account=pid7568880&appName=Ppp&clubId=3109882&stakes=0.50&price=1USD&gameId=220703065557-47033135-0000027-1&timeLimit=15&fastObvious&partner=crowneco-ufxfyajbxx
+//		6s 2s 7c / 9c 8c Ts Qs / 7d 8d Td Ad
+//		http://nsk.convexbytes.com:15273/bestmove?hero=6s%2F9c+8c+Ts+Qs%2F7d+8d+Td+Ad&newCards=2s+7c+Kc&opp=Ks+2h+9d%2F3d+Jd+As+6d%2F2c+3c+6c+4c&dead=3s+Ac&button=0&table=test&rules=progressive16_refant14_nojokers&account=pid7568880&appName=Ppp&clubId=3109882&stakes=0.50&price=1USD&gameId=220703065557-47033135-0000027-1&timeLimit=15&fastObvious&partner=0
+//		6s 2s 7c / 9c 8c Ts Qs / 7d 8d Td Ad
+
+		GameOfc game = new GameOfc(Nw.Ppp, 100);
+		game.id = "220703065557-47033135-0000027-1";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.heroName = "hero";
+		game.initButtonName("hero");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("As")), Card.cards2Mask(Card.str2Cards("2c3c6c4c")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("6s9c8cTsQs"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("6s")), Card.cards2Mask(Card.str2Cards("9c8cTsQs")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("3dJd")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("7d8d3s"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("7d8d")), new ArrayList<>(Arrays.asList(Card.str2Cards("3s")))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("Ks2h")), 0, Card.cards2Mask(Card.str2Cards("")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("TdAdAc"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("TdAd")), new ArrayList<>(Arrays.asList(Card.str2Cards("Ac")))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("9d")), Card.cards2Mask(Card.str2Cards("6d")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("2s7cKc"))));
+
+		System.out.println(game.toString());
+
+		Config cfg = new Config();
+		cfg.RANDOM_DEAL_COUNT = 20000;
+		Config.FANTASY_SCORE = 15;
+		Config.FAIL_PENALTY = -1; // -1 better than -3 in this case
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		long timeBefore = Utils.getTime();
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		System.out.println(Utils.getTime() - timeBefore);
+		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
+		System.out.println(decision.toEventOfc(game.heroName).toString());
+
+	}
+
 	public static void main(String[] args) throws Exception {
     	OfcMcsTest test = new OfcMcsTest();
-    	test.testNotLikeAI13();
+    	test.testNotLikeAI10();
     }
 }
