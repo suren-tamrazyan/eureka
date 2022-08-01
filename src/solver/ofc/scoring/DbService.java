@@ -21,8 +21,8 @@ public class DbService {
 		}
 	}
 
-	public void newHandEstimation(long estid, String handId, double valueAI, double valueSolverAvg, int repeatCount, int distinctSolutionsCount, long timeMsAvg) throws Exception {
-		try (PreparedStatement stmt = con.prepareStatement("insert into hand_estimation (handId, estimationId, valueAI, valueSolverAvg, repeatCount, distinctSolutionsCount, timeMsAvg) values (?, ?, ?, ?, ?, ?, ?)");) {
+	public void newHandEstimation(long estid, String handId, double valueAI, double valueSolverAvg, int repeatCount, int distinctSolutionsCount, long timeMsAvg, int valueAIByBoard, double valueSolverAvgByBoard, int scoreFromHH) throws Exception {
+		try (PreparedStatement stmt = con.prepareStatement("insert into hand_estimation (handId, estimationId, valueAI, valueSolverAvg, repeatCount, distinctSolutionsCount, timeMsAvg, valueAIByBoard, valueSolverAvgByBoard, scoreFromHH) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");) {
 			stmt.setString(1, handId);
 			stmt.setLong(2, estid);
 			stmt.setDouble(3, valueAI);
@@ -30,12 +30,15 @@ public class DbService {
 			stmt.setInt(5, repeatCount);
 			stmt.setInt(6, distinctSolutionsCount);
 			stmt.setLong(7, timeMsAvg);
+			stmt.setInt(8, valueAIByBoard);
+			stmt.setDouble(9, valueSolverAvgByBoard);
+			stmt.setInt(10, scoreFromHH);
 			stmt.executeUpdate();
 		}
 	}
 
-	public void newHandEstimationExample(long estid, String handId, int num, double valueAI, double valueSolver, long timeMs, String solutionSolver, String solutionAI, String[] aiRounds, String[] solverRounds) throws Exception {
-		try (PreparedStatement stmt = con.prepareStatement("insert into hand_estimation_example (handId, estimationId, exampleNumber, valueAI, valueSolver, timeMs, solutionSolver, solutionAI) values (?, ?, ?, ?, ?, ?, ?, ?)");) {
+	public void newHandEstimationExample(long estid, String handId, int num, double valueAI, double valueSolver, long timeMs, String solutionSolver, String solutionAI, String[] aiRounds, String[] solverRounds, int valueAIByBoard, int valueSolverByBoard) throws Exception {
+		try (PreparedStatement stmt = con.prepareStatement("insert into hand_estimation_example (handId, estimationId, exampleNumber, valueAI, valueSolver, timeMs, solutionSolver, solutionAI, valueAIByBoard, valueSolverByBoard) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");) {
 			stmt.setString(1, handId);
 			stmt.setLong(2, estid);
 			stmt.setInt(3, num);
@@ -44,6 +47,8 @@ public class DbService {
 			stmt.setLong(6, timeMs);
 			stmt.setString(7, solutionSolver);
 			stmt.setString(8, solutionAI);
+			stmt.setInt(9, valueAIByBoard);
+			stmt.setInt(10, valueSolverByBoard);
 			stmt.executeUpdate();
 		}
 		try (PreparedStatement stmt = con.prepareStatement("insert into hand_estimation_example_move (handId, estimationId, exampleNumber, round, moveAI, moveSolver) values (?, ?, ?, ?, ?, ?)");) {
@@ -59,15 +64,19 @@ public class DbService {
 		}
 	}
 	
-	public void updateEstimationStats(long estid, double totalValueAI, double totalValueAvg, double totalValueAbs, int handCount, long totalTimeMs, double robustness) throws Exception {
-		try (PreparedStatement stmt = con.prepareStatement("update estimation set totalValueAI = ?, totalValueAvg = ?, totalValueAbs = ?, handCount = ?, totalTimeMs = ?, robustness = ? where estimationId = ?");) {
+	public void updateEstimationStats(long estid, double totalValueAI, double totalValueAvg, double totalValueAbs, int handCount, long totalTimeMs, double robustness, int totalValueAIByBoard, double totalValueAvgByBoard, int totalValueAbsByBoard, int totalScoreFromHH) throws Exception {
+		try (PreparedStatement stmt = con.prepareStatement("update estimation set totalValueAI = ?, totalValueAvg = ?, totalValueAbs = ?, handCount = ?, totalTimeMs = ?, robustness = ?, totalValueAIByBoard = ?, totalValueAvgByBoard = ?, totalValueAbsByBoard = ?, totalScoreFromHH = ? where estimationId = ?");) {
 			stmt.setDouble(1, totalValueAI);
 			stmt.setDouble(2, totalValueAvg);
 			stmt.setDouble(3, totalValueAbs);
 			stmt.setInt(4, handCount);
 			stmt.setLong(5, totalTimeMs);
 			stmt.setDouble(6, robustness);
-			stmt.setLong(7, estid);
+			stmt.setInt(7, totalValueAIByBoard);
+			stmt.setDouble(8, totalValueAvgByBoard);
+			stmt.setInt(9, totalValueAbsByBoard);
+			stmt.setInt(10, totalScoreFromHH);
+			stmt.setLong(11, estid);
 			stmt.executeUpdate();
 		}
 	}

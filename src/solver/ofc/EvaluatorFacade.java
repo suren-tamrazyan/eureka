@@ -348,6 +348,27 @@ public class EvaluatorFacade {
         double bonus = (double)(bonuses[0] + bonuses[1] + bonuses[2]);
         return bonus + (norm_eval_kicker0 + norm_eval_kicker1 + norm_eval_kicker2)/REGULARIZATION_PARAM;
 	}
+
+    /**
+     * evaluate game by board with all players
+     * @param game
+     * @param heroName who is the hero in this evaluation case
+     * @return sum of score between all players
+     */
+    public static int evaluateByBoard(GameOfc game, String heroName) {
+        int result = 0;
+        PlayerOfc hero = game.getPlayer(heroName);
+        Deck d = new Deck();
+        Evaluator ev = new Evaluator();
+        Board heroBoard = hand2board(hero, d, ev);
+        if (hero == null) return result;
+        for (PlayerOfc player : game.getPlayers()) {
+            if (player.isHero(heroName)) continue;
+            Board otherBoard = hand2board(player, d, ev);
+            result += heroBoard.endResult(otherBoard, ev);
+        }
+        return result;
+    }
 	
 	public static void main(String[] args) {
 /*		List<Card> lstBox = new ArrayList<>();

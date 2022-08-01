@@ -19,6 +19,7 @@ public class PlayerHh implements Comparable<PlayerHh> {
 	private boolean inFantasy;
 	private int orderIndex;
 	private boolean hero;
+	private int score;
 	private List<Map<Card, Integer>> roundCards;
 	
 	public String getPid() {
@@ -37,11 +38,16 @@ public class PlayerHh implements Comparable<PlayerHh> {
 		return hero;
 	}
 
+	public int getScore() {
+		return score;
+	}
+
 	public PlayerHh(JSONObject jo) throws Exception {
 		pid = jo.getString("playerId");
 		inFantasy = jo.getBoolean("inFantasy");
 		orderIndex = jo.getInt("orderIndex");
 		hero = jo.getBoolean("hero");
+		score = jo.getInt("result");
 		roundCards = new ArrayList<>(inFantasy?1:5);
 		roundCards.add(new HashMap<>());
 		if (!inFantasy)
