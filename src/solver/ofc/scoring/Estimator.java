@@ -177,7 +177,7 @@ public class Estimator {
 		System.out.println(gameAI);
 		PlayerOfc heroAI = gameAI.getPlayer(gameAI.heroName);
 		double valueAI = EvaluatorFacade.evaluate(heroAI.boxFront.toList(), heroAI.boxMiddle.toList(), heroAI.boxBack.toList(), isOurFantasy);
-		int valueAIByBoard = EvaluatorFacade.evaluateByBoard(gameAI, gameAI.heroName);
+		int valueAIByBoard = EvaluatorFacade.evaluateGame(gameAI, gameAI.heroName, 0); //EvaluatorFacade.evaluateByBoard(gameAI, gameAI.heroName);
 		int scoreFromHH = lstPlayers.stream().filter(PlayerHh::isHero).findFirst().get().getScore();
 		System.out.println(String.format("Estimation of AI: %f; by board: %d; from HH: %d", valueAI, valueAIByBoard, scoreFromHH));
 		
@@ -214,7 +214,7 @@ public class Estimator {
 			}
 			PlayerOfc heroSolver = gameSolver.getPlayer(gameSolver.heroName);
 			double valueSolver = EvaluatorFacade.evaluate(heroSolver.boxFront.toList(), heroSolver.boxMiddle.toList(), heroSolver.boxBack.toList(), isOurFantasy);
-			int valueSolverByBoard = EvaluatorFacade.evaluateByBoard(gameSolver, gameSolver.heroName);
+			int valueSolverByBoard = EvaluatorFacade.evaluateGame(gameSolver, gameSolver.heroName, 0); // EvaluatorFacade.evaluateByBoard(gameSolver, gameSolver.heroName);
 			handValueSolverSum += valueSolver;
 			handValueSolverByBoardSum += valueSolverByBoard;
 			String strSolution = heroSolver.toString();
@@ -414,7 +414,7 @@ public class Estimator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline4; FANTASY_SCORE = 15; RANDOMIZED!!!; 3rd round MCS; FAIL_PENALTY = -3", GameFilter.WITHOUT_FANTASY);
+		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline4; FANTASY_SCORE = 15; RANDOMIZED!!!; 3rd round MCS; FAIL_PENALTY = -3; view by board values", GameFilter.ALL);
 		estimator.estimate();
 	}
 

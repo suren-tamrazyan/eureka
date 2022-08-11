@@ -203,11 +203,12 @@ public class Board {
         else if(h == 1 && idx[1] == 5) { // Middle hand is complete
             evals[1] = ev.evalFive(hands[1]);
             switch(Evaluator.getHandRank(evals[1])) {
+                case TRIPS: bonuses[1] = 2; break;
                 case STRAIGHT: bonuses[1] = 4; break;
                 case FLUSH: bonuses[1] = 8; break;
                 case FULL_HOUSE: bonuses[1] = 12; break;
-                case QUADS: bonuses[1] = 16; break;
-                case STRAIGHT_FLUSH: bonuses[1] = 20; break;
+                case QUADS: bonuses[1] = 20; break;
+                case STRAIGHT_FLUSH: bonuses[1] = 30; break;
             }
             if((idx[0] == 3 && evals[0] < evals[1]) || (idx[2] == 5 && evals[1] < evals[2])) {
                 return 1.0;
@@ -225,8 +226,8 @@ public class Board {
                 case STRAIGHT: bonuses[2] = 2; break;
                 case FLUSH: bonuses[2] = 4; break;
                 case FULL_HOUSE: bonuses[2] = 6; break;
-                case QUADS: bonuses[2] = 8; break;
-                case STRAIGHT_FLUSH: bonuses[2] = 10; break;
+                case QUADS: bonuses[2] = 10; break;
+                case STRAIGHT_FLUSH: bonuses[2] = 15; break;
             }
             if((idx[1] == 5 && evals[1] < evals[2]) || (idx[0] == 3 && evals[0] < evals[2])) {
                 return 1.0;

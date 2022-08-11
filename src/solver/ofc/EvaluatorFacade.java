@@ -349,6 +349,149 @@ public class EvaluatorFacade {
         return bonus + (norm_eval_kicker0 + norm_eval_kicker1 + norm_eval_kicker2)/REGULARIZATION_PARAM;
 	}
 
+    private static class Struct {
+        public long[][] hands;
+        public short[] evals;
+        public int[] bonuses;
+//        public boolean willFantasy = false;
+        public Struct() {
+            evals = new short[4];
+            evals[0] = evals[1] = evals[2] = -1;
+            // The cached values of bonuses for completed hands
+            bonuses = new int[3];
+            // The three hands as arrays of cards, each card a long
+            hands = new long[3][];
+            hands[0] = new long[3];
+            hands[1] = new long[5];
+            hands[2] = new long[5];
+        }
+    }
+    private static Struct prepare(String strFront, String strMiddle, String strBack, boolean inFantasy, Evaluator ev, int fantasyLand) {
+        Struct result = new Struct();
+        Evaluator.encodeHand(strFront, result.hands[0]);
+        Evaluator.encodeHand(strMiddle, result.hands[1]);
+        Evaluator.encodeHand(strBack, result.hands[2]);
+        // The value of reaching Fantasyland
+//        final int fantasyLand = Config.FANTASY_SCORE;
+
+        // Front hand
+        result.evals[0] = ev.evalThree(result.hands[0], true);
+        if(result.evals[0] <= 6185) {
+            result.evals[3] = result.evals[0];
+            if(Evaluator.getHandRank(result.evals[0]) == HandRank.TRIPS) {
+                int r1 = (int)(result.hands[0][0] >> 8) & 0xF;
+                result.bonuses[0] += (r1 + 10);
+            }
+            if(Evaluator.getHandRank(result.evals[0]) == HandRank.ONE_PAIR) {
+                int r1 = (int)(result.hands[0][0] >> 8) & 0xF;
+                int r2 = (int)(result.hands[0][1] >> 8) & 0xF;
+                int r3 = (int)(result.hands[0][2] >> 8) & 0xF;
+                if(r1 == r2 && r1 >= 4) { result.bonuses[0] = (r1 - 3); }
+                else if(r1 == r3 && r1 >= 4) { result.bonuses[0] = (r1 - 3); }
+                else if(r2 == r3 && r2 >= 4) { result.bonuses[0] = (r2 - 3); }
+            }
+            // Fantasyland! (QQ2 evaluates to 3985)
+            if (!inFantasy)
+                if(result.evals[0] <= 3985) { result.bonuses[0] += fantasyLand; /*result.willFantasy = true;*/}
+        } else {
+            result.evals[3] = ev.evalThree(result.hands[0], false);
+        }
+
+        // Middle hand
+        result.evals[1] = ev.evalFive(result.hands[1]);
+        switch(Evaluator.getHandRank(result.evals[1])) {
+            case TRIPS: result.bonuses[1] = 2; break;
+            case STRAIGHT: result.bonuses[1] = 4; break;
+            case FLUSH: result.bonuses[1] = 8; break;
+            case FULL_HOUSE: result.bonuses[1] = 12; break;
+            case QUADS: result.bonuses[1] = 20; break;
+            case STRAIGHT_FLUSH: result.bonuses[1] = 30; break;
+            default: result.bonuses[1] = 0; break;
+        }
+
+        // Back hand
+        result.evals[2] = ev.evalFive(result.hands[2]);
+        switch(Evaluator.getHandRank(result.evals[2])) {
+            case STRAIGHT: result.bonuses[2] = 2; break;
+            case FLUSH: result.bonuses[2] = 4; break;
+            case FULL_HOUSE: result.bonuses[2] = 6; break;
+            case QUADS: result.bonuses[2] = 10; break;
+            case STRAIGHT_FLUSH: result.bonuses[2] = 15; break;
+            default: result.bonuses[2] = 0; break;
+        }
+
+        // Fantasyland!
+        if (inFantasy)
+            if(Evaluator.getHandRank(result.evals[0]) == HandRank.TRIPS || Evaluator.getHandRank(result.evals[2]) == HandRank.QUADS || Evaluator.getHandRank(result.evals[2]) == HandRank.STRAIGHT_FLUSH) { result.bonuses[0] += fantasyLand; /*result.willFantasy = true;*/}
+
+        return result;
+    }
+    public static int evaluate(String strFrontHero, String strMiddleHero, String strBackHero, String strFrontOpp, String strMiddleOpp, String strBackOpp, boolean inFantasyHero, boolean inFantasyOpp, int fantasyScore) {
+        Evaluator ev = new Evaluator();
+        Struct hero = prepare(strFrontHero, strMiddleHero, strBackHero, inFantasyHero, ev, fantasyScore);
+        Struct opp = prepare(strFrontOpp, strMiddleOpp, strBackOpp, inFantasyOpp, ev, fantasyScore);
+        short ef1 = hero.evals[0];
+        short em1 = hero.evals[1];
+        short eb1 = hero.evals[2];
+        short ef13 = hero.evals[3];
+        short ef2 = opp.evals[0];
+        short em2 = opp.evals[1];
+        short eb2 = opp.evals[2];
+        short ef23 = opp.evals[3];
+        boolean fouled1 = (ef1 < em1 || em1 < eb1);
+        boolean fouled2 = (ef2 < em2 || em2 < eb2);
+        if(fouled1 && fouled2) { return 0; }
+        if(fouled1) {
+            return -6 - (opp.bonuses[0] + opp.bonuses[1] + opp.bonuses[2]);
+        }
+        if(fouled2) {
+            return +6 + (hero.bonuses[0] + hero.bonuses[1] + hero.bonuses[2]);
+        }
+        int wins = 0;
+        if(ef13 <= 6185 || ef23 <= 6185) { // I think the author was wrong  if(ef13 <= 6685 || ef23 <= 6685) {
+            // at least one front is pair or trips, compare straight up
+            if(ef13 < ef23) { wins = 1; }
+            if(ef13 > ef23) { wins = -1; }
+        }
+        else {
+            // neither front has pair or trips
+            wins = ev.compareThrees(hero.hands[0], opp.hands[0]);
+        }
+        wins += (em1 < em2) ? 1: 0;
+        wins += (eb1 < eb2) ? 1: 0;
+        wins -= (em1 > em2) ? 1: 0;
+        wins -= (eb1 > eb2) ? 1: 0;
+        if(wins == 3) { wins = 6; } // 6 points for winning all three
+        if(wins == -3) { wins = -6; }
+        return wins + (hero.bonuses[0] + hero.bonuses[1] + hero.bonuses[2])
+                - (opp.bonuses[0] + opp.bonuses[1] + opp.bonuses[2]);
+    }
+
+    /**
+     * evaluate game by board with all players
+     * @param game
+     * @param heroName who is the hero in this evaluation case
+     * @return sum of score between all players
+     */
+    public static int evaluateGame(GameOfc game, String heroName, int fantasyScore) {
+        int result = 0;
+        PlayerOfc hero = game.getPlayer(heroName);
+        if (hero == null) return result;
+//        Evaluator ev = new Evaluator();
+        String strFrontHero = hero.boxFront.toString().replace(".", "");
+        String strMiddleHero = hero.boxMiddle.toString().replace(".", "");
+        String strBackHero = hero.boxBack.toString().replace(".", "");
+        for (PlayerOfc player : game.getPlayers()) {
+            if (player.isHero(heroName)) continue;
+            String strFrontOpp = player.boxFront.toString().replace(".", "");
+            String strMiddleOpp = player.boxMiddle.toString().replace(".", "");
+            String strBackOpp = player.boxBack.toString().replace(".", "");
+            result += evaluate(strFrontHero, strMiddleHero, strBackHero, strFrontOpp, strMiddleOpp, strBackOpp, hero.playFantasy, player.playFantasy, fantasyScore);
+        }
+        return result;
+    }
+
+
     /**
      * evaluate game by board with all players
      * @param game
@@ -358,10 +501,10 @@ public class EvaluatorFacade {
     public static int evaluateByBoard(GameOfc game, String heroName) {
         int result = 0;
         PlayerOfc hero = game.getPlayer(heroName);
+        if (hero == null) return result;
         Deck d = new Deck();
         Evaluator ev = new Evaluator();
         Board heroBoard = hand2board(hero, d, ev);
-        if (hero == null) return result;
         for (PlayerOfc player : game.getPlayers()) {
             if (player.isHero(heroName)) continue;
             Board otherBoard = hand2board(player, d, ev);
