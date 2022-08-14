@@ -67,7 +67,8 @@ public class Evaluator {
         if (val > 322)  return(HandRank.FLUSH);            // 1277 flushes
         if (val > 166)  return(HandRank.FULL_HOUSE);       //  156 full house
         if (val > 10)   return(HandRank.QUADS);            //  156 four-kind
-        return(HandRank.STRAIGHT_FLUSH);                   //   10 straight-flushes
+        if (val > 1)   return(HandRank.STRAIGHT_FLUSH);    //  9 straight-flushes
+        return(HandRank.ROYAL_FLUSH);                   //   1 straight-flushes
     }
 
     public static String decodeCard(long card) {

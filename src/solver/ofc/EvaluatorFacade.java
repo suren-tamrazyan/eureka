@@ -16,6 +16,7 @@ import solver.ofc.evaluator.Board;
 import solver.ofc.evaluator.Deck;
 import solver.ofc.evaluator.Evaluator;
 import solver.ofc.evaluator.HandRank;
+import util.Misc;
 
 public class EvaluatorFacade {
 	
@@ -172,6 +173,7 @@ public class EvaluatorFacade {
 	            case FULL_HOUSE: return 24;
 	            case QUADS: return 32;
 	            case STRAIGHT_FLUSH: return 40;
+                case ROYAL_FLUSH: return 50;
 				default:
 					return 0;
             }
@@ -321,6 +323,7 @@ public class EvaluatorFacade {
             case FULL_HOUSE: bonuses[1] = 12; break;
             case QUADS: bonuses[1] = 20; break;
             case STRAIGHT_FLUSH: bonuses[1] = 30; break;
+            case ROYAL_FLUSH: bonuses[1] = 50; break;
             default: bonuses[1] = 0; break;  
         }
 
@@ -333,12 +336,13 @@ public class EvaluatorFacade {
             case FULL_HOUSE: bonuses[2] = 6; break;
             case QUADS: bonuses[2] = 10; break;
             case STRAIGHT_FLUSH: bonuses[2] = 15; break;
+            case ROYAL_FLUSH: bonuses[2] = 25; break;
             default: bonuses[2] = 0; break;
         }
         
         // Fantasyland! 
         if (inFantasy)
-        	if(Evaluator.getHandRank(evals[0]) == HandRank.TRIPS || Evaluator.getHandRank(evals[2]) == HandRank.QUADS || Evaluator.getHandRank(evals[2]) == HandRank.STRAIGHT_FLUSH) { bonuses[0] += fantasyLand; }
+        	if(Evaluator.getHandRank(evals[0]) == HandRank.TRIPS || Evaluator.getHandRank(evals[2]) == HandRank.QUADS || Evaluator.getHandRank(evals[2]) == HandRank.STRAIGHT_FLUSH || Evaluator.getHandRank(evals[2]) == HandRank.ROYAL_FLUSH) { bonuses[0] += fantasyLand; }
 
 
         // fouled
@@ -406,6 +410,7 @@ public class EvaluatorFacade {
             case FULL_HOUSE: result.bonuses[1] = 12; break;
             case QUADS: result.bonuses[1] = 20; break;
             case STRAIGHT_FLUSH: result.bonuses[1] = 30; break;
+            case ROYAL_FLUSH: result.bonuses[1] = 50; break;
             default: result.bonuses[1] = 0; break;
         }
 
@@ -417,12 +422,13 @@ public class EvaluatorFacade {
             case FULL_HOUSE: result.bonuses[2] = 6; break;
             case QUADS: result.bonuses[2] = 10; break;
             case STRAIGHT_FLUSH: result.bonuses[2] = 15; break;
+            case ROYAL_FLUSH: result.bonuses[2] = 25; break;
             default: result.bonuses[2] = 0; break;
         }
 
         // Fantasyland!
         if (inFantasy)
-            if(Evaluator.getHandRank(result.evals[0]) == HandRank.TRIPS || Evaluator.getHandRank(result.evals[2]) == HandRank.QUADS || Evaluator.getHandRank(result.evals[2]) == HandRank.STRAIGHT_FLUSH) { result.bonuses[0] += fantasyLand; /*result.willFantasy = true;*/}
+            if(Evaluator.getHandRank(result.evals[0]) == HandRank.TRIPS || Evaluator.getHandRank(result.evals[2]) == HandRank.QUADS || Evaluator.getHandRank(result.evals[2]) == HandRank.STRAIGHT_FLUSH || Evaluator.getHandRank(result.evals[2]) == HandRank.ROYAL_FLUSH) { result.bonuses[0] += fantasyLand; /*result.willFantasy = true;*/}
 
         return result;
     }
@@ -535,6 +541,19 @@ public class EvaluatorFacade {
 		
 		System.out.println(evaluateIncompleteHand(lstBox, GameOfc.BOX_LEVEL_BACK, cardToBeBoxed, openCards));
 */
-		System.out.println(evaluateByBoard(Arrays.asList(Card.str2Cards("4dKdJs")), Arrays.asList(Card.str2Cards("2h5c6c3h7d")), Arrays.asList(Card.str2Cards("6h6d6sAcAs"))));
+//		System.out.println(evaluateByBoard(Arrays.asList(Card.str2Cards("4dKdJs")), Arrays.asList(Card.str2Cards("2h5c6c3h7d")), Arrays.asList(Card.str2Cards("6h6d6sAcAs"))));
+
+        // STRAIGHT_FLUSH
+        List<String> sfHands = Arrays.asList("2h3h4h5hAh", "2h3h4h5h6h", "3h4h5h6h7h", "4h5h6h7h8h", "5h6h7h8h9h", "6h7h8h9hTh", "7h8h9hThJh", "8h9hThJhQh", "9hThJhQhKh", "ThJhQhKhAh",
+                                            "2d3d4d5dAd", "2d3d4d5d6d", "3d4d5d6d7d", "4d5d6d7d8d", "5d6d7d8d9d", "6d7d8d9dTd", "7d8d9dTdJd", "8d9dTdJdQd", "9dTdJdQdKd", "TdJdQdKdAd",
+                                            "2s3s4s5sAs", "2s3s4s5s6s", "3s4s5s6s7s", "4s5s6s7s8s", "5s6s7s8s9s", "6s7s8s9sTs", "7s8s9sTsJs", "8s9sTsJsQs", "9sTsJsQsKs", "TsJsQsKsAs",
+                                            "2c3c4c5cAc", "2c3c4c5c6c", "3c4c5c6c7c", "4c5c6c7c8c", "5c6c7c8c9c", "6c7c8c9cTc", "7c8c9cTcJc", "8c9cTcJcQc", "9cTcJcQcKc", "TcJcQcKcAc");
+        Evaluator ev = new Evaluator();
+        for (String sfHand : sfHands) {
+            long[] hand = new long[5];
+            Evaluator.encodeHand(sfHand, hand);
+            short eval = ev.evalFive(hand);
+            System.out.println(Misc.sf("%s %d %s", sfHand, eval, Evaluator.getHandRank(eval)));
+        }
 	}
 }

@@ -209,6 +209,7 @@ public class Board {
                 case FULL_HOUSE: bonuses[1] = 12; break;
                 case QUADS: bonuses[1] = 20; break;
                 case STRAIGHT_FLUSH: bonuses[1] = 30; break;
+                case ROYAL_FLUSH: bonuses[1] = 50; break;
             }
             if((idx[0] == 3 && evals[0] < evals[1]) || (idx[2] == 5 && evals[1] < evals[2])) {
                 return 1.0;
@@ -228,6 +229,7 @@ public class Board {
                 case FULL_HOUSE: bonuses[2] = 6; break;
                 case QUADS: bonuses[2] = 10; break;
                 case STRAIGHT_FLUSH: bonuses[2] = 15; break;
+                case ROYAL_FLUSH: bonuses[2] = 25; break;
             }
             if((idx[1] == 5 && evals[1] < evals[2]) || (idx[0] == 3 && evals[0] < evals[2])) {
                 return 1.0;
