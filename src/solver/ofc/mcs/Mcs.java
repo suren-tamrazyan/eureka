@@ -70,7 +70,7 @@ public class Mcs {
 		}
 
 		outerloop:
-		for (EventOfcMctsSimple natureSamp : startState.getOwnerClosure().natureSamples) {
+		for (EventOfcMctsSimple natureSamp : startState.getNatureSpace().natureSamples) {
 			epoch++;
 			for (EventOfcMctsSimple act : actions) {
 				GameOfcMctsSimple actStateClone = startState.clone();
@@ -119,7 +119,7 @@ public class Mcs {
 			actStateClone.performActionForCurrentAgent(act);
 			double rewardAcc = 0;
 			int cnt = 0;
-			for (EventOfcMctsSimple natureSamp : startState.getOwnerClosure().natureSamples) {
+			for (EventOfcMctsSimple natureSamp : startState.getNatureSpace().natureSamples) {
 				GameOfcMctsSimple natStateClone = actStateClone.clone();
 				natStateClone.performActionForCurrentAgent(natureSamp);
 				EventOfcMctsSimple finalAct = Heuristics.completion(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, natStateClone.cardsToBeBoxed);
@@ -157,7 +157,7 @@ public class Mcs {
 		for (EventOfcMctsSimple act : actions) {
 			rewards.put(act, new Double(0.0));
 		}
-		for (EventOfcMctsSimple natureSamp : startState.getOwnerClosure().natureSamples) {
+		for (EventOfcMctsSimple natureSamp : startState.getNatureSpace().natureSamples) {
 			epoch++;
 //			GameOfcMctsSimple natStateClone = startState.clone();
 			for (EventOfcMctsSimple act : actions) {

@@ -28,10 +28,10 @@ public class AgentOfcMctsSimple implements MctsDomainAgent<GameOfcMctsSimple> {
 //			return availableActions.get(Misc.rand.nextInt(availableActions.size())); this case don't take robust result, because take different random case for other node
 			int num = -1; 
 			String stateStr = state.getStateStr();
-			if (state.getOwnerClosure().numberTakesOfNatureSimulations.containsKey(stateStr))
-				num = state.getOwnerClosure().numberTakesOfNatureSimulations.get(stateStr);
+			if (state.getNatureSpace().numberTakesOfNatureSimulations.containsKey(stateStr))
+				num = state.getNatureSpace().numberTakesOfNatureSimulations.get(stateStr);
 			num++;
-			state.getOwnerClosure().numberTakesOfNatureSimulations.put(stateStr, num);
+			state.getNatureSpace().numberTakesOfNatureSimulations.put(stateStr, num);
 			return availableActions.get(num);
 		} else {
 			if (state.boxFront.size() + state.boxMiddle.size() + state.boxBack.size() == 11) { //state.isLastRound()

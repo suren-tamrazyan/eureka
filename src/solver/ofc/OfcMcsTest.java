@@ -29,7 +29,7 @@ public class OfcMcsTest {
     	System.out.println(game.toString());
     	
     	Config cfg = new Config();
-    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
     	long timeBefore = Utils.getTime();
     	EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
     	System.out.println(Utils.getTime() - timeBefore);
@@ -61,7 +61,7 @@ public class OfcMcsTest {
     	
 //    	Config.RANDOM_DEAL_COUNT = 20000;
     	Config cfg = new Config();
-    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
     	long timeBefore = Utils.getTime();
     	EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
     	System.out.println(Utils.getTime() - timeBefore);
@@ -97,7 +97,7 @@ public class OfcMcsTest {
     	
     	Config cfg = new Config();
     	cfg.RANDOM_DEAL_COUNT = cfg.RANDOM_DEAL_COUNT * 10;
-    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
     	long timeBefore = Utils.getTime();
     	EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
     	System.out.println(Utils.getTime() - timeBefore);
@@ -136,13 +136,13 @@ public class OfcMcsTest {
     	System.out.println(game.toString());
     	
     	Config cfg = new Config();
-    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+    	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
     	long timeBefore = Utils.getTime();
     	EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
     	System.out.println(Utils.getTime() - timeBefore);
     	System.out.println(decision.toEventOfc(game.heroName).toString());
     	System.out.println("Nature samples:");
-    	for (EventOfcMctsSimple natureSamp : stateSimple.getOwnerClosure().natureSamples) {
+    	for (EventOfcMctsSimple natureSamp : stateSimple.getNatureSpace().natureSamples) {
     		System.out.println(natureSamp.toEventOfc("hero").toString());
     	}
     }
@@ -174,7 +174,7 @@ public class OfcMcsTest {
         	
         	
         	Config cfg = new Config();
-        	EventOfc result = Mcs.monteCarloSimulation(new GameOfcMctsSimple(game, new EurekaRunner(game, cfg)), 0).toEventOfc(game.heroName);//EurekaRunner.run(game, 4000);
+        	EventOfc result = Mcs.monteCarloSimulation(new GameOfcMctsSimple(game, new NatureSpace(game, cfg)), 0).toEventOfc(game.heroName);//EurekaRunner.run(game, 4000);
         	System.out.println(result.toString());
         	
         	
@@ -213,7 +213,7 @@ public class OfcMcsTest {
         	
         	Config cfg = new Config();
         	cfg.RANDOM_DEAL_COUNT = 12000;
-        	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+        	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
         	long timeBefore = Utils.getTime();
 //			EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //			EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -247,7 +247,7 @@ public class OfcMcsTest {
 
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 20000;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -278,7 +278,7 @@ public class OfcMcsTest {
 
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 10000;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -317,7 +317,7 @@ public class OfcMcsTest {
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -355,7 +355,7 @@ public class OfcMcsTest {
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 15000;
 		Config.FANTASY_SCORE = 15;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -391,7 +391,7 @@ public class OfcMcsTest {
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
 //		Config.FAIL_PENALTY = -3 -3;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -421,7 +421,7 @@ public class OfcMcsTest {
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 10000;
 		Config.FANTASY_SCORE = 15;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -460,7 +460,7 @@ public class OfcMcsTest {
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
 		Config.FAIL_PENALTY = -1;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -500,7 +500,7 @@ public class OfcMcsTest {
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
 //		Config.FAIL_PENALTY = -3 -3;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -540,7 +540,7 @@ public class OfcMcsTest {
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
 //		Config.FAIL_PENALTY = 0;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -587,7 +587,7 @@ public class OfcMcsTest {
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
 		Config.FAIL_PENALTY = -1; // -1 better than -3 in this case
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new EurekaRunner(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);

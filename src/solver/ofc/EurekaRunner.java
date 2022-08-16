@@ -29,41 +29,13 @@ public class EurekaRunner {
 		return mctsIterationsCount;
 	}
 
-	public List<EventOfcMctsSimple> natureSamples;
-	public Map<String, Integer> numberTakesOfNatureSimulations = new HashMap<>();
+	public NatureSpace natureSpace;
 
 	public EurekaRunner(List<Card> front, List<Card> middle, List<Card> back, List<Card> toBeBoxed, List<Card> otherOpenedCard, 
 			GameMode aGameMode, boolean aIsFirstRound, String aHeroName, Config aCfg) {
 		cfg = aCfg;
-    	stateSimple = new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aIsFirstRound, aHeroName, this);
-    	
-		//initAvailableActionsForNature; one common space of samples for all state (node) because one deal over algorithm
-    	int sizeFront = front.size();
-    	int sizeMiddle = middle.size();
-    	int sizeBack = back.size();
-    	int sizeCardsToBeBoxed = toBeBoxed.size();
-
-		List<Card> availableCards = stateSimple.getAvailableCards();
-		int dealSize = 13 - (sizeFront + sizeMiddle + sizeBack + (sizeCardsToBeBoxed - (aIsFirstRound?0:1)));
-		BigInteger cntCombi = Utils.combinationCount(availableCards.size(), dealSize);
-		if (cntCombi.compareTo(BigInteger.valueOf(3 * cfg.RANDOM_DEAL_COUNT)) > 0) {
-			this.natureSamples = new ArrayList<EventOfcMctsSimple>(cfg.RANDOM_DEAL_COUNT);
-			Set<Set<Card>> checkDistinct = new HashSet<>(cfg.RANDOM_DEAL_COUNT);
-			int i = 0;
-			while (i < cfg.RANDOM_DEAL_COUNT) {
-				Collections.shuffle(availableCards);
-				Set<Card> tmp = new HashSet<>(availableCards.subList(0, dealSize));
-				if (checkDistinct.add(tmp)) {
-					this.natureSamples.add(new EventOfcMctsSimple(EventOfc.TYPE_DEAL_CARDS, tmp));
-					i++;
-				}
-			}
-		} else {
-			this.natureSamples = Generator.combination(availableCards).simple(dealSize).stream().map(x -> new EventOfcMctsSimple(EventOfc.TYPE_DEAL_CARDS, x)).collect(Collectors.toList());
-			Collections.shuffle(this.natureSamples); // very, very important
-		}
-
-		this.numberTakesOfNatureSimulations.clear();
+		natureSpace = new NatureSpace(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aIsFirstRound, aHeroName, cfg);
+    	stateSimple = new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aIsFirstRound, aHeroName, natureSpace);
 	}
 	
 	public EurekaRunner(GameOfc game, Config aCfg) {
@@ -79,7 +51,7 @@ public class EurekaRunner {
 		MctsCallback callback = null;
 		MctsCallback callbackDebug = Config.DEBUG_PRINT ? new DebugPrinter() : null;
     	Mcts<GameOfcMctsSimple, EventOfcMctsSimple, AgentOfcMctsSimple> mcts = Mcts.initializeIterations(cfg.NUMBER_OF_ITERATIONS, callback, callbackDebug);
-    	mcts.dontClone(AgentOfcMcts.class, EurekaRunner.class);
+    	mcts.dontClone(AgentOfcMcts.class, EurekaRunner.class, NatureSpace.class);
     	EventOfcMctsSimple decision = mcts.uctSearchWithExploration(stateSimple, cfg.EXPLORATION_PARAMETER, timeDurationMs, cfg.TIME_LIMIT_MS);
     	System.out.println(String.format("mcts.iterationCount = %d", mcts.getIterationsCount()));
     	this.mctsIterationsCount = mcts.getIterationsCount();
@@ -91,7 +63,7 @@ public class EurekaRunner {
 		Config cfg = new Config();
 		cfg.TIME_LIMIT_MS = timeLimitMs;
 		if (aRound == 4 || aRound == 3) { // for 4 and 3 round can run MCS
-			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg)), timeDurationMs > 0 ? timeDurationMs : cfg.TIME_LIMIT_MS, Config.CPU_NUM).toEventOfc(aHeroName);
+			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, new NatureSpace(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg)), timeDurationMs > 0 ? timeDurationMs : cfg.TIME_LIMIT_MS, Config.CPU_NUM).toEventOfc(aHeroName);
 		} else {
 			if (aRound == 1) cfg.EXPLORATION_PARAMETER = 7;
 			if (aRound == 2) cfg.EXPLORATION_PARAMETER = 15;

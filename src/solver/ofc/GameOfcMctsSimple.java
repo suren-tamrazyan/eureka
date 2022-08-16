@@ -28,12 +28,16 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 	public String heroName;
 	
 	// common space
-	private EurekaRunner ownerClosure;
-	public EurekaRunner getOwnerClosure() {
-		return ownerClosure;
+	private NatureSpace natureSpace;
+	public NatureSpace getNatureSpace() {
+		return natureSpace;
+	}
+
+	public static int calcDeckSize(GameMode aGameMode) {
+		return (aGameMode == GameMode.GAME_MODE_OFC_WILD_CARD_REGULAR || aGameMode == GameMode.GAME_MODE_OFC_WILD_CARD_PROGRESSIVE || aGameMode == GameMode.GAME_MODE_OFC_WILD_CARD_ULTIMATE) ? 54 : 52;
 	}
 	public GameOfcMctsSimple(List<Card> front, List<Card> middle, List<Card> back, List<Card> toBeBoxed, List<Card> otherOpenedCard, 
-			GameMode aGameMode, boolean aIsFirstRound, String aHeroName, EurekaRunner aOwnerClosure) {
+			GameMode aGameMode, boolean aIsFirstRound, String aHeroName, NatureSpace aNatureSpace) {
 		boxFront.addAll(front);
 		boxMiddle.addAll(middle);
 		boxBack.addAll(back);
@@ -42,9 +46,9 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		this.isFirstRound = aIsFirstRound;
 		heroName = aHeroName;
 		
-		this.ownerClosure = aOwnerClosure;
+		this.natureSpace = aNatureSpace;
 		
-		int deckSize = (gameMode == GameMode.GAME_MODE_OFC_WILD_CARD_REGULAR || gameMode == GameMode.GAME_MODE_OFC_WILD_CARD_PROGRESSIVE || gameMode == GameMode.GAME_MODE_OFC_WILD_CARD_ULTIMATE) ? 54 : 52;
+		int deckSize = calcDeckSize(gameMode);
 		deck = new ArrayList<>(deckSize);
 		for (int i = 0; i < deckSize; i++)
 			deck.add(Card.getCard(i));
@@ -66,9 +70,9 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		}
 		return other;
 	}
-	public GameOfcMctsSimple(GameOfc source, EurekaRunner aOwnerClosure) {
+	public GameOfcMctsSimple(GameOfc source, NatureSpace aNatureSpace) {
 		this(source.getPlayer(source.heroName).boxFront.toList(), source.getPlayer(source.heroName).boxMiddle.toList(), source.getPlayer(source.heroName).boxBack.toList(),
-				source.getPlayer(source.heroName).cardsToBeBoxed, mergeToOther(source), source.gameMode, source.isFirstRound(), source.heroName, aOwnerClosure);
+				source.getPlayer(source.heroName).cardsToBeBoxed, mergeToOther(source), source.gameMode, source.isFirstRound(), source.heroName, aNatureSpace);
 	}
 
 	public GameOfcMctsSimple() {
@@ -91,7 +95,7 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		result.deck = new ArrayList<>(deck);
 		result.isFirstRound = isFirstRound;
 		result.heroName = heroName;
-		result.ownerClosure = ownerClosure;
+		result.natureSpace = natureSpace;
 		return result;
 	}
 
@@ -100,7 +104,7 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 //			if (availableActionsForNature == null)
 //				initAvailableActionsForNature();
 //			return availableActionsForNature;
-			return getOwnerClosure().natureSamples;
+			return getNatureSpace().natureSamples;
 		} else {
 			if (availableActionsForAgent == null)
 				initAvailableActionsForAgent();
@@ -118,15 +122,15 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		resetCache();
 	}
 
-	public List<Card> getAvailableCards() {
-		List<Card> result = new ArrayList<>(this.deck);
-		result.removeAll(boxBack);
-		result.removeAll(boxMiddle);
-		result.removeAll(boxFront);
-		result.removeAll(cardsToBeBoxed);
-		
-		return result;
-	}
+//	public List<Card> getAvailableCards() {
+//		List<Card> result = new ArrayList<>(this.deck);
+//		result.removeAll(boxBack);
+//		result.removeAll(boxMiddle);
+//		result.removeAll(boxFront);
+//		result.removeAll(cardsToBeBoxed);
+//
+//		return result;
+//	}
 	
 //	protected void initAvailableActionsForNature() {
 //		long timeBefore = Misc.getTime();
