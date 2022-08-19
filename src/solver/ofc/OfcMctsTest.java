@@ -516,7 +516,7 @@ public class OfcMctsTest {
     	System.out.println("start!");
     	long timeBefore = Utils.getTime();
     	long tsec = 10;
-    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Jd")), Arrays.asList(Card.str2Cards("2cTcTd")), Arrays.asList(Card.str2Cards("6h6d6s")), Arrays.asList(Card.str2Cards("2h8hTs")),  Arrays.asList(Card.str2Cards("Qh3c3d3s4d4c9h9d7s5h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000);
+    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Jd")), Arrays.asList(Card.str2Cards("2cTcTd")), Arrays.asList(Card.str2Cards("6h6d6s")), Arrays.asList(Card.str2Cards("2h8hTs")),  Arrays.asList(Card.str2Cards("Qh3c3d3s4d4c9h9d7s5h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000, null);
     	System.out.println(Utils.getTime() - timeBefore);
     	System.out.println(decision.toString());
     }
@@ -534,7 +534,7 @@ public class OfcMctsTest {
     	System.out.println("start!");
     	long timeBefore = Utils.getTime();
     	long tsec = 60;
-    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Qd")), Arrays.asList(Card.str2Cards("8cKs")), Arrays.asList(Card.str2Cards("6dJd6c6s")), Arrays.asList(Card.str2Cards("5s8h8d")),  Arrays.asList(Card.str2Cards("Td8sJs7dQhQcQs5h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000);
+    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Qd")), Arrays.asList(Card.str2Cards("8cKs")), Arrays.asList(Card.str2Cards("6dJd6c6s")), Arrays.asList(Card.str2Cards("5s8h8d")),  Arrays.asList(Card.str2Cards("Td8sJs7dQhQcQs5h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000, null);
     	System.out.println(Utils.getTime() - timeBefore);
     	System.out.println(decision.toString());
     }
@@ -552,7 +552,7 @@ public class OfcMctsTest {
     	System.out.println("start!");
     	long timeBefore = Utils.getTime();
     	long tsec = 10;
-    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("JcKd")), Arrays.asList(Card.str2Cards("3s7c7h")), Arrays.asList(Card.str2Cards("8h8cTd4c")), Arrays.asList(Card.str2Cards("2d7d9h")),  Arrays.asList(Card.str2Cards("Kc6c9s2sQsAcKs5d6dJd3d5sAh")), GameMode.GAME_MODE_REGULAR, 4, "HeroName", /*60*/tsec*1000, 1700000);
+    	EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("JcKd")), Arrays.asList(Card.str2Cards("3s7c7h")), Arrays.asList(Card.str2Cards("8h8cTd4c")), Arrays.asList(Card.str2Cards("2d7d9h")),  Arrays.asList(Card.str2Cards("Kc6c9s2sQsAcKs5d6dJd3d5sAh")), GameMode.GAME_MODE_REGULAR, 4, "HeroName", /*60*/tsec*1000, 1700000, null);
     	System.out.println(Utils.getTime() - timeBefore);
     	System.out.println(decision.toString());
     	
@@ -563,7 +563,7 @@ public class OfcMctsTest {
 		System.out.println("start!");
 		long timeBefore = Utils.getTime();
 		long tsec = 5;
-		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("QsKc")), Arrays.asList(Card.str2Cards("3dAc")), Arrays.asList(Card.str2Cards("8h4hTh")), Arrays.asList(Card.str2Cards("2c5h9h")),  Arrays.asList(Card.str2Cards("As7d8c7h4sJdJsQhQd6sAdKh2d9d9s")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000);
+		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("QsKc")), Arrays.asList(Card.str2Cards("3dAc")), Arrays.asList(Card.str2Cards("8h4hTh")), Arrays.asList(Card.str2Cards("2c5h9h")),  Arrays.asList(Card.str2Cards("As7d8c7h4sJdJsQhQd6sAdKh2d9d9s")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000, null);
 		System.out.println(Utils.getTime() - timeBefore);
 		System.out.println(decision.toString());
 
@@ -574,7 +574,7 @@ public class OfcMctsTest {
 		System.out.println("start!");
 		long timeBefore = Utils.getTime();
 		long tsec = 10;
-		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("6hTh4h")), Arrays.asList(Card.str2Cards("2h2d2c2s")), Arrays.asList(Card.str2Cards("3c9dKs")),  Arrays.asList(Card.str2Cards("6s8h6c5dJdKd8d4c")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000);
+		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("6hTh4h")), Arrays.asList(Card.str2Cards("2h2d2c2s")), Arrays.asList(Card.str2Cards("3c9dKs")),  Arrays.asList(Card.str2Cards("6s8h6c5dJdKd8d4c")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000, null);
 		System.out.println(Utils.getTime() - timeBefore);
 		System.out.println(decision.toString());
 
@@ -585,7 +585,7 @@ public class OfcMctsTest {
 		System.out.println("start!");
 		long timeBefore = Utils.getTime();
 		long tsec = 5;
-		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Qd")), Arrays.asList(Card.str2Cards("KsKh")), Arrays.asList(Card.str2Cards("2c3h5s3c")), Arrays.asList(Card.str2Cards("5h9hQc")),  Arrays.asList(Card.str2Cards("AhTs2s8h8d7cJcKdKc7h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000);
+		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("Qd")), Arrays.asList(Card.str2Cards("KsKh")), Arrays.asList(Card.str2Cards("2c3h5s3c")), Arrays.asList(Card.str2Cards("5h9hQc")),  Arrays.asList(Card.str2Cards("AhTs2s8h8d7cJcKdKc7h")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000, null);
 		System.out.println(Utils.getTime() - timeBefore);
 		System.out.println(decision.toString());
 
@@ -596,7 +596,7 @@ public class OfcMctsTest {
 		System.out.println("start!");
 		long timeBefore = Utils.getTime();
 		long tsec = 10;
-		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("Qs7c4h4c9d")),  Arrays.asList(Card.str2Cards("As7h7d8cJd")), GameMode.GAME_MODE_REGULAR, 1, "HeroName", /*60*/tsec*1000, 1700000);
+		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("Qs7c4h4c9d")),  Arrays.asList(Card.str2Cards("As7h7d8cJd")), GameMode.GAME_MODE_REGULAR, 1, "HeroName", /*60*/tsec*1000, 1700000, null);
 		System.out.println(Utils.getTime() - timeBefore);
 		System.out.println(decision.toString());
 

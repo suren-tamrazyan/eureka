@@ -48,7 +48,7 @@ public class Mcs {
 					EventOfcMctsSimple finalAct = Heuristics.completion(estState.state.boxFront, estState.state.boxMiddle, estState.state.boxBack, estState.state.cardsToBeBoxed);
 					estState.state.performActionForCurrentAgent(finalAct);
 
-					double reward = EvaluatorFacade.evaluate(estState.state.boxFront, estState.state.boxMiddle, estState.state.boxBack, false);
+					double reward = estState.state.evaluate(false);//EvaluatorFacade.evaluate(estState.state.boxFront, estState.state.boxMiddle, estState.state.boxBack, false);
 //					if (reward > 0)
 						rewards.get(estState.act).add(reward);
 				}
@@ -124,7 +124,7 @@ public class Mcs {
 				natStateClone.performActionForCurrentAgent(natureSamp);
 				EventOfcMctsSimple finalAct = Heuristics.completion(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, natStateClone.cardsToBeBoxed);
 				natStateClone.performActionForCurrentAgent(finalAct);
-				double rwrd = EvaluatorFacade.evaluate(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, false);
+				double rwrd = natStateClone.evaluate(false);//EvaluatorFacade.evaluate(natStateClone.boxFront, natStateClone.boxMiddle, natStateClone.boxBack, false);
 				rewardAcc += rwrd;
 				i++;
 				if (Config.DEBUG_PRINT) {
@@ -166,7 +166,7 @@ public class Mcs {
 				actStateClone.performActionForCurrentAgent(natureSamp);
 				EventOfcMctsSimple finalAct = Heuristics.completion(actStateClone.boxFront, actStateClone.boxMiddle, actStateClone.boxBack, actStateClone.cardsToBeBoxed);
 				actStateClone.performActionForCurrentAgent(finalAct);
-				double rwrd = EvaluatorFacade.evaluate(actStateClone.boxFront, actStateClone.boxMiddle, actStateClone.boxBack, false);
+				double rwrd = actStateClone.evaluate(false);//EvaluatorFacade.evaluate(actStateClone.boxFront, actStateClone.boxMiddle, actStateClone.boxBack, false);
 				double rewardAcc = rewards.get(act) + rwrd;
 				rewards.put(act, rewardAcc);
 				i++;
@@ -185,7 +185,7 @@ public class Mcs {
 	}
 
 	protected static void debugOnEstimateSample(EventOfcMctsSimple action, GameOfcMctsSimple state, EventOfcMctsSimple sample, int actionIterNum, double actionRewardAcc, double actionReward) {
-//		System.out.println(String.format("%f %s", EvaluatorFacade.evaluate(state.boxFront, state.boxMiddle, state.boxBack, false), sample));
+//		System.out.println(String.format("%f %s", state.evaluate(false);//EvaluatorFacade.evaluate(state.boxFront, state.boxMiddle, state.boxBack, false), sample));
 //		if (actionIterNum % 100 == 0) {
 			if (csv.isEmpty())
 				csv.add("epoch;branch;rewardAcc;state;reward");

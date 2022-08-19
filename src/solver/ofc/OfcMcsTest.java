@@ -355,7 +355,7 @@ public class OfcMcsTest {
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 15000;
 		Config.FANTASY_SCORE = 15;
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpaceExt(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -587,7 +587,9 @@ public class OfcMcsTest {
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
 		Config.FAIL_PENALTY = -1; // -1 better than -3 in this case
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
+//		NatureSpace natureSpace = new NatureSpace(game, cfg);
+		NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -600,6 +602,6 @@ public class OfcMcsTest {
 
 	public static void main(String[] args) throws Exception {
     	OfcMcsTest test = new OfcMcsTest();
-    	test.testNotLikeAI10();
+    	test.testNotLikeAI6();
     }
 }

@@ -1,13 +1,7 @@
 package solver.ofc;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.paukov.combinatorics3.Generator;
@@ -59,11 +53,16 @@ public class EurekaRunner {
 	}
 
 	public static EventOfc run(List<Card> front, List<Card> middle, List<Card> back, List<Card> toBeBoxed, List<Card> otherOpenedCard, 
-			GameMode aGameMode, int aRound, String aHeroName, long timeDurationMs, long timeLimitMs) {
+			GameMode aGameMode, int aRound, String aHeroName, long timeDurationMs, long timeLimitMs, List<NatureSpaceExt.OppHand> opps) {
 		Config cfg = new Config();
 		cfg.TIME_LIMIT_MS = timeLimitMs;
 		if (aRound == 4 || aRound == 3) { // for 4 and 3 round can run MCS
-			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, new NatureSpace(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg)), timeDurationMs > 0 ? timeDurationMs : cfg.TIME_LIMIT_MS, Config.CPU_NUM).toEventOfc(aHeroName);
+			NatureSpace ns;
+			if (!Config.ESTIMATE_OPPONENTS)//if (opps == null)
+				ns = new NatureSpace(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg);
+			else
+				ns = new NatureSpaceExt(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg, opps);
+			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, ns), timeDurationMs > 0 ? timeDurationMs : cfg.TIME_LIMIT_MS, Config.CPU_NUM).toEventOfc(aHeroName);
 		} else {
 			if (aRound == 1) cfg.EXPLORATION_PARAMETER = 7;
 			if (aRound == 2) cfg.EXPLORATION_PARAMETER = 15;
@@ -82,7 +81,8 @@ public class EurekaRunner {
 	
 	public static EventOfc run(GameOfc game, long timeDurationMs, long timeLimitMs) {
 		return run(game.getPlayer(game.heroName).boxFront.toList(), game.getPlayer(game.heroName).boxMiddle.toList(), game.getPlayer(game.heroName).boxBack.toList(),
-				game.getPlayer(game.heroName).cardsToBeBoxed, GameOfcMctsSimple.mergeToOther(game), game.gameMode, game.getRound(), game.heroName, timeDurationMs, timeLimitMs);
+				game.getPlayer(game.heroName).cardsToBeBoxed, GameOfcMctsSimple.mergeToOther(game), game.gameMode, game.getRound(), game.heroName, timeDurationMs, timeLimitMs,
+				Arrays.stream(game.getPlayers()).filter(pl -> !pl.isHero(game.heroName)).map(player -> new NatureSpaceExt.OppHand(player.boxFront.toList(), player.boxMiddle.toList(), player.boxBack.toList(), null, player.playFantasy)).collect(Collectors.toList()));
 	}
 	
 	public static EventOfc run(GameOfc game) {

@@ -377,4 +377,17 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 	public String getStateStr() {
 		return boxFront + "-" + boxMiddle + "-" + boxBack;
 	}
+
+	public double evaluate(boolean inFantasy) {
+		if (natureSpace instanceof NatureSpaceExt) {
+			try {
+				return ((NatureSpaceExt) natureSpace).evaluateBySpace(boxFront, boxMiddle, boxBack, inFantasy);
+			} catch (NatureSpaceExt.DontPassSpaceException e) {
+				System.out.println("DontPassSpaceException");
+				return EvaluatorFacade.evaluate(boxFront, boxMiddle, boxBack, inFantasy);
+			}
+		}
+		else
+			return EvaluatorFacade.evaluate(boxFront, boxMiddle, boxBack, inFantasy);
+	}
 }
