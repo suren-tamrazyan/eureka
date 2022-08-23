@@ -1,10 +1,6 @@
 package solver.ofc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.paukov.combinatorics3.Generator;
@@ -22,6 +18,18 @@ public class EvaluatorFacade {
 	
 	public static final int THREAD_COUNT = 5;
 	public static final int TIME_LIMIT = 10;
+
+    private static long[] card2code = new long[52];
+    static {
+        for (int i = 0; i < 52; i++) card2code[i] =  Evaluator.encodeCard(Card.getCard(i).toString());
+    }
+    public static void encodeHand(Collection<Card> cards, long[] hand) {
+        int i = 0;
+        for (Card card : cards) {
+            hand[i] = card2code[card.getIndex()];
+            i++;
+        }
+    }
 	
 	public static Board hand2board(PlayerOfc hand, Deck d, Evaluator ev) {
         String strFront = hand.boxFront.toString().replace(".", "");
@@ -251,20 +259,20 @@ public class EvaluatorFacade {
 	}
 	*/
 	
-	public static double evaluate(List<Card> front, List<Card> middle, List<Card> back, boolean inFantasy) {
-//		return evaluateByBoard(front, middle, back);
-		
-		if (front.size() != 3 || middle.size() != 5 || back.size() != 5)
-			throw new IllegalArgumentException("Error: front/middle/back have't full boxes");
-		
-        String strFront = front.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
-        String strMiddle = middle.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
-        String strBack = back.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+//	public static double evaluate(List<Card> front, List<Card> middle, List<Card> back, boolean inFantasy) {
+////		return evaluateByBoard(front, middle, back);
+//
+//		if (front.size() != 3 || middle.size() != 5 || back.size() != 5)
+//			throw new IllegalArgumentException("Error: front/middle/back have't full boxes");
+//
+//        String strFront = front.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+//        String strMiddle = middle.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+//        String strBack = back.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+//
+//        return evaluate(strFront, strMiddle, strBack, inFantasy);
+//    }
         
-        return evaluate(strFront, strMiddle, strBack, inFantasy);
-    }
-        
-    public static double evaluate(String strFront, String strMiddle, String strBack, boolean inFantasy) {
+    public static double evaluate(List<Card> front, List<Card> middle, List<Card> back, boolean inFantasy) {
 //    	final int MULTIPLIER = 1;//10000;
     	final short MAX_EVAL = 7748 + 1;
     	final int REGULARIZATION_PARAM = 3;
@@ -283,9 +291,9 @@ public class EvaluatorFacade {
         hands[0] = new long[3];
         hands[1] = new long[5];
         hands[2] = new long[5];
-        Evaluator.encodeHand(strFront, hands[0]); 
-        Evaluator.encodeHand(strMiddle, hands[1]);
-        Evaluator.encodeHand(strBack, hands[2]);
+        encodeHand(front, hands[0]);
+        encodeHand(middle, hands[1]);
+        encodeHand(back, hands[2]);
         // The value of reaching Fantasyland
         final int fantasyLand = Config.FANTASY_SCORE;
 
@@ -370,11 +378,11 @@ public class EvaluatorFacade {
             hands[2] = new long[5];
         }
     }
-    private static Struct prepare(String strFront, String strMiddle, String strBack, boolean inFantasy, Evaluator ev, int fantasyLand) {
+    private static Struct prepare(List<Card> front, List<Card> middle, List<Card> back, boolean inFantasy, Evaluator ev, int fantasyLand) {
         Struct result = new Struct();
-        Evaluator.encodeHand(strFront, result.hands[0]);
-        Evaluator.encodeHand(strMiddle, result.hands[1]);
-        Evaluator.encodeHand(strBack, result.hands[2]);
+        encodeHand(front, result.hands[0]);
+        encodeHand(middle, result.hands[1]);
+        encodeHand(back, result.hands[2]);
         // The value of reaching Fantasyland
 //        final int fantasyLand = Config.FANTASY_SCORE;
 
@@ -432,10 +440,10 @@ public class EvaluatorFacade {
 
         return result;
     }
-    public static int evaluate(String strFrontHero, String strMiddleHero, String strBackHero, String strFrontOpp, String strMiddleOpp, String strBackOpp, boolean inFantasyHero, boolean inFantasyOpp, int fantasyScore) {
+    public static int evaluate(List<Card> frontHero, List<Card> middleHero, List<Card> backHero, List<Card> frontOpp, List<Card> middleOpp, List<Card> backOpp, boolean inFantasyHero, boolean inFantasyOpp, int fantasyScore) {
         Evaluator ev = new Evaluator();
-        Struct hero = prepare(strFrontHero, strMiddleHero, strBackHero, inFantasyHero, ev, fantasyScore);
-        Struct opp = prepare(strFrontOpp, strMiddleOpp, strBackOpp, inFantasyOpp, ev, fantasyScore);
+        Struct hero = prepare(frontHero, middleHero, backHero, inFantasyHero, ev, fantasyScore);
+        Struct opp = prepare(frontOpp, middleOpp, backOpp, inFantasyOpp, ev, fantasyScore);
         short ef1 = hero.evals[0];
         short em1 = hero.evals[1];
         short eb1 = hero.evals[2];
@@ -484,15 +492,9 @@ public class EvaluatorFacade {
         PlayerOfc hero = game.getPlayer(heroName);
         if (hero == null) return result;
 //        Evaluator ev = new Evaluator();
-        String strFrontHero = hero.boxFront.toString().replace(".", "");
-        String strMiddleHero = hero.boxMiddle.toString().replace(".", "");
-        String strBackHero = hero.boxBack.toString().replace(".", "");
         for (PlayerOfc player : game.getPlayers()) {
             if (player.isHero(heroName)) continue;
-            String strFrontOpp = player.boxFront.toString().replace(".", "");
-            String strMiddleOpp = player.boxMiddle.toString().replace(".", "");
-            String strBackOpp = player.boxBack.toString().replace(".", "");
-            result += evaluate(strFrontHero, strMiddleHero, strBackHero, strFrontOpp, strMiddleOpp, strBackOpp, hero.playFantasy, player.playFantasy, fantasyScore);
+            result += evaluate(hero.boxFront.toList(), hero.boxMiddle.toList(), hero.boxBack.toList(), player.boxFront.toList(), player.boxMiddle.toList(), player.boxBack.toList(), hero.playFantasy, player.playFantasy, fantasyScore);
         }
         return result;
     }

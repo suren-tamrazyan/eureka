@@ -71,6 +71,7 @@ public class NatureSpaceExt extends NatureSpace{
         }
 
 
+        // TODO small space
         for (int i = 0; i < Config.OPP_RANDOM_DEAL_COUNT; i++) {
             Collections.shuffle(availableCards);
             int fromIndex = 0;
@@ -93,10 +94,10 @@ public class NatureSpaceExt extends NatureSpace{
                 Arrays.stream(game.getPlayers()).filter(pl -> !pl.isHero(game.heroName)).map(player -> new OppHand(player.boxFront.toList(), player.boxMiddle.toList(), player.boxBack.toList(), null, player.playFantasy)).collect(Collectors.toList()));
     }
 
-    public int evaluateGame(String strFrontHero, String strMiddleHero, String strBackHero, List<OppHand> opps, boolean heroInFantasy, int fantasyScore) {
+    public int evaluateGame(List<Card> frontHero, List<Card> middleHero, List<Card> backHero, List<OppHand> opps, boolean heroInFantasy, int fantasyScore) {
         int result = 0;
         for (OppHand opp : opps)
-            result += EvaluatorFacade.evaluate(strFrontHero, strMiddleHero, strBackHero, opp.strFront, opp.strMiddle, opp.strBack, heroInFantasy, opp.oppPlayFantasy, fantasyScore);
+            result += EvaluatorFacade.evaluate(frontHero, middleHero, backHero, opp.front, opp.middle, opp.back, heroInFantasy, opp.oppPlayFantasy, fantasyScore);
         return result;
     }
 
@@ -109,15 +110,12 @@ public class NatureSpaceExt extends NatureSpace{
             maskHero |= (1L << crd.getIndex());
         for (Card crd : backHero)
             maskHero |= (1L << crd.getIndex());
-        String strFrontHero = frontHero.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
-        String strMiddleHero = middleHero.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
-        String strBackHero = backHero.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
         int sum = 0;
         int cnt = 0;
         for (List<OppHand> opps : natureSamplesOpp) {
             long finalMaskHero = maskHero;
             if (opps.stream().allMatch(x -> (finalMaskHero & x.mask) == 0)) {
-                sum += evaluateGame(strFrontHero, strMiddleHero, strBackHero, opps, heroInFantasy, Config.FANTASY_SCORE);
+                sum += evaluateGame(frontHero, middleHero, backHero, opps, heroInFantasy, Config.FANTASY_SCORE);
                 cnt++;
             }
         }

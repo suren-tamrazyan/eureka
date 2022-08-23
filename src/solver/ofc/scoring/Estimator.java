@@ -28,10 +28,7 @@ import game.GameException;
 import game.Game.Nw;
 import game.GameOfc;
 import game.GameOfc.GameMode;
-import solver.ofc.EurekaRunner;
-import solver.ofc.EvaluatorFacade;
-import solver.ofc.Heuristics;
-import solver.ofc.Utils;
+import solver.ofc.*;
 import game.PlayerOfc;
 
 public class Estimator {
@@ -414,7 +411,8 @@ public class Estimator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_upoker_yakov\\nojoker1", "baseline5; Upoker-Yakov; 3rd round MCS + EVALUATE_GAME; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.WITHOUT_FANTASY);
+		Config.ESTIMATE_OPPONENTS = true;
+		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline5; 3rd round MCS + EXTEND TIME + ESTIMATE_OPPONENTS; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
 		estimator.estimate();
 	}
 
