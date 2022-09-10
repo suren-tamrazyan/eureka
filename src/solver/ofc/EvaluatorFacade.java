@@ -271,8 +271,11 @@ public class EvaluatorFacade {
 //
 //        return evaluate(strFront, strMiddle, strBack, inFantasy);
 //    }
-        
+
     public static double evaluate(List<Card> front, List<Card> middle, List<Card> back, boolean inFantasy) {
+        return evaluate(front, middle, back, inFantasy, Config.FANTASY_SCORE);
+    }
+    public static double evaluate(List<Card> front, List<Card> middle, List<Card> back, boolean inFantasy, int fantasyLand) {
 //    	final int MULTIPLIER = 1;//10000;
     	final short MAX_EVAL = 7748 + 1;
     	final int REGULARIZATION_PARAM = 3;
@@ -294,8 +297,6 @@ public class EvaluatorFacade {
         encodeHand(front, hands[0]);
         encodeHand(middle, hands[1]);
         encodeHand(back, hands[2]);
-        // The value of reaching Fantasyland
-        final int fantasyLand = Config.FANTASY_SCORE;
 
         // Front hand
         evals[0] = ev.evalThree(hands[0], true);

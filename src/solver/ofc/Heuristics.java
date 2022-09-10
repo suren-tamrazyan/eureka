@@ -27,8 +27,8 @@ public class Heuristics {
 		private short eval; // less is better 
 		private long[] lHand;
 		
-		private String strBase;
-		private String strEval;
+//		private String strBase;
+//		private String strEval;
 		
 		private long mask = 0L;
 		
@@ -45,9 +45,13 @@ public class Heuristics {
 				throw new IllegalArgumentException("Init Heuristics.AsHand: hand size is not 5 and is not 3");
 			
 			Evaluator ev = new Evaluator();
-			strBase = baseList.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
-			strEval = evalList.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
-	        lHand = Evaluator.encodeHand(strBase + strEval);
+//			strBase = baseList.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+//			strEval = evalList.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+//	        lHand = Evaluator.encodeHand(strBase + strEval);
+			List<Card> allcard = new ArrayList<>(baseList);
+			allcard.addAll(evalList);
+			lHand = new long[allcard.size()];
+			EvaluatorFacade.encodeHand(allcard, lHand);
 	        
 	        if(lHand.length == 5)
 	        	eval = ev.evalFive(lHand);
@@ -69,7 +73,7 @@ public class Heuristics {
 			int result = this.eval - o.eval;
 			if (!Config.DISTINCT_TREE)
 				if (result == 0) // prevent remove equals by eval objects
-					result = this.strEval.compareTo(o.strEval);
+					result = 1;//this.strEval.compareTo(o.strEval);
 			return result;
 		}
 		
@@ -87,7 +91,7 @@ public class Heuristics {
 		
 		@Override
 		public String toString() {
-			return String.format("%s-%s", strBase, strEval);
+			return String.format("%s-%s", baseList, evalList);
 		}
 		
 	}

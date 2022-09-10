@@ -50,6 +50,8 @@ public class Estimator {
 	private double totalValueAvgByBoard = 0;
 	private int totalValueAbsByBoard = 0;
 	private int totalScoreFromHH = 0;
+	private int totalFantasyAI = 0;
+	private int totalFantasySolver;
 	private long totalTime = 0;
 	private int distinctSolutionsCount = 0;
 
@@ -71,7 +73,7 @@ public class Estimator {
 			for (String file : files) {
 				estimateHandFile(file);
 			}
-			dbService.updateEstimationStats(this.id, this.totalValueAI, this.totalValueAvg, this.totalValueAbs, this.handCount, this.totalTime, (double)this.distinctSolutionsCount/(double)this.handCount, this.totalValueAIByBoard, this.totalValueAvgByBoard, this.totalValueAbsByBoard, totalScoreFromHH);
+			dbService.updateEstimationStats(this.id, this.totalValueAI, this.totalValueAvg, this.totalValueAbs, this.handCount, this.totalTime, (double)this.distinctSolutionsCount/(double)this.handCount, this.totalValueAIByBoard, this.totalValueAvgByBoard, this.totalValueAbsByBoard, this.totalScoreFromHH, this.totalFantasyAI, this.totalFantasySolver);
 			System.out.println(String.format("Estimation is complete: totalValueAI = %f, totalValueAvg = %f, totalValueAbs = %f, handCount = %d, totalTime = %d, robustness (from 1 to %d) = %f, totalValueAIByBoard = %d, totalValueAvgByBoard = %f, totalValueAbsByBoard = %d", this.totalValueAI, this.totalValueAvg, this.totalValueAbs, this.handCount, this.totalTime, REPEAT_COUNT, (double)this.distinctSolutionsCount/(double)this.handCount, this.totalValueAIByBoard, this.totalValueAvgByBoard, this.totalValueAbsByBoard));
 		}
 	}
@@ -176,12 +178,15 @@ public class Estimator {
 		double valueAI = EvaluatorFacade.evaluate(heroAI.boxFront.toList(), heroAI.boxMiddle.toList(), heroAI.boxBack.toList(), isOurFantasy);
 		int valueAIByBoard = EvaluatorFacade.evaluateGame(gameAI, gameAI.heroName, 0); //EvaluatorFacade.evaluateByBoard(gameAI, gameAI.heroName);
 		int scoreFromHH = lstPlayers.stream().filter(PlayerHh::isHero).findFirst().get().getScore();
+		boolean fantasyAI = Math.abs(valueAI - EvaluatorFacade.evaluate(heroAI.boxFront.toList(), heroAI.boxMiddle.toList(), heroAI.boxBack.toList(), isOurFantasy, 0) - (double)Config.FANTASY_SCORE) <= 0.01;
 		System.out.println(String.format("Estimation of AI: %f; by board: %d; from HH: %d", valueAI, valueAIByBoard, scoreFromHH));
 		
 		System.out.println();
 		
 		double handValueSolverSum = 0;
 		int handValueSolverByBoardSum = 0;
+		int handFantasyAICount = 0;
+		int handFantasySolverCount = 0;
 		Set<String> distinctSolutions = new HashSet<>();
 		long timeHandTimeSum = 0;
 		for (int num = 0; num < REPEAT_COUNT; num++) {
@@ -212,15 +217,18 @@ public class Estimator {
 			PlayerOfc heroSolver = gameSolver.getPlayer(gameSolver.heroName);
 			double valueSolver = EvaluatorFacade.evaluate(heroSolver.boxFront.toList(), heroSolver.boxMiddle.toList(), heroSolver.boxBack.toList(), isOurFantasy);
 			int valueSolverByBoard = EvaluatorFacade.evaluateGame(gameSolver, gameSolver.heroName, 0); // EvaluatorFacade.evaluateByBoard(gameSolver, gameSolver.heroName);
+			boolean fantasySolver = Math.abs(valueSolver - EvaluatorFacade.evaluate(heroSolver.boxFront.toList(), heroSolver.boxMiddle.toList(), heroSolver.boxBack.toList(), isOurFantasy, 0) - (double)Config.FANTASY_SCORE) <= 0.01;
 			handValueSolverSum += valueSolver;
 			handValueSolverByBoardSum += valueSolverByBoard;
+			if (fantasyAI) handFantasyAICount++;
+			if (fantasySolver) handFantasySolverCount++;
 			String strSolution = heroSolver.toString();
 			distinctSolutions.add(strSolution);
 			System.out.println(strSolution);
 			System.out.println(String.format("Estimation of Solver %d: %f; by board: %d", num, valueSolver, valueSolverByBoard));
-			dbService.newHandEstimationExample(this.id, gameId, num, valueAI, valueSolver, timeExecExample, strSolution, gameAI.getPlayer(gameAI.heroName).toString(), aiRounds, solverRounds, valueAIByBoard, valueSolverByBoard);
+			dbService.newHandEstimationExample(this.id, gameId, num, valueAI, valueSolver, timeExecExample, strSolution, gameAI.getPlayer(gameAI.heroName).toString(), aiRounds, solverRounds, valueAIByBoard, valueSolverByBoard, fantasyAI, fantasySolver);
 		}
-		dbService.newHandEstimation(this.id, gameId, valueAI, handValueSolverSum/REPEAT_COUNT, REPEAT_COUNT, distinctSolutions.size(), timeHandTimeSum/REPEAT_COUNT, valueAIByBoard, handValueSolverByBoardSum/REPEAT_COUNT, scoreFromHH);
+		dbService.newHandEstimation(this.id, gameId, valueAI, handValueSolverSum/REPEAT_COUNT, REPEAT_COUNT, distinctSolutions.size(), timeHandTimeSum/REPEAT_COUNT, valueAIByBoard, handValueSolverByBoardSum/REPEAT_COUNT, scoreFromHH, handFantasyAICount, handFantasySolverCount);
 		
 		handCount++;
 		totalValueAI += valueAI;
@@ -229,10 +237,12 @@ public class Estimator {
 		totalValueAIByBoard += valueAIByBoard;
 		totalValueAvgByBoard += handValueSolverByBoardSum/REPEAT_COUNT;
 		totalValueAbsByBoard += handValueSolverByBoardSum;
+		totalFantasyAI += handFantasyAICount;
+		totalFantasySolver += handFantasySolverCount;
 		totalScoreFromHH += scoreFromHH;
 		totalTime += timeHandTimeSum;
 		distinctSolutionsCount += distinctSolutions.size();
-		
+
 		System.out.println();
 		System.out.println();
 	}
@@ -271,8 +281,8 @@ public class Estimator {
 		switch (round) {
 		case 1: return 9000;
 		case 2: return 5000;
-		case 3: return 5000;
-		case 4: return 4000;
+		case 3: return 5000 * 100;
+		case 4: return 4000 * 100;
 		case 5: return 2000;
 		default:
 			return 0;
@@ -411,8 +421,8 @@ public class Estimator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Config.ESTIMATE_OPPONENTS = true;
-		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline5; 3rd round MCS + EXTEND TIME + ESTIMATE_OPPONENTS; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
+		Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_SINGLE;
+		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline5; 3rd round MCS + EXTEND TIME + BOARD_SINGLE; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
 		estimator.estimate();
 	}
 

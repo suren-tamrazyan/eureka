@@ -355,6 +355,7 @@ public class OfcMcsTest {
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 15000;
 		Config.FANTASY_SCORE = 15;
+		Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_ACROSS;
 		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpaceExt(game, cfg));
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);

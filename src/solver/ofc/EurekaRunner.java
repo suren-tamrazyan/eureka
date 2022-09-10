@@ -58,7 +58,7 @@ public class EurekaRunner {
 		cfg.TIME_LIMIT_MS = timeLimitMs;
 		if (aRound == 4 || aRound == 3) { // for 4 and 3 round can run MCS
 			NatureSpace ns;
-			if (!Config.ESTIMATE_OPPONENTS)//if (opps == null)
+			if (Config.EvaluationMethod == Config.EvaluationMethodKind.SINGLE_HERO)//if (opps == null)
 				ns = new NatureSpace(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg);
 			else
 				ns = new NatureSpaceExt(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg, opps);

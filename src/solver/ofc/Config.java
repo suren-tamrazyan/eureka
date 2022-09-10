@@ -1,6 +1,7 @@
 package solver.ofc;
 
 public class Config {
+	public enum EvaluationMethodKind {SINGLE_HERO, BOARD_ACROSS, BOARD_SINGLE}
 	public static boolean DEBUG_PRINT = false;
 	public static int FAIL_PENALTY = -3;//0;
 	public static boolean HEURISTIC_COMPLETE = true;
@@ -11,8 +12,8 @@ public class Config {
 	public static boolean FANTASY_FAST_SOLVE = false; // FAST but not strict
 	public static int FANTASY_SCORE = 15;//20//10;//15;
 	public static int CPU_NUM = 4;
+	public static EvaluationMethodKind EvaluationMethod = EvaluationMethodKind.SINGLE_HERO;
 
-	public static boolean ESTIMATE_OPPONENTS = false;
 	public static int OPP_RANDOM_DEAL_COUNT = 200;
 
 	public int NUMBER_OF_ITERATIONS = 15000;

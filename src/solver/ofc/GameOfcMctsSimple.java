@@ -379,15 +379,14 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 	}
 
 	public double evaluate(boolean inFantasy) {
-		if (natureSpace instanceof NatureSpaceExt) {
+		if (Config.EvaluationMethod == Config.EvaluationMethodKind.BOARD_SINGLE || Config.EvaluationMethod == Config.EvaluationMethodKind.BOARD_ACROSS) {  //if (natureSpace instanceof NatureSpaceExt) {
 			try {
 				return ((NatureSpaceExt) natureSpace).evaluateBySpace(boxFront, boxMiddle, boxBack, inFantasy);
 			} catch (NatureSpaceExt.DontPassSpaceException e) {
 				System.out.println("DontPassSpaceException");
 				return EvaluatorFacade.evaluate(boxFront, boxMiddle, boxBack, inFantasy);
 			}
-		}
-		else
+		} else
 			return EvaluatorFacade.evaluate(boxFront, boxMiddle, boxBack, inFantasy);
 	}
 }

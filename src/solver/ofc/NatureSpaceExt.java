@@ -17,10 +17,11 @@ public class NatureSpaceExt extends NatureSpace{
         public List<Card> back;
         public List<Card> cardsToBeBoxed;
         public long mask = 0L;
-        public String strFront;
-        public String strMiddle;
-        public String strBack;
+//        public String strFront;
+//        public String strMiddle;
+//        public String strBack;
         public boolean oppPlayFantasy;
+        public double evalSingle;
         public OppHand(List<Card> aFront, List<Card> aMiddle, List<Card> aBack, List<Card> aCardsToBeBoxed, boolean aOppPlayFantasy) {
             front = aFront;
             middle = aMiddle;
@@ -41,9 +42,11 @@ public class NatureSpaceExt extends NatureSpace{
                 mask |= (1L << crd.getIndex());
             for (Card crd : back)
                 mask |= (1L << crd.getIndex());
-            strFront = front.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
-            strMiddle = middle.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
-            strBack = back.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+//            strFront = front.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+//            strMiddle = middle.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+//            strBack = back.stream().map(Card::toStrDirect).collect(Collectors.joining(""));
+            if (Config.EvaluationMethod == Config.EvaluationMethodKind.BOARD_SINGLE)
+                evalSingle = EvaluatorFacade.evaluate(front, middle, back, oppPlayFantasy);
         }
     }
 
@@ -71,7 +74,7 @@ public class NatureSpaceExt extends NatureSpace{
         }
 
 
-        // TODO small space
+        // TODO case for small space
         for (int i = 0; i < Config.OPP_RANDOM_DEAL_COUNT; i++) {
             Collections.shuffle(availableCards);
             int fromIndex = 0;
@@ -94,10 +97,17 @@ public class NatureSpaceExt extends NatureSpace{
                 Arrays.stream(game.getPlayers()).filter(pl -> !pl.isHero(game.heroName)).map(player -> new OppHand(player.boxFront.toList(), player.boxMiddle.toList(), player.boxBack.toList(), null, player.playFantasy)).collect(Collectors.toList()));
     }
 
-    public int evaluateGame(List<Card> frontHero, List<Card> middleHero, List<Card> backHero, List<OppHand> opps, boolean heroInFantasy, int fantasyScore) {
+    public int evaluateGameAcross(List<Card> frontHero, List<Card> middleHero, List<Card> backHero, List<OppHand> opps, boolean heroInFantasy, int fantasyScore) {
         int result = 0;
         for (OppHand opp : opps)
             result += EvaluatorFacade.evaluate(frontHero, middleHero, backHero, opp.front, opp.middle, opp.back, heroInFantasy, opp.oppPlayFantasy, fantasyScore);
+        return result;
+    }
+
+    public int evaluateGameSingle(double heroEval, List<OppHand> opps) {
+        int result = 0;
+        for (OppHand opp : opps)
+            result += (heroEval - opp.evalSingle);
         return result;
     }
 
@@ -112,10 +122,24 @@ public class NatureSpaceExt extends NatureSpace{
             maskHero |= (1L << crd.getIndex());
         int sum = 0;
         int cnt = 0;
+        double heroEval = 0;
+        if (Config.EvaluationMethod == Config.EvaluationMethodKind.BOARD_SINGLE)
+            heroEval = EvaluatorFacade.evaluate(frontHero, middleHero, backHero, heroInFantasy);
         for (List<OppHand> opps : natureSamplesOpp) {
-            long finalMaskHero = maskHero;
-            if (opps.stream().allMatch(x -> (finalMaskHero & x.mask) == 0)) {
-                sum += evaluateGame(frontHero, middleHero, backHero, opps, heroInFantasy, Config.FANTASY_SCORE);
+            boolean pass = true;
+            for (OppHand op : opps)
+                pass = pass && (maskHero & op.mask) == 0;
+            if (pass) {
+                switch (Config.EvaluationMethod) {
+                    case BOARD_SINGLE:
+                        sum += evaluateGameSingle(heroEval, opps);
+                        break;
+                    case BOARD_ACROSS:
+                        sum += evaluateGameAcross(frontHero, middleHero, backHero, opps, heroInFantasy, Config.FANTASY_SCORE);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Config.EvaluationMethod is not BOARD_SINGLE and not BOARD_ACROSS");
+                }
                 cnt++;
             }
         }
