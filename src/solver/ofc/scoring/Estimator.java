@@ -117,10 +117,11 @@ public class Estimator {
 			System.out.println("not joined " + gameId);
 			return;
 		}
+		boolean isSpartan = "Spartan".equals(hh.getString("appName"));
 		JSONArray jaPlayers = handData.getJSONArray(gameId);
 		List<PlayerHh> lstPlayers = new ArrayList<>();
 		for (int i = 0; i < jaPlayers.length(); i++)
-			lstPlayers.add(new PlayerHh(jaPlayers.getJSONObject(i)));
+			lstPlayers.add(new PlayerHh(jaPlayers.getJSONObject(i), isSpartan));
 		
 		boolean isOurFantasy = lstPlayers.stream().filter(PlayerHh::isHero).findAny().get().isInFantasy();
 		if (gameFilter == GameFilter.ONLY_FANTASY && !isOurFantasy){
@@ -281,8 +282,8 @@ public class Estimator {
 		switch (round) {
 		case 1: return 9000;
 		case 2: return 5000;
-		case 3: return 5000 * 100;
-		case 4: return 4000 * 100;
+		case 3: return 5000;
+		case 4: return 4000;
 		case 5: return 2000;
 		default:
 			return 0;
@@ -421,8 +422,11 @@ public class Estimator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_SINGLE;
-		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline5; 3rd round MCS + EXTEND TIME + BOARD_SINGLE; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
+		Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_ACROSS;
+		Config.OPP_RANDOM_DEAL_COUNT = 100;
+		Config.DEPTH_OF_SEARCH = 1;
+//		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline5; 3rd round MCS + EXTEND TIME + BOARD_SINGLE; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
+		Estimator estimator = new Estimator("C:\\temp\\spartan_hh", "spartan; baseline5; BOARD_ACROSS; OPP_RANDOM_DEAL_COUNT = 100; DEPTH_OF_SEARCH = 1; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
 		estimator.estimate();
 	}
 

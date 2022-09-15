@@ -42,12 +42,12 @@ public class PlayerHh implements Comparable<PlayerHh> {
 		return score;
 	}
 
-	public PlayerHh(JSONObject jo) throws Exception {
+	public PlayerHh(JSONObject jo, boolean isSpartan) throws Exception {
 		pid = jo.getString("playerId");
 		inFantasy = jo.getBoolean("inFantasy");
 		orderIndex = jo.getInt("orderIndex");
 		hero = jo.getBoolean("hero");
-		score = jo.getInt("result");
+		score = jo.getInt("result"); if (isSpartan) score = jo.getInt("win");
 		roundCards = new ArrayList<>(inFantasy?1:5);
 		roundCards.add(new HashMap<>());
 		if (!inFantasy)
