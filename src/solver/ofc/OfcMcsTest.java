@@ -601,8 +601,60 @@ public class OfcMcsTest {
 
 	}
 
+	public void testNotLikeAI15() throws Exception {
+//		http://10.211.59.133:8089/bestmove?hero=Qc%2FJd+3s+Ks%2F2h+5h+7h&newCards=2d+3c+8d&opp=Ac+Ah%2F4c+3d%2F9h+Th+Jh%09As%2F2c+5s+5c+8s%2F6d+7d+9d+4d&dead=7s&button=1&table=443-1c426558&rules=progressive16_refant14_nojokers&account=Wifi_onZone01&appName=Spartan&clubId=0&stakes=5.00&price=1INR&gameId=356860800&timeLimit=15&fastObvious&partner=altai-zxgsejynkd&timeDurationMs=4408
+//		Qc 8d / Jd 3s Ks / 2h 5h 7h 2d
+//		Qc 8d / Jd 3s Ks / 2h 5h 7h 2d
+//
+//		http://13.49.155.94:8000/bestmove?hero=Qc%2FJd+3s+Ks%2F2h+5h+7h&newCards=2d+3c+8d&opp=Ac+Ah%2F4c+3d%2F9h+Th+Jh%09As%2F2c+5s+5c+8s%2F6d+7d+9d+4d&dead=7s&button=1&table=test&rules=progressive16_refant14_nojokers&account=Wifi_onZone01&appName=Spartan&clubId=0&stakes=5.00&price=1INR&gameId=356860800&timeLimit=15&fastObvious&partner=altai-zxgsejynkd
+//		Qc 2d / Jd 3s Ks 3c / 2h 5h 7h
+//
+//		http://nsk.convexbytes.com:15273/bestmove?hero=Qc%2FJd+3s+Ks%2F2h+5h+7h&newCards=2d+3c+8d&opp=Ac+Ah%2F4c+3d%2F9h+Th+Jh%09As%2F2c+5s+5c+8s%2F6d+7d+9d+4d&dead=7s&button=1&table=test&rules=progressive16_refant14_nojokers&account=Wifi_onZone01&appName=Spartan&clubId=0&stakes=5.00&price=1INR&gameId=356860800&timeLimit=15&fastObvious&partner=0
+//		Qc 2d / Jd 3s Ks 3c / 2h 5h 7h
+
+		GameOfc game = new GameOfc(Nw.Spartan, 100);
+		game.id = "356860800";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.addPlayer(new PlayerOfc("opp2", 1520));
+		game.heroName = "hero";
+		game.initButtonName("opp2");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("As")), Card.cards2Mask(Card.str2Cards("2c5s5c8s")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("QcJd3sKs2h"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("Qc")), Card.cards2Mask(Card.str2Cards("Jd3sKs")), Card.cards2Mask(Card.str2Cards("2h")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp2", Card.cards2Mask(Card.str2Cards("AcAh")), Card.cards2Mask(Card.str2Cards("4c3d")), Card.cards2Mask(Card.str2Cards("9h")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6d7d")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("5h7h7s"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("5h7h")), new ArrayList<>(Arrays.asList(Card.str2Cards("7s")))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp2", Card.cards2Mask(Card.str2Cards("")), 0, Card.cards2Mask(Card.str2Cards("ThJh")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), 0, Card.cards2Mask(Card.str2Cards("9d4d")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("2d3c8d"))));
+
+		System.out.println(game.toString());
+
+		Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
+		Config.DEPTH_OF_SEARCH = 10;
+		Config.OPP_RANDOM_DEAL_COUNT = 1000;
+		Config.DEBUG_PRINT = true;
+		Config.FAIL_PENALTY = -3;
+
+//		EventOfc result = EurekaRunner.run(game, 15000, 17000);
+		Config cfg = new Config();
+		NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
+		long timeBefore = Utils.getTime();
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+
+		System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, decision.toEventOfc(game.heroName).toString()));
+
+	}
+
 	public static void main(String[] args) throws Exception {
     	OfcMcsTest test = new OfcMcsTest();
-    	test.testNotLikeAI6();
+    	test.testNotLikeAI15();
     }
 }

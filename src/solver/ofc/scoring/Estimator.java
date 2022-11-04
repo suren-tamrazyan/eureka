@@ -426,7 +426,7 @@ public class Estimator {
 		Config.OPP_RANDOM_DEAL_COUNT = 100;
 		Config.DEPTH_OF_SEARCH = 1;
 //		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline5; 3rd round MCS + EXTEND TIME + BOARD_SINGLE; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
-		Estimator estimator = new Estimator("C:\\temp\\spartan_hh", "spartan; baseline5; BOARD_ACROSS; OPP_RANDOM_DEAL_COUNT = 100; DEPTH_OF_SEARCH = 1; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
+		Estimator estimator = new Estimator("C:\\temp\\spartan_hh", "spartan; baseline5; round 1 by time; BOARD_ACROSS; OPP_RANDOM_DEAL_COUNT = 100; DEPTH_OF_SEARCH = 1; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
 		estimator.estimate();
 	}
 

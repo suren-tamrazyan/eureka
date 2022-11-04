@@ -69,9 +69,9 @@ public class EurekaRunner {
 //			if (aRound == 3) cfg.EXPLORATION_PARAMETER = 20;
 			
 			if (aRound == 1) {
-				cfg.NUMBER_OF_ITERATIONS = 10000;
-				cfg.RANDOM_DEAL_COUNT = cfg.NUMBER_OF_ITERATIONS;
-				timeDurationMs = 0;
+//				cfg.NUMBER_OF_ITERATIONS = 10000;
+//				cfg.RANDOM_DEAL_COUNT = cfg.NUMBER_OF_ITERATIONS;
+//				timeDurationMs = 0;
 			}
 			cfg.RANDOM_DEAL_COUNT = cfg.NUMBER_OF_ITERATIONS;
 			EurekaRunner runner = new EurekaRunner(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg);

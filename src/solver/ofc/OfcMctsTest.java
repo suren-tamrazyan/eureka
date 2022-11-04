@@ -602,12 +602,27 @@ public class OfcMctsTest {
 
 	}
 
+	public void testNotLikeAI10() {
+		Config.DEPTH_OF_SEARCH = 10;
+		Config.FAIL_PENALTY = -3;
+		Config.FANTASY_SCORE = 10;
+		Config.DEBUG_PRINT = true;
+
+		System.out.println("start!");
+		long timeBefore = Utils.getTime();
+		long tsec = 10;
+		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("2s6h8h9sQh")),  Arrays.asList(Card.str2Cards("")), GameMode.GAME_MODE_REGULAR, 1, "HeroName", /*60*/tsec*1000, 1700000, null);
+		System.out.println(Utils.getTime() - timeBefore);
+		System.out.println(decision.toString());
+
+	}
+
 	public static void main(String[] args) throws Exception {
 		OfcMctsTest test = new OfcMctsTest();
 //		Config.RANDOM_DEAL_COUNT = 10000;
 //		Config.NUMBER_OF_ITERATIONS = 20000;
 //		Config.EXPLORATION_PARAMETER = 30;
-		test.testNotLikeAI9_1();
+		test.testNotLikeAI10();
     	
 //    	LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
 //    	OfcMctsSimpleRunner.numberTakesOfNatureSimulations.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
