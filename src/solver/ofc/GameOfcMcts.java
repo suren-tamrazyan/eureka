@@ -325,4 +325,9 @@ public class GameOfcMcts extends GameOfc implements MctsDomainState<EventOfcMcts
 		return false;
 	}
 
+	public String getStateStr() {
+		PlayerOfc hero = getPlayer(heroName);
+		return hero.boxFront + "-" + hero.boxMiddle + "-" + hero.boxBack;
+	}
+
 }

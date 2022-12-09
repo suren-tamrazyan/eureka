@@ -78,10 +78,10 @@ public class PlayerHh implements Comparable<PlayerHh> {
 
 	@Override
 	public int compareTo(PlayerHh o) {
-		if (this.getOrderIndex() == 0)
-			return 1;
-		if (o.getOrderIndex() == 0)
-			return -1;
+//		if (this.getOrderIndex() == 0)
+//			return 1;
+//		if (o.getOrderIndex() == 0)
+//			return -1;
 		return this.getOrderIndex() - o.getOrderIndex();
 	}
 	

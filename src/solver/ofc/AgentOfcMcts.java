@@ -28,7 +28,7 @@ public class AgentOfcMcts  implements MctsDomainAgent<GameOfcMcts> {
         return state;
 	}
 
-	private EventOfcMcts getBiasedOrRandomActionFromStatesAvailableActions(GameOfcMcts state) {
+	public EventOfcMcts getBiasedOrRandomActionFromStatesAvailableActions(GameOfcMcts state) {
 		List<EventOfcMcts> availableActions = state.getAvailableActionsForCurrentAgent();
 		if (state.currentStepForNature) {
 			return availableActions.get(ThreadLocalRandom.current().nextInt(availableActions.size()));

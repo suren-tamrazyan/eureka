@@ -29,6 +29,8 @@ import game.Game.Nw;
 import game.GameOfc;
 import game.GameOfc.GameMode;
 import solver.ofc.*;
+import solver.ofc.mcts.Mcts;
+import util.Misc;
 import game.PlayerOfc;
 
 public class Estimator {
@@ -90,7 +92,7 @@ public class Estimator {
 		System.out.println();
 	}
 	
-	public JSONArray fetchHHsFromFile(String filename) throws Exception {
+	public static JSONArray fetchHHsFromFile(String filename) throws Exception {
 		ArrayList<String> lst = new ArrayList<String>();
 		try (BufferedReader br = new BufferedReader(new FileReader(filename))){
 			String str;
@@ -122,6 +124,12 @@ public class Estimator {
 		List<PlayerHh> lstPlayers = new ArrayList<>();
 		for (int i = 0; i < jaPlayers.length(); i++)
 			lstPlayers.add(new PlayerHh(jaPlayers.getJSONObject(i), isSpartan));
+
+        long heroCount = lstPlayers.stream().filter(PlayerHh::isHero).count();
+        if (heroCount != 1) {
+            System.out.println(Misc.sf("hero count = %d", heroCount));
+            return;
+        }
 		
 		boolean isOurFantasy = lstPlayers.stream().filter(PlayerHh::isHero).findAny().get().isInFantasy();
 		if (gameFilter == GameFilter.ONLY_FANTASY && !isOurFantasy){
@@ -135,6 +143,8 @@ public class Estimator {
 		
 		System.out.println("Estimation " + gameId);
 		
+		Collections.sort(lstPlayers);
+		
 		GameOfc gameAI = new GameOfc(Nw.Ppp, 1);
 		GameOfc gameSolverBase = new GameOfc(Nw.Ppp, 1);
 		List<GameOfc> lstGames = Stream.of(gameAI, gameSolverBase).collect(Collectors.toList());
@@ -142,19 +152,18 @@ public class Estimator {
 			game.id = gameId;
 			String dealerName = "";
 			for (PlayerHh pl : lstPlayers) {
-				if (pl.getOrderIndex() == 0)
-					dealerName = pl.getPid();
+//				if (pl.getOrderIndex() == 0)
+//					dealerName = pl.getPid();
 				if (pl.isHero())
 					game.heroName = pl.getPid();
 				game.addPlayer(new PlayerOfc(pl.getPid(), 1, pl.isInFantasy()));
 			}
+			dealerName = lstPlayers.get(lstPlayers.size() - 1).getPid();
 			game.initButtonName(dealerName);
 			game.gameMode = str2GameMode(hh.getString("rules"));
 			game.setSkipCheckFLCardCount();
 			game.setAllowEmptyDeadBox();
 		}
-		
-		Collections.sort(lstPlayers);
 
 		System.out.println("gameAI");
 		// gameAI
@@ -265,7 +274,7 @@ public class Estimator {
 		}
 	}
 
-	private EventOfc bestMoveMctsSimple(GameOfc game) throws Exception {
+	public static EventOfc bestMoveMctsSimple(GameOfc game) throws Exception {
 		PlayerOfc hero = game.getPlayer(game.heroName);
 		if (hero.playFantasy)
 			return Heuristics.fantasyCompletion(hero.boxFront.toList(), hero.boxMiddle.toList(), hero.boxBack.toList(), hero.cardsToBeBoxed, 85000).toEventOfc(game.heroName);
@@ -278,7 +287,33 @@ public class Estimator {
     	return result;
 	}
 	
-	private long delay(int round) {
+	public static EventOfc bestMoveMctsHard(GameOfc game) {
+		PlayerOfc hero = game.getPlayer(game.heroName);
+		if (hero.playFantasy)
+			return Heuristics.fantasyCompletion(hero.boxFront.toList(), hero.boxMiddle.toList(), hero.boxBack.toList(), hero.cardsToBeBoxed, 85000).toEventOfc(game.heroName);
+		
+		GameOfcMcts state = new GameOfcMcts(game);
+		Mcts<GameOfcMcts, EventOfcMcts, AgentOfcMcts> mcts = Mcts.initializeIterations(10000, null, null);
+		mcts.dontClone(AgentOfcMcts.class);
+		long timeBefore = Misc.getTime();
+		int round = game.getRound();
+		if (round == 5)
+			return state.getCurrentAgent().getBiasedOrRandomActionFromStatesAvailableActions(state);
+		int expl = 15;
+		if (round == 1) expl = 7;
+		if (round == 2) expl = 15;
+		if (round == 3) expl = 20;
+		if (round == 4) expl = 30;
+		if (round == 5) expl = 30;
+		EventOfcMcts decision = mcts.uctSearchWithExploration(state, expl, 0, 60000);
+		decision.setTime();
+		System.out.println(Misc.sf("MCTS decision in %d ms: \n%s", Misc.getTime() - timeBefore, decision.toString()));
+		System.out.println(Misc.sf("IterateCount = %d", mcts.getIterationsCount()));
+
+    	return decision;
+	}
+	
+	private static long delay(int round) {
 		switch (round) {
 		case 1: return 9000;
 		case 2: return 5000;
@@ -422,11 +457,13 @@ public class Estimator {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_ACROSS;
+		Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
 		Config.OPP_RANDOM_DEAL_COUNT = 100;
-		Config.DEPTH_OF_SEARCH = 1;
+		Config.DEPTH_OF_SEARCH = 10;
+		Config.FANTASY_SCORE = 15;
+		Config.FAIL_PENALTY = -3;
 //		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline5; 3rd round MCS + EXTEND TIME + BOARD_SINGLE; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
-		Estimator estimator = new Estimator("C:\\temp\\spartan_hh", "spartan; baseline5; round 1 by time; BOARD_ACROSS; OPP_RANDOM_DEAL_COUNT = 100; DEPTH_OF_SEARCH = 1; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
+		Estimator estimator = new Estimator("C:\\temp\\hh_yakov_ppp_223_202211_ALTAI_M666", "yakov-ppp; baseline5; round 1 by time; SINGLE_HERO; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.WITHOUT_FANTASY);
 		estimator.estimate();
 	}
 

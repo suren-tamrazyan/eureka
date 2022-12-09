@@ -186,11 +186,11 @@ public class Mcs {
 
 	protected static void debugOnEstimateSample(EventOfcMctsSimple action, GameOfcMctsSimple state, EventOfcMctsSimple sample, int actionIterNum, double actionRewardAcc, double actionReward) {
 //		System.out.println(String.format("%f %s", state.evaluate(false);//EvaluatorFacade.evaluate(state.boxFront, state.boxMiddle, state.boxBack, false), sample));
-		if (actionIterNum % 100 == 0) {
+//		if (actionIterNum % 100 == 0) {
 			if (csv.isEmpty())
 				csv.add("epoch;branch;rewardAcc;state;reward");
 			csv.add(String.format(java.util.Locale.US, "%d;%s;%.4f;%s;%.4f", actionIterNum, action.toString().replaceAll(";", ""), actionRewardAcc, state.getStateStr().replaceAll(";", ""), actionReward));
-		}
+//		}
 	}
 
 	protected static void onEndSearch() {

@@ -86,4 +86,47 @@ public class DbService {
 			stmt.executeUpdate();
 		}
 	}
+	public void newFit(long id, String name) throws Exception {
+		try (PreparedStatement stmt = con.prepareStatement("insert into fit (fitId, fitName, fitDate) values (?, ?, ?)");) {
+			stmt.setLong(1, id);
+			stmt.setString(2, name);
+			stmt.setTimestamp(3, new java.sql.Timestamp(id));
+			stmt.executeUpdate();
+		}
+	}
+
+	public void updateFitStats(long fitId, int cntRound1, int cntRound2, int cntRound3, int cntRound4, int cntRound5, int cntFantasy, int totalNonFan, int totalFantasy, double fracRound1, double fracRound2, double fracRound3, double fracRound4, double fracRound5, double fracFantasy, long totalTimeMs) throws Exception {
+		try (PreparedStatement stmt = con.prepareStatement("update fit set cntRound1 = ?, cntRound2 = ?, cntRound3 = ?, cntRound4 = ?, cntRound5 = ?, cntFantasy = ?, totalNonFan = ?, totalFantasy = ?, fracRound1 = ?, fracRound2 = ?, fracRound3 = ?, fracRound4 = ?, fracRound5 = ?, fracFantasy = ?, totalTimeMs = ? where fitId = ?");) {
+			stmt.setInt(1, cntRound1);
+			stmt.setInt(2, cntRound2);
+			stmt.setInt(3, cntRound3);
+			stmt.setInt(4, cntRound4);
+			stmt.setInt(5, cntRound5);
+			stmt.setInt(6, cntFantasy);
+			stmt.setInt(7, totalNonFan);
+			stmt.setInt(8, totalFantasy);
+			stmt.setDouble(9, fracRound1);
+			stmt.setDouble(10, fracRound2);
+			stmt.setDouble(11, fracRound3);
+			stmt.setDouble(12, fracRound4);
+			stmt.setDouble(13, fracRound5);
+			stmt.setDouble(14, Double.isFinite(fracFantasy)?fracFantasy:0);
+			stmt.setLong(15, totalTimeMs);
+			stmt.setLong(16, fitId);
+			stmt.executeUpdate();
+		}
+	}
+
+	public void newFitMove(long fitId, String handId, int round, String moveAI, String moveSolver, boolean isEquals) throws Exception {
+		try (PreparedStatement stmt = con.prepareStatement("insert into fit_move (fitId, handId, round, moveAI, moveSolver, isEquals) values (?, ?, ?, ?, ?, ?)");) {
+			stmt.setLong(1, fitId);
+			stmt.setString(2, handId);
+			stmt.setInt(3, round);
+			stmt.setString(4, moveAI);
+			stmt.setString(5, moveSolver);
+			stmt.setBoolean(6, isEquals);
+			stmt.executeUpdate();
+		}
+
+	}
 }

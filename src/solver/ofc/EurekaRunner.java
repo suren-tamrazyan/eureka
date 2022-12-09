@@ -45,7 +45,7 @@ public class EurekaRunner {
 		MctsCallback callback = null;
 		MctsCallback callbackDebug = Config.DEBUG_PRINT ? new DebugPrinter() : null;
     	Mcts<GameOfcMctsSimple, EventOfcMctsSimple, AgentOfcMctsSimple> mcts = Mcts.initializeIterations(cfg.NUMBER_OF_ITERATIONS, callback, callbackDebug);
-    	mcts.dontClone(AgentOfcMcts.class, EurekaRunner.class, NatureSpace.class);
+    	mcts.dontClone(AgentOfcMcts.class, AgentOfcMctsSimple.class, EurekaRunner.class, NatureSpace.class);
     	EventOfcMctsSimple decision = mcts.uctSearchWithExploration(stateSimple, cfg.EXPLORATION_PARAMETER, timeDurationMs, cfg.TIME_LIMIT_MS);
     	System.out.println(String.format("mcts.iterationCount = %d", mcts.getIterationsCount()));
     	this.mctsIterationsCount = mcts.getIterationsCount();

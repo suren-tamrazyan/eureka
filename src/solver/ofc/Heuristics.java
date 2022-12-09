@@ -189,7 +189,7 @@ public class Heuristics {
 											}
 											solutionsCount++;
 										}
-										return;
+//										return;
 									}
 								}
 							}
@@ -319,8 +319,10 @@ public class Heuristics {
 		System.out.println("Core count: " + Runtime.getRuntime().availableProcessors());
 //		System.out.println(completion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("8d8sTh2c3h4d5h6d9dTcJhQcKd4s")), true).toEventOfc("hero"));
 //		System.out.println(completion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("7sQhKdAs3h4d4s5d8h9h9d9c9sJs")), true).toEventOfc("hero"));
-		System.out.println(fantasyCompletion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("7d9c9s2h3h4c5c6sThJhQcKcAd2s4d8c")), 10000).toEventOfc("hero"));
+		//System.out.println(fantasyCompletion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("9hAdAs5c6s7s8d9d3c4c8cTcJc4dJd")), 10000).toEventOfc("hero"));
 //		System.out.println(fantasyCompletion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("3h4c4s5h5s6d7d7s8h8d9h9c9sThTdAh")), 10000).toEventOfc("hero"));
-		System.out.println(String.format("time = %d", Utils.getTime() - time)); 
+		System.out.println(EvaluatorFacade.evaluate(Arrays.asList(Card.str2Cards("KcAsKh")), Arrays.asList(Card.str2Cards("4h8c4c9cAc")), Arrays.asList(Card.str2Cards("ThTdTsQsQd")), false));
+		System.out.println(EvaluatorFacade.evaluate(Arrays.asList(Card.str2Cards("KcAsKh")), Arrays.asList(Card.str2Cards("4h8c4c9c2s")), Arrays.asList(Card.str2Cards("ThTdTsQsQd")), false));
+		System.out.println(String.format("time = %d", Utils.getTime() - time));
 	}
 }

@@ -20,7 +20,7 @@ public class DebugPrinter implements MctsCallback {
 		
 		System.out.println("VisitCount");
 		LinkedHashMap<String, Integer> sortedMapByCount = new LinkedHashMap<>();
-		root.getChildNodes().stream().sorted(Comparator.comparingInt(MctsTreeNode<?, ?, ?>::getVisitCount).reversed()).forEachOrdered(x -> sortedMapByCount.put(((solver.ofc.GameOfcMctsSimple)x.getDeepCloneOfRepresentedState()).getStateStr(), x.getVisitCount()));
+		root.getChildNodes().stream().sorted(Comparator.comparingInt(MctsTreeNode<?, ?, ?>::getVisitCount).reversed()).forEachOrdered(x -> sortedMapByCount.put(((solver.ofc.GameOfcMcts)x.getDeepCloneOfRepresentedState()).getStateStr(), x.getVisitCount()));
 		for (Map.Entry<String, Integer> ent : sortedMapByCount.entrySet())
 			System.out.println(String.format("%s: %d", ent.getKey(), ent.getValue()));
       
@@ -28,7 +28,7 @@ public class DebugPrinter implements MctsCallback {
       
       	System.out.println("Reward");
       	LinkedHashMap<String, Double> sortedMapByReward = new LinkedHashMap<>();
-      	root.getChildNodes().stream().sorted(Comparator.comparingDouble(MctsTreeNode<?, ?, ?>::getDomainTheoreticValue).reversed()).forEachOrdered(x -> sortedMapByReward.put(((solver.ofc.GameOfcMctsSimple)x.getDeepCloneOfRepresentedState()).getStateStr(), x.getDomainTheoreticValue()));
+      	root.getChildNodes().stream().sorted(Comparator.comparingDouble(MctsTreeNode<?, ?, ?>::getDomainTheoreticValue).reversed()).forEachOrdered(x -> sortedMapByReward.put(((solver.ofc.GameOfcMcts)x.getDeepCloneOfRepresentedState()).getStateStr(), x.getDomainTheoreticValue()));
       	for (Map.Entry<String, Double> ent : sortedMapByReward.entrySet())
       		System.out.println(String.format("%s: %f", ent.getKey(), ent.getValue()));
       
@@ -54,7 +54,7 @@ public class DebugPrinter implements MctsCallback {
 		if (iterationsNum % 100 == 0) {
 			if (csv.isEmpty())
 				csv.add("epoch;branch;count;reward");
-			root.getChildNodes().stream().forEach(x -> csv.add( String.format(java.util.Locale.US, "%d;%s;%d;%.2f", iterationsNum, ((solver.ofc.GameOfcMctsSimple)x.getDeepCloneOfRepresentedState()).getStateStr(), x.getVisitCount(), x.getDomainTheoreticValue()) ));
+			root.getChildNodes().stream().forEach(x -> csv.add( String.format(java.util.Locale.US, "%d;%s;%d;%.2f", iterationsNum, ((solver.ofc.GameOfcMcts)x.getDeepCloneOfRepresentedState()).getStateStr(), x.getVisitCount(), x.getDomainTheoreticValue()) ));
 		}
 	}
 
