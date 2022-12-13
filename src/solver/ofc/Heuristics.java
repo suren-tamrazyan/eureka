@@ -108,9 +108,13 @@ public class Heuristics {
 			back = aBack;
 		}
 		
-		public double eval(boolean inFantasy) {
-			if (eval == null)
-				eval = EvaluatorFacade.evaluate(front.toCompleteList(), middle.toCompleteList(), back.toCompleteList(), inFantasy);
+		public double eval(boolean inFantasy, boolean isPusoy) {
+			if (eval == null) {
+				if (isPusoy)
+					eval = solver.pusoy.Evaluator.evaluate(front.toCompleteList(), middle.toCompleteList(), back.toCompleteList());
+				else
+					eval = EvaluatorFacade.evaluate(front.toCompleteList(), middle.toCompleteList(), back.toCompleteList(), inFantasy);
+			}
 			return eval; 
 		}
 		
@@ -152,8 +156,8 @@ public class Heuristics {
 		private Trinity best = null;
 		private volatile double bestEval = Double.NEGATIVE_INFINITY;
 		private int solutionsCount = 0;
-		
-		public EventOfcMctsSimple fantasyCompletion(List<Card> front, List<Card> middle, List<Card> back, Collection<Card> toBeBoxed, long timeLimitMs) {
+
+		public EventOfcMctsSimple fantasyCompletion(List<Card> front, List<Card> middle, List<Card> back, Collection<Card> toBeBoxed, long timeLimitMs, boolean isPusoy) {
 			long timeStart = System.nanoTime();
 			long timeLimitNano = timeLimitMs * 1000000;
 			
@@ -176,16 +180,16 @@ public class Heuristics {
 	//									if (backupBadSolution == null) backupBadSolution = current;
 									boolean fouled = (hFront.getEval() < hMiddle.getEval() || hMiddle.getEval() < hBack.getEval());
 									if (!fouled) {
-										if (current.eval(true) <= bestEval) {
+										if (current.eval(true, isPusoy) <= bestEval) {
 											if (Config.FANTASY_FAST_SOLVE) // FAST but not strict
 												return;
 											else
 												continue;
 										}
 										synchronized (lock) {
-											if (current.eval(true) > bestEval) {
+											if (current.eval(true, isPusoy) > bestEval) {
 												best = current;
-												bestEval = best.eval(true);
+												bestEval = best.eval(true, isPusoy);
 											}
 											solutionsCount++;
 										}
@@ -237,9 +241,9 @@ public class Heuristics {
 						if (backupBadSolution == null) backupBadSolution = current;
 						boolean fouled = (hFront.getEval() < hMiddle.getEval() || hMiddle.getEval() < hBack.getEval());
 						if (!fouled) {
-							if (current.eval(false) > bestEvalByBack) {
+							if (current.eval(false, false) > bestEvalByBack) {
 								bestByBack = current;
-								bestEvalByBack = bestByBack.eval(false);
+								bestEvalByBack = bestByBack.eval(false, false);
 							}
 							cntBack++;
 							if (cntBack >= Config.DEPTH_OF_SEARCH)
@@ -268,9 +272,9 @@ public class Heuristics {
 						if (backupBadSolution == null) backupBadSolution = current;
 						boolean fouled = (hFront.getEval() < hMiddle.getEval() || hMiddle.getEval() < hBack.getEval());
 						if (!fouled) {
-							if (current.eval(false) > bestEvalByFront) {
+							if (current.eval(false, false) > bestEvalByFront) {
 								bestByFront = current;
-								bestEvalByFront = bestByFront.eval(false);
+								bestEvalByFront = bestByFront.eval(false, false);
 							}
 							cntFront++;
 							if (cntFront >= Config.DEPTH_OF_SEARCH)
@@ -298,9 +302,14 @@ public class Heuristics {
 	
 	public static EventOfcMctsSimple fantasyCompletion(List<Card> front, List<Card> middle, List<Card> back, Collection<Card> toBeBoxed, long timeLimitMs) {
 		Completor completor = new Completor();
-		return completor.fantasyCompletion(front, middle, back, toBeBoxed, timeLimitMs);
+		return completor.fantasyCompletion(front, middle, back, toBeBoxed, timeLimitMs, false);
 	}
-	
+
+	public static EventOfcMctsSimple pusoyCompletion(Collection<Card> toBeBoxed, long timeLimitMs) {
+		Completor completor = new Completor();
+		return completor.fantasyCompletion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), toBeBoxed, timeLimitMs, true);
+	}
+
 	public static void main(String[] args) {
 //		System.out.println(Misc.sf("Oleg = %d", EvaluatorFacade.evaluate(Arrays.asList(Card.str2Cards("5d5sJs")), Arrays.asList(Card.str2Cards("4c7d7s8c9c")), Arrays.asList(Card.str2Cards("3h8h9hThQh")))));
 //		System.out.println(Misc.sf("Suren = %d", EvaluatorFacade.evaluate(Arrays.asList(Card.str2Cards("4c8c9c")), Arrays.asList(Card.str2Cards("5d5s7d7sJs")), Arrays.asList(Card.str2Cards("3h8h9hThQh")))));
@@ -316,13 +325,16 @@ public class Heuristics {
 //		System.out.println(completion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("2h2d2c3h3d3c5c6c7h9hJdQsKsAs"))).toEventOfc("hero"));		
 //		System.out.println(completion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("2h3d5c6h6c6s7d8dTdTcJsQdKhAc"))).toEventOfc("hero"));		
 //		System.out.println(completion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("2h2s4s5d6s7h7c8h9h9d9cTdJhAc")), true).toEventOfc("hero"));
-		System.out.println("Core count: " + Runtime.getRuntime().availableProcessors());
+//		System.out.println("Core count: " + Runtime.getRuntime().availableProcessors());
 //		System.out.println(completion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("8d8sTh2c3h4d5h6d9dTcJhQcKd4s")), true).toEventOfc("hero"));
 //		System.out.println(completion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("7sQhKdAs3h4d4s5d8h9h9d9c9sJs")), true).toEventOfc("hero"));
 		//System.out.println(fantasyCompletion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("9hAdAs5c6s7s8d9d3c4c8cTcJc4dJd")), 10000).toEventOfc("hero"));
 //		System.out.println(fantasyCompletion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("3h4c4s5h5s6d7d7s8h8d9h9c9sThTdAh")), 10000).toEventOfc("hero"));
-		System.out.println(EvaluatorFacade.evaluate(Arrays.asList(Card.str2Cards("KcAsKh")), Arrays.asList(Card.str2Cards("4h8c4c9cAc")), Arrays.asList(Card.str2Cards("ThTdTsQsQd")), false));
-		System.out.println(EvaluatorFacade.evaluate(Arrays.asList(Card.str2Cards("KcAsKh")), Arrays.asList(Card.str2Cards("4h8c4c9c2s")), Arrays.asList(Card.str2Cards("ThTdTsQsQd")), false));
+//		System.out.println(EvaluatorFacade.evaluate(Arrays.asList(Card.str2Cards("KcAsKh")), Arrays.asList(Card.str2Cards("4h8c4c9cAc")), Arrays.asList(Card.str2Cards("ThTdTsQsQd")), false));
+//		System.out.println(EvaluatorFacade.evaluate(Arrays.asList(Card.str2Cards("KcAs3h")), Arrays.asList(Card.str2Cards("4h8c4c9c2s")), Arrays.asList(Card.str2Cards("ThTd3sQsQd")), false));
+//		System.out.println(EvaluatorFacade.evaluate(Arrays.asList(Card.str2Cards("KcAs3h")), Arrays.asList(Card.str2Cards("4h8c4cAc2s")), Arrays.asList(Card.str2Cards("ThTd3sQsQd")), false));
+//		System.out.println(fantasyCompletion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("9hAdAs5c6s7s8d9d3c4c8cTcJc4dJd")), 10000).toEventOfc("hero"));
+		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("TdThAh6d6c2h2c9c3c3d3s4c4d")), 10000).toEventOfc("hero"));
 		System.out.println(String.format("time = %d", Utils.getTime() - time));
 	}
 }

@@ -21,6 +21,7 @@
         <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{TestOfcEval.java"/>
         <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.mcs"/>
         <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.scoring"/>
+        <javaElement handleIdentifier="=eureka/src&lt;solver.pusoy"/>
         <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Board.java"/>
         <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Products.java"/>
         <javaElement handleIdentifier="=eureka/src&lt;solver.ofc"/>

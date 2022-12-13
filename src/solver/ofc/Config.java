@@ -13,8 +13,8 @@ public class Config {
 	public static int CPU_NUM = 4;
 	
 	
-	public static EvaluationMethodKind EvaluationMethod = EvaluationMethodKind.BOARD_ACROSS;
-	public static int DEPTH_OF_SEARCH = 1;//10;
+	public static EvaluationMethodKind EvaluationMethod = EvaluationMethodKind.SINGLE_HERO;
+	public static int DEPTH_OF_SEARCH = 10;
 	public static int OPP_RANDOM_DEAL_COUNT = 100;//200;
 
 	public int NUMBER_OF_ITERATIONS = 15000;
