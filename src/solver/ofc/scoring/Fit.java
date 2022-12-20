@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import solver.ofc.Config;
 import solver.ofc.Utils;
+import solver.ofc.scoring.Estimator.GameFilter;
 import util.Misc;
 
 import java.nio.file.Files;
@@ -25,6 +26,7 @@ public class Fit {
     private String name;
     //	private String description;
     private DbService dbService;
+	private GameFilter gameFilter;
 
 
     private int[] cntRound = new int[5];
@@ -33,12 +35,13 @@ public class Fit {
     private int totalFantasy = 0;
     private long totalTimeMs = 0;
 
-    public Fit(String aFolder, String aName) throws Exception {
+    public Fit(String aFolder, String aName, GameFilter aGameFilter) throws Exception {
         System.out.println("get db connection");
         dbService = new DbService();
         this.id = Utils.getTime(); // simple id as time
         this.folder = aFolder;
-        this.name = String.format("%s (%s; %s)", aName, folder, Utils.dateFormatIntel(this.id));
+        this.gameFilter = aGameFilter;
+        this.name = String.format("%s (%s; %s; %s)", aName, folder, Utils.dateFormatIntel(this.id), this.gameFilter);
         System.out.println("dbService.newEstimate");
         dbService.newFit(this.id, this.name);
     }
@@ -92,6 +95,14 @@ public class Fit {
         }
 
         boolean isOurFantasy = lstPlayers.stream().filter(PlayerHh::isHero).findAny().get().isInFantasy();
+		if (gameFilter == GameFilter.ONLY_FANTASY && !isOurFantasy){
+			System.out.println("skip by filter:" + gameId);
+			return;
+		}
+		if (gameFilter == GameFilter.WITHOUT_FANTASY && isOurFantasy){
+			System.out.println("skip by filter:" + gameId);
+			return;
+		}
 
         System.out.println("Fit " + gameId);
 
@@ -179,7 +190,7 @@ public class Fit {
         Config.FAIL_PENALTY = Integer.parseInt(failPenalty);
         String name = String.format("%s; OPP_RANDOM_DEAL_COUNT = %d; DEPTH_OF_SEARCH = %d; FANTASY_SCORE = %d; FAIL_PENALTY = %d", Config.EvaluationMethod, Config.OPP_RANDOM_DEAL_COUNT, Config.DEPTH_OF_SEARCH, Config.FANTASY_SCORE, Config.FAIL_PENALTY);
 
-        Fit fit = new Fit(path, name);
+        Fit fit = new Fit(path, name, GameFilter.ONLY_FANTASY);
         fit.fit();
     }
 }
