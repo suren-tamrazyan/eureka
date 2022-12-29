@@ -190,7 +190,7 @@ public class Fit {
         Config.FAIL_PENALTY = Integer.parseInt(failPenalty);
         String name = String.format("%s; OPP_RANDOM_DEAL_COUNT = %d; DEPTH_OF_SEARCH = %d; FANTASY_SCORE = %d; FAIL_PENALTY = %d", Config.EvaluationMethod, Config.OPP_RANDOM_DEAL_COUNT, Config.DEPTH_OF_SEARCH, Config.FANTASY_SCORE, Config.FAIL_PENALTY);
 
-        Fit fit = new Fit(path, name, GameFilter.ONLY_FANTASY);
+        Fit fit = new Fit(path, name, GameFilter.ALL);
         fit.fit();
     }
 }

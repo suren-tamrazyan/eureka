@@ -645,7 +645,7 @@ public class OfcMctsTest {
 
 		System.out.println(game);
 
-		boolean isSimple = true;
+		boolean isSimple = false;
 
 		if (isSimple) {
 			Config.DEBUG_PRINT = true;
@@ -823,7 +823,7 @@ public class OfcMctsTest {
 //		Config.RANDOM_DEAL_COUNT = 10000;
 //		Config.NUMBER_OF_ITERATIONS = 20000;
 //		Config.EXPLORATION_PARAMETER = 30;
-		test.testNotLikeAI19();
+		test.testNotLikeAI16();
     	
 //    	LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
 //    	OfcMctsSimpleRunner.numberTakesOfNatureSimulations.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));

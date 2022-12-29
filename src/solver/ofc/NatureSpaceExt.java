@@ -1,9 +1,12 @@
 package solver.ofc;
 
 import game.Card;
+import game.EventOfc;
 import game.GameOfc;
 import game.PlayerOfc;
+import org.paukov.combinatorics3.Generator;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,18 +77,37 @@ public class NatureSpaceExt extends NatureSpace{
         }
 
 
-        // TODO case for small space
-        for (int i = 0; i < Config.OPP_RANDOM_DEAL_COUNT; i++) {
-            Collections.shuffle(availableCards);
-            int fromIndex = 0;
-            List<OppHand> smplsOpps = new ArrayList<>();
-            for (OppHand opp : opps) {
-                int dealSize = 13 - (opp.front.size() + opp.middle.size() + opp.back.size());
-                List<Card> lstDeal = availableCards.subList(fromIndex, fromIndex + dealSize);
-                fromIndex += dealSize;
-                smplsOpps.add(new OppHand(new ArrayList<>(opp.front), new ArrayList<>(opp.middle), new ArrayList<>(opp.back), new ArrayList<>(lstDeal), opp.oppPlayFantasy));
+        int oneOppDealSize1 = 13 - (opps.get(0).front.size() + opps.get(0).middle.size() + opps.get(0).back.size());
+        int oneOppDealSize2 = 0;
+        if (opps.size() > 1)
+            oneOppDealSize2 = 13 - (opps.get(1).front.size() + opps.get(1).middle.size() + opps.get(1).back.size());
+        BigInteger cntCombi = Utils.combinationCount(availableCards.size(), oneOppDealSize1);
+        if (cntCombi.compareTo(BigInteger.valueOf(1000)) == -1) { // case for small space
+            List<List<Card>> lstDeals = Generator.combination(availableCards).simple(oneOppDealSize1).stream().collect(Collectors.toList());
+            List<List<Card>> lstDeals2 = null;
+            if (oneOppDealSize2 > 0 && oneOppDealSize1 != oneOppDealSize2)
+                lstDeals2 = Generator.combination(availableCards).simple(oneOppDealSize2).stream().collect(Collectors.toList());
+            for (int i = 0; i < lstDeals.size(); i++) {
+                List<Card> lstDeal = lstDeals.get(i);
+                List<OppHand> smplsOpps = new ArrayList<>();
+                smplsOpps.add(new OppHand(new ArrayList<>(opps.get(0).front), new ArrayList<>(opps.get(0).middle), new ArrayList<>(opps.get(0).back), new ArrayList<>(lstDeal), opps.get(0).oppPlayFantasy));
+                if (opps.size() > 1)
+                    smplsOpps.add(new OppHand(new ArrayList<>(opps.get(1).front), new ArrayList<>(opps.get(1).middle), new ArrayList<>(opps.get(1).back), new ArrayList<>(oneOppDealSize2 > 0 && oneOppDealSize1 != oneOppDealSize2 ? lstDeals2.get(i) : lstDeal), opps.get(1).oppPlayFantasy));
+                natureSamplesOpp.add(smplsOpps);
             }
-            natureSamplesOpp.add(smplsOpps);
+        } else {
+            for (int i = 0; i < Config.OPP_RANDOM_DEAL_COUNT; i++) {
+                Collections.shuffle(availableCards);
+                int fromIndex = 0;
+                List<OppHand> smplsOpps = new ArrayList<>();
+                for (OppHand opp : opps) {
+                    int dealSize = 13 - (opp.front.size() + opp.middle.size() + opp.back.size());
+                    List<Card> lstDeal = availableCards.subList(fromIndex, fromIndex + dealSize);
+                    fromIndex += dealSize;
+                    smplsOpps.add(new OppHand(new ArrayList<>(opp.front), new ArrayList<>(opp.middle), new ArrayList<>(opp.back), new ArrayList<>(lstDeal), opp.oppPlayFantasy));
+                }
+                natureSamplesOpp.add(smplsOpps);
+            }
         }
 
         natureSamplesOpp.parallelStream().forEach(x -> x.forEach(OppHand::completion));

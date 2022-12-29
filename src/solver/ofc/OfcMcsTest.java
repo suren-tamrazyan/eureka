@@ -679,12 +679,12 @@ public class OfcMcsTest {
 
 		System.out.println(game.toString());
 
-		Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
+		Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_ACROSS;
 		Config.DEPTH_OF_SEARCH = 10;
 		Config.OPP_RANDOM_DEAL_COUNT = 100;
 		Config.DEBUG_PRINT = true;
-		Config.FANTASY_SCORE = 0;
-		Config.FAIL_PENALTY = 0;
+		Config.FANTASY_SCORE = 7;
+		Config.FAIL_PENALTY = -1;
 
 //		EventOfc result = EurekaRunner.run(game, 15000, 17000);
 		Config cfg = new Config();
@@ -829,6 +829,6 @@ public class OfcMcsTest {
 
 	public static void main(String[] args) throws Exception {
     	OfcMcsTest test = new OfcMcsTest();
-    	test.testNotLikeAI19();
+    	test.testNotLikeAI16();
     }
 }
