@@ -362,7 +362,7 @@ public class EvaluatorFacade {
         return bonus + (norm_eval_kicker0 + norm_eval_kicker1 + norm_eval_kicker2)/REGULARIZATION_PARAM;
 	}
 
-    private static class Struct {
+    public static class Struct {
         public long[][] hands;
         public short[] evals;
         public int[] bonuses;
