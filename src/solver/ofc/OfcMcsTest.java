@@ -829,6 +829,6 @@ public class OfcMcsTest {
 
 	public static void main(String[] args) throws Exception {
     	OfcMcsTest test = new OfcMcsTest();
-    	test.testNotLikeAI16();
+    	test.testNotLikeAI7();
     }
 }

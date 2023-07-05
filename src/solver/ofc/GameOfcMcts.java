@@ -5,13 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import game.*;
 import org.paukov.combinatorics3.Generator;
 
-import game.Card;
-import game.EventOfc;
-import game.GameOfc;
-import game.Player;
-import game.PlayerOfc;
 import solver.ofc.mcts.MctsDomainState;
 
 public class GameOfcMcts extends GameOfc implements MctsDomainState<EventOfcMcts, AgentOfcMcts> {
@@ -102,7 +99,7 @@ public class GameOfcMcts extends GameOfc implements MctsDomainState<EventOfcMcts
 		resetCache();
 	}
 
-	protected List<Card> getAvailableCards() {
+	public List<Card> getAvailableCards() {
 		int deckSize = (gameMode == GameMode.GAME_MODE_OFC_WILD_CARD_REGULAR || gameMode == GameMode.GAME_MODE_OFC_WILD_CARD_PROGRESSIVE || gameMode == GameMode.GAME_MODE_OFC_WILD_CARD_ULTIMATE) ? 54 : 52;
 		List<Card> deck = new ArrayList<>(deckSize);
 		for (int i = 0; i < deckSize; i++)
@@ -284,7 +281,7 @@ public class GameOfcMcts extends GameOfc implements MctsDomainState<EventOfcMcts
 			return false;
 		return true;
 	}
-	
+
 	public static void main(String[] args) {
 //		int deckSize = 52;
 //		List<Card> deck = new ArrayList<>(deckSize);
@@ -330,4 +327,23 @@ public class GameOfcMcts extends GameOfc implements MctsDomainState<EventOfcMcts
 		return hero.boxFront + "-" + hero.boxMiddle + "-" + hero.boxBack;
 	}
 
+
+
+	public void merge(EventOfcMctsSimple eventToFinal) throws GameException {
+		PlayerOfc hero = hero();
+		for (Card card : eventToFinal.front)
+			hero.boxFront.addCard(card);
+		for (Card card : eventToFinal.middle)
+			hero.boxMiddle.addCard(card);
+		for (Card card : eventToFinal.back)
+			hero.boxBack.addCard(card);
+		round = 5;
+		finish = true;
+	}
+
+	public GameOfcMcts copy() {
+		GameOfcMcts clone = new GameOfcMcts(this);
+		clone.currentStepForNature = this.currentStepForNature;
+		return clone;
+	}
 }

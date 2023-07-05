@@ -305,7 +305,7 @@ public class Estimator {
 		if (round == 3) expl = 20;
 		if (round == 4) expl = 30;
 		if (round == 5) expl = 30;
-		EventOfcMcts decision = mcts.uctSearchWithExploration(state, expl, 0, 60000);
+		EventOfcMcts decision = mcts.uctSearchWithExploration(state, expl, 0, 600000);
 		decision.setTime();
 		System.out.println(Misc.sf("MCTS decision in %d ms: \n%s", Misc.getTime() - timeBefore, decision.toString()));
 		System.out.println(Misc.sf("IterateCount = %d", mcts.getIterationsCount()));

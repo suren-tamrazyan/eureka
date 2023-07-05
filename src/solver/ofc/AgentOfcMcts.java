@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 
 import game.Card;
+import game.GameException;
 import game.GameOfc;
 import game.PlayerOfc;
 import solver.ofc.mcts.MctsDomainAgent;
@@ -21,11 +22,24 @@ public class AgentOfcMcts  implements MctsDomainAgent<GameOfcMcts> {
 
 	@Override
 	public GameOfcMcts getTerminalStateByPerformingSimulationFromState(GameOfcMcts state) {
-        while (!state.isTerminal()) {
-            EventOfcMcts action = getBiasedOrRandomActionFromStatesAvailableActions(state);
-            state.performActionForCurrentAgent(action);
-        }
-        return state;
+		while (!state.isTerminal()) {
+			EventOfcMcts action = getBiasedOrRandomActionFromStatesAvailableActions(state);
+			state.performActionForCurrentAgent(action);
+		}
+//		EventOfcMctsSimple heuristic = Heuristics.completion(state.hero().boxFront.toList(), state.hero().boxMiddle.toList(), state.hero().boxBack.toList(), state.hero().cardsToBeBoxed);
+//		if (heuristic != null) {
+//			try {
+//				state.merge(heuristic);
+//			} catch (GameException e) {
+//				throw new RuntimeException(e);
+//			}
+//		} else {
+//			while (!state.isTerminal()) {
+//				EventOfcMcts action = getBiasedOrRandomActionFromStatesAvailableActions(state);
+//				state.performActionForCurrentAgent(action);
+//			}
+//		}
+		return state;
 	}
 
 	public EventOfcMcts getBiasedOrRandomActionFromStatesAvailableActions(GameOfcMcts state) {
@@ -34,7 +48,7 @@ public class AgentOfcMcts  implements MctsDomainAgent<GameOfcMcts> {
 			return availableActions.get(ThreadLocalRandom.current().nextInt(availableActions.size()));
 		} else {
 			if (state.isLastRound()) {
-				double maxReward = -1000000;
+				double maxReward = Double.NEGATIVE_INFINITY;
 				EventOfcMcts bestAction = availableActions.get(0);
 				for (EventOfcMcts act : availableActions) {
 					GameOfc clone = state.clone();
@@ -50,6 +64,13 @@ public class AgentOfcMcts  implements MctsDomainAgent<GameOfcMcts> {
 					}
 				}
 				return bestAction;
+//			} else {
+//				EventOfcMctsSimple heurRes = Heuristics.completion(state.hero().boxFront.toList(), state.hero().boxMiddle.toList(), state.hero().boxBack.toList(), state.hero().cardsToBeBoxed);
+//				if (heurRes == null)
+//					return availableActions.get(0);
+//				else
+//					return (EventOfcMcts) heurRes.toEventOfc(state.heroName);
+//			}
 			} else if (state.isFirstRound()) {
 				return availableActions.get(ThreadLocalRandom.current().nextInt(availableActions.size()));
 			} else {
@@ -82,7 +103,7 @@ public class AgentOfcMcts  implements MctsDomainAgent<GameOfcMcts> {
 		if (!state.hero().boxBack.isFull())
 			valB = EvaluatorFacade.evaluateIncompleteHand(state.hero().boxBack.toList(), GameOfc.BOX_LEVEL_BACK, state.hero().cardsToBeBoxed, openCards);
 		
-		double maxVal = -1000000;
+		double maxVal = Double.NEGATIVE_INFINITY;
 		EventOfcMcts bestAction = availableActions.get(0);
 		for (EventOfcMcts act : availableActions) {
 			double currentVal = 0;
@@ -166,7 +187,7 @@ public class AgentOfcMcts  implements MctsDomainAgent<GameOfcMcts> {
 			e.printStackTrace();
 		}
 		
-		double maxVal = -1000000;
+		double maxVal = Double.NEGATIVE_INFINITY;
 		EventOfcMcts bestAction = availableActions.get(0);
 		for (EventOfcMcts act : availableActions) {
 			double currentVal = 0;
@@ -211,7 +232,7 @@ public class AgentOfcMcts  implements MctsDomainAgent<GameOfcMcts> {
 			return availableActions.get(ThreadLocalRandom.current().nextInt(availableActions.size()));
 		}
 		
-		double maxVal = -1000000;
+		double maxVal = Double.NEGATIVE_INFINITY;
 		EventOfcMcts bestAction = availableActions.get(0);
 		for (EventOfcMcts act : availableActions) {
 			double currentVal = 0;

@@ -47,17 +47,11 @@ public class EvaluatorFacade {
         return board;
 	}
 
-	public static int evaluate(PlayerOfc hand) {
+	public static double evaluate(PlayerOfc hand) {
 		if (!hand.boxesIsFull())
 			throw new IllegalArgumentException(String.format("Error: player %s have't full boxes", hand.name));
 		
-        Deck d = new Deck();
-        Evaluator ev = new Evaluator();
-		Board board = hand2board(hand, d, ev);
-        Board failBoard = new Board("AdAhAd", "2d3cTd7c3d", "9s8s7s6s2h", d, ev);
-        int result = board.endResult(failBoard, ev);
-        
-        return result;
+        return evaluate(hand.boxFront.toList(), hand.boxMiddle.toList(), hand.boxBack.toList(), hand.playFantasy);
 	}
 
 	public static int evaluateByBoard(List<Card> front, List<Card> middle, List<Card> back) {
@@ -277,7 +271,7 @@ public class EvaluatorFacade {
     }
     public static double evaluate(List<Card> front, List<Card> middle, List<Card> back, boolean inFantasy, int fantasyLand) {
 //    	final int MULTIPLIER = 1;//10000;
-    	final short MAX_EVAL = 7748 + 1;
+    	final short MAX_EVAL = 7748 + 1; //7462
     	final int REGULARIZATION_PARAM = 3;
         Evaluator ev = new Evaluator();
         // The values of completely filled hands
@@ -544,8 +538,10 @@ public class EvaluatorFacade {
 		
 		System.out.println(evaluateIncompleteHand(lstBox, GameOfc.BOX_LEVEL_BACK, cardToBeBoxed, openCards));
 */
-//		System.out.println(evaluateByBoard(Arrays.asList(Card.str2Cards("4dKdJs")), Arrays.asList(Card.str2Cards("2h5c6c3h7d")), Arrays.asList(Card.str2Cards("6h6d6sAcAs"))));
+		System.out.println(evaluate(Arrays.asList(Card.str2Cards("4dKdJs")), Arrays.asList(Card.str2Cards("2h5c6c3h7d")), Arrays.asList(Card.str2Cards("6h6d6sAcAs")), false, 5));
+        System.out.println(evaluate(Arrays.asList(Card.str2Cards("AhAcKd")), Arrays.asList(Card.str2Cards("2h2s2d2c3c")), Arrays.asList(Card.str2Cards("3h3s3d3c4c")), false, 5));
 
+        System.exit(0);
         // STRAIGHT_FLUSH
         List<String> sfHands = Arrays.asList("2h3h4h5hAh", "2h3h4h5h6h", "3h4h5h6h7h", "4h5h6h7h8h", "5h6h7h8h9h", "6h7h8h9hTh", "7h8h9hThJh", "8h9hThJhQh", "9hThJhQhKh", "ThJhQhKhAh",
                                             "2d3d4d5dAd", "2d3d4d5d6d", "3d4d5d6d7d", "4d5d6d7d8d", "5d6d7d8d9d", "6d7d8d9dTd", "7d8d9dTdJd", "8d9dTdJdQd", "9dTdJdQdKd", "TdJdQdKdAd",

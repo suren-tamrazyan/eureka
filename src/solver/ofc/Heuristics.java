@@ -296,7 +296,9 @@ public class Heuristics {
 		
 		if (best == null)
 			best = backupBadSolution;
-		
+		if (best == null)
+			return null;
+
 		return best.toEventOfcMctsSimple(toBeBoxed);
 	}
 	
@@ -340,6 +342,7 @@ public class Heuristics {
 		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("AdJs3sTdTcQc6d2dAhKh6h5h3h")), 10000).toEventOfc("hero"));
 		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("Tc6c5h3c3hAdQh8cAsKsQs7s2s")), 10000).toEventOfc("hero"));
 		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("QdJc5cQcJsTd9c8sTh9h7h6h3h")), 10000).toEventOfc("hero"));
+		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("Tc8h4dKhQc9d5h3cKsTs6s4s3s")), 10000).toEventOfc("hero"));
 		System.out.println(String.format("time = %d", Utils.getTime() - time));
 //		time = Utils.getTime();
 //		Config.FANTASY_SCORE = 5;

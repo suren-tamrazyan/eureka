@@ -3,12 +3,11 @@ package solver.ofc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import game.Card;
-import game.EventOfc;
+
+import game.*;
 import game.Game.Nw;
-import game.GameOfc;
 import game.GameOfc.GameMode;
-import game.PlayerOfc;
+import solver.ofc.mcs.FullTraversal;
 import solver.ofc.mcts.Mcts;
 import util.Misc;
 
@@ -571,15 +570,71 @@ public class OfcMctsTest {
 
 	}
 
-	public void testNotLikeAI7() {
+	public void testNotLikeAI7() throws Exception {
 
-		System.out.println("start!");
-		long timeBefore = Utils.getTime();
-		long tsec = 10;
-		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("6hTh4h")), Arrays.asList(Card.str2Cards("2h2d2c2s")), Arrays.asList(Card.str2Cards("3c9dKs")),  Arrays.asList(Card.str2Cards("6s8h6c5dJdKd8d4c")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000, null);
-		System.out.println(Utils.getTime() - timeBefore);
-		System.out.println(decision.toString());
+		boolean isSimple = false;
 
+		if (isSimple) {
+			System.out.println("start!");
+			long timeBefore = Utils.getTime();
+			long tsec = 10;
+			EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("6hTh4h")), Arrays.asList(Card.str2Cards("2h2d2c2s")), Arrays.asList(Card.str2Cards("3c9dKs")),  Arrays.asList(Card.str2Cards("6s8h6c5dJdKd8d4c")), GameMode.GAME_MODE_REGULAR, 3, "HeroName", /*60*/tsec*1000, 1700000, null);
+			System.out.println(Utils.getTime() - timeBefore);
+			System.out.println(decision.toString());
+		} else {
+			GameOfc game = new GameOfc(Nw.Ppp, 100);
+			game.id = "220505095551-44429199-0000035-1";
+			game.addPlayer(new PlayerOfc("opp1", 1520));
+			game.addPlayer(new PlayerOfc("hero", 1520));
+			game.heroName = "hero";
+			game.initButtonName("opp1");
+			game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+			List<Card> emptyList = new ArrayList<>();
+
+			game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("4h2h2d2c2s"))));
+			game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("4h")), Card.cards2Mask(Card.str2Cards("2h2d2c2s")), emptyList));
+			game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6c")), Card.cards2Mask(Card.str2Cards("5dJdKd8d")), emptyList));
+			game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("6hTh4c"))));
+			game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6hTh")), Card.cards2Mask(Card.str2Cards("")), new ArrayList<>(Arrays.asList(Card.str2Cards("4c")))));
+			game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6s8h")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+			game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("3c9dKs"))));
+
+			System.out.println(game);
+			GameOfcMcts state = new GameOfcMcts(game);
+			Mcts<GameOfcMcts, EventOfcMcts, AgentOfcMcts> mcts = Mcts.initializeIterations(40000, null, new DebugPrinter());
+			mcts.dontClone(AgentOfcMcts.class);
+			long timeBefore = Misc.getTime();
+			EventOfcMcts decision = mcts.uctSearchWithExploration(state, 20, 0, 60000);
+			decision.setTime();
+			System.out.println(Misc.sf("MCTS decision in %d ms: \n%s", Misc.getTime() - timeBefore, decision.toString()));
+			System.out.println(Misc.sf("IterateCount = %d", mcts.getIterationsCount()));
+		}
+
+	}
+
+	public void testNotLikeAI7FullCalculate() throws Exception {
+		GameOfc game = new GameOfc(Nw.Ppp, 100);
+		game.id = "220505095551-44429199-0000035-1";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.heroName = "hero";
+		game.initButtonName("opp1");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("4h2h2d2c2s"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("4h")), Card.cards2Mask(Card.str2Cards("2h2d2c2s")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6c")), Card.cards2Mask(Card.str2Cards("5dJdKd8d")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("6hTh4c"))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6hTh")), Card.cards2Mask(Card.str2Cards("")), new ArrayList<>(Arrays.asList(Card.str2Cards("4c")))));
+		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6s8h")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("3c9dKs"))));
+
+		GameOfcMcts state = new GameOfcMcts(game);
+		double ev = FullTraversal.evalPerspective(state, true);
+		System.out.println("total ev = " + ev);
 	}
 
 	public void testNotLikeAI8() {
@@ -744,7 +799,7 @@ public class OfcMctsTest {
 
 		System.out.println(game);
 
-		boolean isSimple = true;
+		boolean isSimple = false;
 
 		if (isSimple) {
 			Config.DEBUG_PRINT = true;
@@ -823,7 +878,9 @@ public class OfcMctsTest {
 //		Config.RANDOM_DEAL_COUNT = 10000;
 //		Config.NUMBER_OF_ITERATIONS = 20000;
 //		Config.EXPLORATION_PARAMETER = 30;
-		test.testNotLikeAI16();
+
+//		test.testNotLikeAI7();
+		test.testNotLikeAI7FullCalculate();
     	
 //    	LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
 //    	OfcMctsSimpleRunner.numberTakesOfNatureSimulations.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
