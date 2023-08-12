@@ -163,7 +163,7 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		int[] limits = {3, 5, 5, 1};
 		int boxesNum = this.isFirstRound ? 3: 4; // for first round without dead box
 		
-		if (frontCount + middleCount + backCount + cardsToBeBoxed.size() == 13) {
+		if (frontCount + middleCount + backCount + cardsToBeBoxed.size() == 13 + 4) {
 			if (Config.HEURISTIC_COMPLETE) {
 				lAvailableActionsForCurrentStep.add(Heuristics.completion(boxFront, boxMiddle, boxBack, cardsToBeBoxed));
 			} else {
