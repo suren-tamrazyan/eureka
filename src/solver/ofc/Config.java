@@ -21,4 +21,5 @@ public class Config {
 	public int RANDOM_DEAL_COUNT = 15000; // == NUMBER_OF_ITERATIONS
 	public double EXPLORATION_PARAMETER = 7;//20;//2;//1.41;
 	public long TIME_LIMIT_MS = 17000;
+	boolean NOT_SAMPLED_DEADS = false; // for first not sampled deads; it's inexplicable, but the result is better
 }

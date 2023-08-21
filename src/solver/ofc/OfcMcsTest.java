@@ -209,10 +209,10 @@ public class OfcMcsTest {
         	game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "pid6691608", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("9d7s")), 0, emptyList));
         	game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("2h8hTs"))));
         	
-        	System.out.println(game.toString());
+        	System.out.println(game);
         	
         	Config cfg = new Config();
-        	cfg.RANDOM_DEAL_COUNT = 12000;
+        	cfg.RANDOM_DEAL_COUNT = 20000;
         	GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
         	long timeBefore = Utils.getTime();
 //			EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
@@ -249,9 +249,9 @@ public class OfcMcsTest {
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
-		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
-//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
 		System.out.println(Utils.getTime() - timeBefore);
 		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
 		System.out.println(decision.toEventOfc(game.heroName).toString());
@@ -391,6 +391,7 @@ public class OfcMcsTest {
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
+		Config.DEBUG_PRINT = false;
 //		Config.FAIL_PENALTY = -3 -3;
 		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
@@ -424,9 +425,9 @@ public class OfcMcsTest {
 		Config.FANTASY_SCORE = 15;
 		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
-		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
-//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 10000, 4);
 		System.out.println(Utils.getTime() - timeBefore);
 		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
 		System.out.println(decision.toEventOfc(game.heroName).toString());
@@ -455,17 +456,17 @@ public class OfcMcsTest {
 		game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("TcJh")), emptyList));
 		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("TdTsQd"))));
 
-		System.out.println(game.toString());
+		System.out.println(game);
 
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
-		Config.FAIL_PENALTY = -1;
+		Config.FAIL_PENALTY = -1;//-2;
 		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
-		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
-//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
 		System.out.println(Utils.getTime() - timeBefore);
 		System.out.println(String.format("RANDOM_DEAL_COUNT = %d", cfg.RANDOM_DEAL_COUNT));
 		System.out.println(decision.toEventOfc(game.heroName).toString());
@@ -539,7 +540,8 @@ public class OfcMcsTest {
 
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 20000;
-		Config.FANTASY_SCORE = 15;
+		Config.FANTASY_SCORE = 7;
+		Config.DEBUG_PRINT = true;
 //		Config.FAIL_PENALTY = 0;
 		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
 		long timeBefore = Utils.getTime();
@@ -587,10 +589,15 @@ public class OfcMcsTest {
 		Config cfg = new Config();
 		cfg.RANDOM_DEAL_COUNT = 20000;
 		Config.FANTASY_SCORE = 15;
-		Config.FAIL_PENALTY = -1; // -1 better than -3 in this case
-//		NatureSpace natureSpace = new NatureSpace(game, cfg);
-		NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
+		Config.DEBUG_PRINT = false;
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
+
+//		Config cfg = new Config();
+//		cfg.RANDOM_DEAL_COUNT = 20000;
+//		Config.FANTASY_SCORE = 15;
+//		Config.FAIL_PENALTY = -1; // -1 better than -3 in this case
+//		NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
+//		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 //		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple);
@@ -636,18 +643,26 @@ public class OfcMcsTest {
 
 		System.out.println(game.toString());
 
-		Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
-		Config.DEPTH_OF_SEARCH = 10;
-		Config.OPP_RANDOM_DEAL_COUNT = 1000;
-		Config.DEBUG_PRINT = true;
-		Config.FAIL_PENALTY = -3;
-
-//		EventOfc result = EurekaRunner.run(game, 15000, 17000);
 		Config cfg = new Config();
-		NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
-		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
+		cfg.RANDOM_DEAL_COUNT = 20000;
+		Config.FANTASY_SCORE = 15;
+		Config.DEBUG_PRINT = false;
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, new NatureSpace(game, cfg));
+
+
+
+//		Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
+//		Config.DEPTH_OF_SEARCH = 10;
+//		Config.OPP_RANDOM_DEAL_COUNT = 1000;
+//		Config.DEBUG_PRINT = true;
+//		Config.FAIL_PENALTY = -3;
+//
+//		Config cfg = new Config();
+//		NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
+//		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
 		long timeBefore = Utils.getTime();
-		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 100000, 4);
 
 		System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, decision.toEventOfc(game.heroName).toString()));
 
@@ -679,16 +694,15 @@ public class OfcMcsTest {
 
 		System.out.println(game.toString());
 
-		Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_ACROSS;
+//		Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_ACROSS;
 		Config.DEPTH_OF_SEARCH = 10;
 		Config.OPP_RANDOM_DEAL_COUNT = 100;
 		Config.DEBUG_PRINT = true;
 		Config.FANTASY_SCORE = 7;
 		Config.FAIL_PENALTY = -1;
 
-//		EventOfc result = EurekaRunner.run(game, 15000, 17000);
 		Config cfg = new Config();
-		NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
+		NatureSpace natureSpace = new NatureSpace(game, cfg);
 		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
@@ -726,13 +740,13 @@ public class OfcMcsTest {
 		Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
 		Config.DEPTH_OF_SEARCH = 10;
 		Config.OPP_RANDOM_DEAL_COUNT = 100;
-		Config.DEBUG_PRINT = true;
+//		Config.DEBUG_PRINT = true;
 		Config.FANTASY_SCORE = 15;
 		Config.FAIL_PENALTY = -3;
 
 //		EventOfc result = EurekaRunner.run(game, 15000, 17000);
 		Config cfg = new Config();
-		NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
+		NatureSpace natureSpace = new NatureSpace(game, cfg);
 		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
 		long timeBefore = Utils.getTime();
 		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
@@ -827,8 +841,42 @@ public class OfcMcsTest {
 
 	}
 
+	public void testNotLikeAI10_firstround() throws Exception {
+
+		GameOfc game = new GameOfc(Nw.Ppp, 100);
+		game.id = "220922002657-50722998-0000007-1";
+		game.addPlayer(new PlayerOfc("opp1", 1520));
+		game.addPlayer(new PlayerOfc("hero", 1520));
+		game.heroName = "hero";
+		game.initButtonName("opp1");
+		game.gameMode = GameMode.GAME_MODE_OFC_PROGRESSIVE;
+
+		List<Card> emptyList = new ArrayList<>();
+
+		game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("2s6h8h9sQh"))));
+
+		System.out.println(game);
+
+		Config.FANTASY_SCORE = 1;
+		Config.FAIL_PENALTY = -1;
+		Config.DEBUG_PRINT = true;
+
+//		EventOfc result = EurekaRunner.run(game, 15000, 17000);
+		Config cfg = new Config();
+		cfg.RANDOM_DEAL_COUNT = 50000;
+		NatureSpace natureSpace = new NatureSpace(game, cfg);
+		GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
+		long timeBefore = Utils.getTime();
+//		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+		EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 100000, 4);
+
+		System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, decision.toEventOfc(game.heroName).toString()));
+
+	}
+
 	public static void main(String[] args) throws Exception {
     	OfcMcsTest test = new OfcMcsTest();
-    	test.testNotLikeAI7();
+//    	test.testNotLikeAI7();
+		test.testNotLikeAI19();
     }
 }

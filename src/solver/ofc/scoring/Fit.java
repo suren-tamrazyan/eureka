@@ -134,8 +134,8 @@ public class Fit {
                 for (EventOfc ev : evs) {
                     if (pl.isHero() && (ev.type == EventOfc.PUT_CARDS_TO_BOXES || ev.type == EventOfc.FANTASY_CARDS_TO_BOXES)) {
 //                        aiRounds[round] = ev;
-//                        EventOfc solverMove = Estimator.bestMoveMctsSimple(game);
-                        EventOfc solverMove = Estimator.bestMoveMctsHard(game);
+                        EventOfc solverMove = Estimator.bestMoveMctsSimple(game);
+//                        EventOfc solverMove = Estimator.bestMoveMctsHard(game);
                         boolean isEquals = false;
                         if (ev.equalCardBoxes(solverMove)) {
                             if (pl.isInFantasy())
@@ -190,7 +190,7 @@ public class Fit {
         Config.FAIL_PENALTY = Integer.parseInt(failPenalty);
         String name = String.format("%s; OPP_RANDOM_DEAL_COUNT = %d; DEPTH_OF_SEARCH = %d; FANTASY_SCORE = %d; FAIL_PENALTY = %d", Config.EvaluationMethod, Config.OPP_RANDOM_DEAL_COUNT, Config.DEPTH_OF_SEARCH, Config.FANTASY_SCORE, Config.FAIL_PENALTY);
 
-        Fit fit = new Fit(path, "HARD " + name, GameFilter.WITHOUT_FANTASY);
+        Fit fit = new Fit(path, "HARD " + name, GameFilter.ALL);
         fit.fit();
     }
 }

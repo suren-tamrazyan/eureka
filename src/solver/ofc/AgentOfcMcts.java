@@ -71,24 +71,24 @@ public class AgentOfcMcts  implements MctsDomainAgent<GameOfcMcts> {
 //				else
 //					return (EventOfcMcts) heurRes.toEventOfc(state.heroName);
 //			}
-			} else if (state.isFirstRound()) {
+			} else //if (state.isFirstRound()) {
 				return availableActions.get(ThreadLocalRandom.current().nextInt(availableActions.size()));
-			} else {
-				// heavy play out
-				List<Card> openCards = new ArrayList<>();
-				for (PlayerOfc p : state.getPlayers()) {
-					if (!p.name.equals(state.heroName)) {
-						openCards.addAll(p.boxBack.toList());
-						openCards.addAll(p.boxMiddle.toList());
-						openCards.addAll(p.boxFront.toList());
-						openCards.addAll(p.boxDead.toList());
-						openCards.addAll(p.cardsToBeBoxed);
-
-					}
-				}
-//				return getHeuristicMove_maxValue(state, availableActions, openCards);
-				return getHeuristicMove_ProbabilityByOneRow(state, availableActions, openCards);
-			}
+//			} else {
+//				// heavy play out
+//				List<Card> openCards = new ArrayList<>();
+//				for (PlayerOfc p : state.getPlayers()) {
+//					if (!p.name.equals(state.heroName)) {
+//						openCards.addAll(p.boxBack.toList());
+//						openCards.addAll(p.boxMiddle.toList());
+//						openCards.addAll(p.boxFront.toList());
+//						openCards.addAll(p.boxDead.toList());
+//						openCards.addAll(p.cardsToBeBoxed);
+//
+//					}
+//				}
+////				return getHeuristicMove_maxValue(state, availableActions, openCards);
+//				return getHeuristicMove_ProbabilityByOneRow(state, availableActions, openCards);
+//			}
 		}
 	}
 

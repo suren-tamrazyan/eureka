@@ -31,28 +31,12 @@ public class NatureSpace {
         availableCards.removeAll(back);
         availableCards.removeAll(toBeBoxed);
 
-        int sizeDead = 0;
-        switch (sizeFront + sizeMiddle + sizeBack) {
-            case 0:
-                sizeDead = 0;
-                break;
-            case 5:
-                sizeDead = 1;
-                break;
-            case 7:
-                sizeDead = 2;
-                break;
-            case 9:
-                sizeDead = 3;
-                break;
-            case 11:
-                sizeDead = 4;
-                break;
-            default:
-                throw new IllegalArgumentException("Unexpected size of cards: " + sizeFront + " " + sizeMiddle + " " + sizeBack);
-        }
+        int sizeDead = Utils.deadCardsCount(sizeFront + sizeMiddle + sizeBack);
+        if (aCfg.NOT_SAMPLED_DEADS)
+            sizeDead = 0;
+        int totalCount = 13 + (aCfg.NOT_SAMPLED_DEADS ? 0 : 4);
 
-        int dealSize = 13 + 4 - (sizeFront + sizeMiddle + sizeBack + sizeDead + (sizeCardsToBeBoxed - (aIsFirstRound?0:1)));
+        int dealSize = totalCount - (sizeFront + sizeMiddle + sizeBack + sizeDead + sizeCardsToBeBoxed);
         BigInteger cntCombi = Utils.combinationCount(availableCards.size(), dealSize);
         if (cntCombi.compareTo(BigInteger.valueOf(3 * aCfg.RANDOM_DEAL_COUNT)) > 0) {
             this.natureSamples = new ArrayList<EventOfcMctsSimple>(aCfg.RANDOM_DEAL_COUNT);

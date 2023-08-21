@@ -26,6 +26,7 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 	private List<Card> deck;
 	public boolean isFirstRound;
 	public String heroName;
+	private Config cfg;
 	
 	// common space
 	private NatureSpace natureSpace;
@@ -37,7 +38,7 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		return (aGameMode == GameMode.GAME_MODE_OFC_WILD_CARD_REGULAR || aGameMode == GameMode.GAME_MODE_OFC_WILD_CARD_PROGRESSIVE || aGameMode == GameMode.GAME_MODE_OFC_WILD_CARD_ULTIMATE) ? 54 : 52;
 	}
 	public GameOfcMctsSimple(List<Card> front, List<Card> middle, List<Card> back, List<Card> toBeBoxed, List<Card> otherOpenedCard, 
-			GameMode aGameMode, boolean aIsFirstRound, String aHeroName, NatureSpace aNatureSpace) {
+			GameMode aGameMode, boolean aIsFirstRound, String aHeroName, NatureSpace aNatureSpace, Config aCfg) {
 		boxFront.addAll(front);
 		boxMiddle.addAll(middle);
 		boxBack.addAll(back);
@@ -45,6 +46,7 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		this.gameMode = aGameMode;
 		this.isFirstRound = aIsFirstRound;
 		heroName = aHeroName;
+		this.cfg = aCfg;
 		
 		this.natureSpace = aNatureSpace;
 		
@@ -72,7 +74,7 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 	}
 	public GameOfcMctsSimple(GameOfc source, NatureSpace aNatureSpace) {
 		this(source.getPlayer(source.heroName).boxFront.toList(), source.getPlayer(source.heroName).boxMiddle.toList(), source.getPlayer(source.heroName).boxBack.toList(),
-				source.getPlayer(source.heroName).cardsToBeBoxed, mergeToOther(source), source.gameMode, source.isFirstRound(), source.heroName, aNatureSpace);
+				source.getPlayer(source.heroName).cardsToBeBoxed, mergeToOther(source), source.gameMode, source.isFirstRound(), source.heroName, aNatureSpace, new Config());
 	}
 
 	public GameOfcMctsSimple() {
@@ -162,8 +164,12 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		int[] counter = {frontCount, middleCount, backCount, deadCount};
 		int[] limits = {3, 5, 5, 1};
 		int boxesNum = this.isFirstRound ? 3: 4; // for first round without dead box
+		int sizeDead = Utils.deadCardsCount(frontCount + middleCount + backCount);
+		if (this.cfg.NOT_SAMPLED_DEADS)
+			sizeDead = 0;
+		int totalCount = 13 + (this.cfg.NOT_SAMPLED_DEADS ? 0 : 4);
 		
-		if (frontCount + middleCount + backCount + cardsToBeBoxed.size() == 13 + 4) {
+		if (frontCount + middleCount + backCount + sizeDead + cardsToBeBoxed.size() == totalCount) {
 			if (Config.HEURISTIC_COMPLETE) {
 				lAvailableActionsForCurrentStep.add(Heuristics.completion(boxFront, boxMiddle, boxBack, cardsToBeBoxed));
 			} else {

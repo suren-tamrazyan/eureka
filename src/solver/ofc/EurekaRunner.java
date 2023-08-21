@@ -28,8 +28,9 @@ public class EurekaRunner {
 	public EurekaRunner(List<Card> front, List<Card> middle, List<Card> back, List<Card> toBeBoxed, List<Card> otherOpenedCard, 
 			GameMode aGameMode, boolean aIsFirstRound, String aHeroName, Config aCfg) {
 		cfg = aCfg;
+		cfg.NOT_SAMPLED_DEADS = aIsFirstRound; // for first not sampled deads; it's inexplicable, but the result is better
 		natureSpace = new NatureSpace(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aIsFirstRound, aHeroName, cfg);
-    	stateSimple = new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aIsFirstRound, aHeroName, natureSpace);
+    	stateSimple = new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aIsFirstRound, aHeroName, natureSpace, cfg);
 	}
 	
 	public EurekaRunner(GameOfc game, Config aCfg) {
@@ -47,7 +48,7 @@ public class EurekaRunner {
     	Mcts<GameOfcMctsSimple, EventOfcMctsSimple, AgentOfcMctsSimple> mcts = Mcts.initializeIterations(cfg.NUMBER_OF_ITERATIONS, callback, callbackDebug);
     	mcts.dontClone(AgentOfcMcts.class, AgentOfcMctsSimple.class, EurekaRunner.class, NatureSpace.class);
     	EventOfcMctsSimple decision = mcts.uctSearchWithExploration(stateSimple, cfg.EXPLORATION_PARAMETER, timeDurationMs, cfg.TIME_LIMIT_MS);
-    	System.out.println(String.format("mcts.iterationCount = %d", mcts.getIterationsCount()));
+    	System.out.println(String.format("best mcts.iterationCount = %d", mcts.getIterationsCount()));
     	this.mctsIterationsCount = mcts.getIterationsCount();
     	return decision.toEventOfc(stateSimple.heroName);
 	}
@@ -56,13 +57,14 @@ public class EurekaRunner {
 			GameMode aGameMode, int aRound, String aHeroName, long timeDurationMs, long timeLimitMs, List<NatureSpaceExt.OppHand> opps) {
 		Config cfg = new Config();
 		cfg.TIME_LIMIT_MS = timeLimitMs;
+		cfg.NOT_SAMPLED_DEADS = aRound == 1; // for first not sampled deads; it's inexplicable, but the result is better
 		if (aRound == 4 || aRound == 3) { // for 4 and 3 round can run MCS
 			NatureSpace ns;
 			if (Config.EvaluationMethod == Config.EvaluationMethodKind.SINGLE_HERO)//if (opps == null)
 				ns = new NatureSpace(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg);
 			else
 				ns = new NatureSpaceExt(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, cfg, opps);
-			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, ns), timeDurationMs > 0 ? timeDurationMs : cfg.TIME_LIMIT_MS, Config.CPU_NUM).toEventOfc(aHeroName);
+			return Mcs.monteCarloSimulation(new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aRound == 1, aHeroName, ns, cfg), timeDurationMs > 0 ? timeDurationMs : cfg.TIME_LIMIT_MS, Config.CPU_NUM).toEventOfc(aHeroName);
 		} else {
 			if (aRound == 1) cfg.EXPLORATION_PARAMETER = 7;
 			if (aRound == 2) cfg.EXPLORATION_PARAMETER = 15;

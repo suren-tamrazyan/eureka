@@ -77,21 +77,22 @@ public class OfcThirdRoundTest {
 
         System.out.println(game);
 
-        Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_ACROSS;
+        Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
         Config.DEPTH_OF_SEARCH = 10;
         Config.OPP_RANDOM_DEAL_COUNT = 100;
         Config.DEBUG_PRINT = true;
         Config.FANTASY_SCORE = 7;
-        Config.FAIL_PENALTY = -1;
+        Config.FAIL_PENALTY = -3;
 
-//		EventOfc result = EurekaRunner.run(game, 15000, 17000);
-        Config cfg = new Config();
-        NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
-        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
         long timeBefore = Utils.getTime();
-        EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+		EventOfc result = EurekaRunner.run(game, 0, 8000);
+//        Config cfg = new Config();
+//        NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
+//        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
+//        long timeBefore = Utils.getTime();
+//        EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 
-        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, decision.toEventOfc(game.heroName).toString()));
+        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
 
     }
     public void testNotLikeAI100MctsNotSimple() throws Exception {
@@ -164,14 +165,15 @@ public class OfcThirdRoundTest {
         Config.FANTASY_SCORE = 7;
         Config.FAIL_PENALTY = -3;
 
-//		EventOfc result = EurekaRunner.run(game, 15000, 17000);
-        Config cfg = new Config();
-        NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
-        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
         long timeBefore = Utils.getTime();
-        EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+		EventOfc result = EurekaRunner.run(game, 15000, 17000);
+//        Config cfg = new Config();
+//        NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
+//        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
+//        long timeBefore = Utils.getTime();
+//        EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 
-        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, decision.toEventOfc(game.heroName).toString()));
+        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
 
     }
 
@@ -239,21 +241,22 @@ public class OfcThirdRoundTest {
 
         System.out.println(game);
 
-        Config.EvaluationMethod = Config.EvaluationMethodKind.BOARD_ACROSS;
+        Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
         Config.DEPTH_OF_SEARCH = 10;
         Config.OPP_RANDOM_DEAL_COUNT = 100;
         Config.DEBUG_PRINT = true;
         Config.FANTASY_SCORE = 7;
         Config.FAIL_PENALTY = -3;
 
-//		EventOfc result = EurekaRunner.run(game, 15000, 17000);
-        Config cfg = new Config();
-        NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
-        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
         long timeBefore = Utils.getTime();
-        EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+		EventOfc result = EurekaRunner.run(game, 0, 8000);
+//        Config cfg = new Config();
+//        NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
+//        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
+//        long timeBefore = Utils.getTime();
+//        EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
 
-        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, decision.toEventOfc(game.heroName).toString()));
+        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
 
     }
 
@@ -396,10 +399,10 @@ public class OfcThirdRoundTest {
         Config.OPP_RANDOM_DEAL_COUNT = 200;
         Config.DEBUG_PRINT = false;
         Config.FANTASY_SCORE = 7;
-        Config.FAIL_PENALTY = 0;
+        Config.FAIL_PENALTY = -3;
 
         long timeBefore = Utils.getTime();
-		EventOfc result = EurekaRunner.run(game, 50000, 60000);
+		EventOfc result = EurekaRunner.run(game, 0, 8000);
 //        Config cfg = new Config();
 //        NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
 //        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
@@ -473,15 +476,17 @@ public class OfcThirdRoundTest {
         Config.FANTASY_SCORE = 7;
         Config.FAIL_PENALTY = -3;
 
-//        long timeBefore = Utils.getTime();
-//        EventOfc result = EurekaRunner.run(game, 50000, 60000);
-        Config cfg = new Config();
-        NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
-        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
         long timeBefore = Utils.getTime();
-        EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+        EventOfc decision = EurekaRunner.run(game, 50000, 60000);
+//        Config cfg = new Config();
+//        cfg.RANDOM_DEAL_COUNT = 30000;
+//        NatureSpace natureSpace = new NatureSpace(game, cfg);
+//        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
+//        long timeBefore = Utils.getTime();
+//        EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0);
+//        EventOfcMctsSimple decision = Mcs.monteCarloSimulation(stateSimple, 0, 4);
 
-        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, decision.toEventOfc(game.heroName).toString()));
+        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, decision.toString()));
 
     }
 
@@ -547,10 +552,10 @@ public class OfcThirdRoundTest {
         Config.OPP_RANDOM_DEAL_COUNT = 100;
         Config.DEBUG_PRINT = false;
         Config.FANTASY_SCORE = 7;
-        Config.FAIL_PENALTY = 0;
+        Config.FAIL_PENALTY = -3;
 
         long timeBefore = Utils.getTime();
-        EventOfc result = EurekaRunner.run(game, 50000, 60000);
+        EventOfc result = EurekaRunner.run(game, 0, 8000);
 //        Config cfg = new Config();
 //        NatureSpace natureSpace = new NatureSpaceExt(game, cfg);
 //        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
@@ -586,7 +591,7 @@ public class OfcThirdRoundTest {
         Config.FAIL_PENALTY = 0;
 
         GameOfcMcts state = new GameOfcMcts(game);
-        Mcts<GameOfcMcts, EventOfcMcts, AgentOfcMcts> mcts = Mcts.initializeIterations(20000, null, new DebugPrinter());
+        Mcts<GameOfcMcts, EventOfcMcts, AgentOfcMcts> mcts = Mcts.initializeIterations(20000, null, null);
         mcts.dontClone(AgentOfcMcts.class);
         long timeBefore = Misc.getTime();
         EventOfcMcts decision = mcts.uctSearchWithExploration(state, 7, 0, 60000);
@@ -596,8 +601,117 @@ public class OfcThirdRoundTest {
 
     }
 
+
+
+    // another first round
+//    http://nsk.convexbytes.com:15273/bestmove?hero=%2F%2F&newCards=6s+8h+Qh+Kh+Kc&opp=%2F%2F&dead=&button=0&table=test&rules=progressive16_refant14_nojokers&account=pid7568847&appName=Ppp&clubId=3109882&stakes=0.50&price=0.001USD&gameId=221106145621-52798420-0000004-1&timeLimit=15&fastObvious&partner=0
+//    Qh / Kh Kc / 6s 8h
+//    http://13.49.160.164:8000/bestmove?hero=%2F%2F&newCards=6s+8h+Qh+Kh+Kc&opp=%2F%2F&dead=&button=1&table=test&rules=progressive16_refant14_nojokers&account=pid7568847&appName=Ppp&clubId=3109882&stakes=0.50&price=0.001USD&gameId=221106145621-52798420-0000004-1&timeLimit=15&fastObvious&partner=altai-zxgsejynkd
+//    Kc Kh / 6s / 8h Qh
+
+    public void testNotLikeAI107() throws Exception {
+
+        GameOfc game = new GameOfc(Game.Nw.Upoker, 100);
+        game.id = "221106145621-52798420-0000004-1";
+        game.addPlayer(new PlayerOfc("opp1", 1520));
+        game.addPlayer(new PlayerOfc("hero", 1520));
+        game.heroName = "hero";
+        game.initButtonName("opp1");
+        game.gameMode = GameOfc.GameMode.GAME_MODE_REGULAR;
+
+        List<Card> emptyList = new ArrayList<>();
+
+        game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("6s8hQhKhKc"))));
+
+        System.out.println(game);
+
+        Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
+        Config.DEPTH_OF_SEARCH = 10;
+        Config.OPP_RANDOM_DEAL_COUNT = 100;
+        Config.DEBUG_PRINT = false;
+        Config.FANTASY_SCORE = 7;
+        Config.FAIL_PENALTY = -3;
+
+        long timeBefore = Utils.getTime();
+        EventOfc result = EurekaRunner.run(game, 0, 8000);
+//        Config cfg = new Config();
+//        NatureSpace natureSpace = new NatureSpace(game, cfg);
+//        GameOfcMctsSimple stateSimple = new GameOfcMctsSimple(game, natureSpace);
+//        long timeBefore = Utils.getTime();
+//        EventOfcMctsSimple result = Mcs.monteCarloSimulation(stateSimple, 10000, 4);
+
+        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
+
+    }
+
+    public void testNotLikeAI107MctsNotSimple() throws Exception {
+
+        GameOfc game = new GameOfc(Game.Nw.Upoker, 100);
+        game.id = "221106145621-52798420-0000004-1";
+        game.addPlayer(new PlayerOfc("opp1", 1520));
+        game.addPlayer(new PlayerOfc("hero", 1520));
+        game.heroName = "hero";
+        game.initButtonName("opp1");
+        game.gameMode = GameOfc.GameMode.GAME_MODE_REGULAR;
+
+        List<Card> emptyList = new ArrayList<>();
+
+        game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("6s8hQhKhKc"))));
+
+        System.out.println(game);
+
+        Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
+        Config.DEPTH_OF_SEARCH = 10;
+        Config.OPP_RANDOM_DEAL_COUNT = 100;
+        Config.DEBUG_PRINT = false;
+        Config.FANTASY_SCORE = 7;
+        Config.FAIL_PENALTY = -3;
+
+        GameOfcMcts state = new GameOfcMcts(game);
+        Mcts<GameOfcMcts, EventOfcMcts, AgentOfcMcts> mcts = Mcts.initializeIterations(100000, null, null);
+        mcts.dontClone(AgentOfcMcts.class);
+        long timeBefore = Misc.getTime();
+        EventOfcMcts decision = mcts.uctSearchWithExploration(state, 7, 0, 600000);
+        decision.setTime();
+        System.out.println(Misc.sf("MCTS decision in %d ms: \n%s", Misc.getTime() - timeBefore, decision.toString()));
+        System.out.println(Misc.sf("IterateCount = %d", mcts.getIterationsCount()));
+
+    }
+
+
+    // second round
+    public void testFail1() throws Exception {
+
+        GameOfc game = new GameOfc(Game.Nw.Upoker, 100);
+        game.id = "221106145621-52798420-0000004-1";
+        game.addPlayer(new PlayerOfc("opp1", 1520));
+        game.addPlayer(new PlayerOfc("hero", 1520));
+        game.heroName = "hero";
+        game.initButtonName("opp1");
+        game.gameMode = GameOfc.GameMode.GAME_MODE_REGULAR;
+
+        List<Card> emptyList = new ArrayList<>();
+
+        game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("2h3c5d8cKc"))));
+
+        System.out.println(game);
+
+        Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
+        Config.DEPTH_OF_SEARCH = 10;
+        Config.OPP_RANDOM_DEAL_COUNT = 100;
+        Config.DEBUG_PRINT = false;
+        Config.FANTASY_SCORE = 7;
+        Config.FAIL_PENALTY = -3;
+
+        long timeBefore = Utils.getTime();
+        EventOfc result = EurekaRunner.run(game, 0, 16000);
+
+        System.out.println(String.format("MCS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
+
+    }
+
     public static void main(String[] args) throws Exception {
         OfcThirdRoundTest test = new OfcThirdRoundTest();
-        test.testNotLikeAI106MctsNotSimple();
+        test.testFail1();
     }
 }

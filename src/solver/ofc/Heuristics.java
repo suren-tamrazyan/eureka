@@ -339,10 +339,11 @@ public class Heuristics {
 //		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("TdThAh6d6c2h2c9c3c3d3s4c4d")), 10000).toEventOfc("hero"));
 //		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("AhAdAs6d7h8d9dTd4c5c7c9cQc7s9s")), 20000).toEventOfc("hero"));
 //		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("TdTsKh8d8h6d6c7dAdAcAhQh9s")), 10000).toEventOfc("hero"));
-		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("AdJs3sTdTcQc6d2dAhKh6h5h3h")), 10000).toEventOfc("hero"));
-		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("Tc6c5h3c3hAdQh8cAsKsQs7s2s")), 10000).toEventOfc("hero"));
-		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("QdJc5cQcJsTd9c8sTh9h7h6h3h")), 10000).toEventOfc("hero"));
-		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("Tc8h4dKhQc9d5h3cKsTs6s4s3s")), 10000).toEventOfc("hero"));
+//		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("AdJs3sTdTcQc6d2dAhKh6h5h3h")), 10000).toEventOfc("hero"));
+//		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("Tc6c5h3c3hAdQh8cAsKsQs7s2s")), 10000).toEventOfc("hero"));
+//		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("QdJc5cQcJsTd9c8sTh9h7h6h3h")), 10000).toEventOfc("hero"));
+//		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("Tc8h4dKhQc9d5h3cKsTs6s4s3s")), 10000).toEventOfc("hero"));
+		System.out.println(completion(Arrays.asList(Card.str2Cards("5d5s")), Arrays.asList(Card.str2Cards("4c")), Arrays.asList(Card.str2Cards("3h8h")), Arrays.asList(Card.str2Cards("Js5c7s8c9c9hThQhAcAhAsAd"))).toEventOfc("hero"));
 		System.out.println(String.format("time = %d", Utils.getTime() - time));
 //		time = Utils.getTime();
 //		Config.FANTASY_SCORE = 5;

@@ -19,6 +19,33 @@ public class Utils {
 	public static BigInteger combinationCount(int n, int m) {
 		return factorial(n).divide(factorial(m).multiply(factorial(n-m)));
 	}
+
+	public static int deadCardsCount(int playedCardsCount) {
+		int sizeDead = 0;
+		switch (playedCardsCount) {
+			case 0:
+				sizeDead = 0;
+				break;
+			case 5:
+				sizeDead = 0;
+				break;
+			case 7:
+				sizeDead = 1;
+				break;
+			case 9:
+				sizeDead = 2;
+				break;
+			case 11:
+				sizeDead = 3;
+				break;
+			case 13:
+				sizeDead = 4;
+				break;
+			default:
+				throw new IllegalArgumentException("Unexpected size of cards: " + playedCardsCount);
+		}
+		return sizeDead;
+	}
 	
 	public static long getTime() {
 		Calendar c = Calendar.getInstance();

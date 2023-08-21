@@ -460,10 +460,11 @@ public class Estimator {
 		Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
 		Config.OPP_RANDOM_DEAL_COUNT = 100;
 		Config.DEPTH_OF_SEARCH = 10;
-		Config.FANTASY_SCORE = 15;
+		Config.FANTASY_SCORE = 7;
 		Config.FAIL_PENALTY = -3;
 //		Estimator estimator = new Estimator("C:\\ofc_mcts_scoring\\hh_nojokers2", "baseline5; 3rd round MCS + EXTEND TIME + BOARD_SINGLE; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.ALL);
-		Estimator estimator = new Estimator("C:\\temp\\hh_yakov_ppp_223_202211_ALTAI_M666", "yakov-ppp; baseline5; round 1 by time; SINGLE_HERO; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.WITHOUT_FANTASY);
+//		Estimator estimator = new Estimator("C:\\temp\\hh_yakov_ppp_223_202211_ALTAI_M666", "yakov-ppp; baseline6; round 1 by time; SINGLE_HERO; FANTASY_SCORE = 15; FAIL_PENALTY = -3;", GameFilter.WITHOUT_FANTASY);
+		Estimator estimator = new Estimator("C:\\temp\\hh_yakov_ppp_223_202211_ALTAI_M666\\fail", "test1 for fail; baseline7; round 1 by time; SINGLE_HERO; FANTASY_SCORE = 0; FAIL_PENALTY = -3;", GameFilter.WITHOUT_FANTASY);
 		estimator.estimate();
 	}
 

@@ -572,7 +572,8 @@ public class OfcMctsTest {
 
 	public void testNotLikeAI7() throws Exception {
 
-		boolean isSimple = false;
+		boolean isSimple = true;
+		Config.NATURE_ORDERED_MODE = false;
 
 		if (isSimple) {
 			System.out.println("start!");
@@ -660,14 +661,14 @@ public class OfcMctsTest {
 	}
 
 	public void testNotLikeAI10() {
-		Config.DEPTH_OF_SEARCH = 10;
-		Config.FAIL_PENALTY = -3;
-		Config.FANTASY_SCORE = 10;
-		Config.DEBUG_PRINT = true;
+//		Config.DEPTH_OF_SEARCH = 10;
+//		Config.FAIL_PENALTY = -3;
+		Config.FANTASY_SCORE = 7;
+//		Config.DEBUG_PRINT = true;
 
 		System.out.println("start!");
 		long timeBefore = Utils.getTime();
-		long tsec = 10;
+		long tsec = 100;
 		EventOfc decision = EurekaRunner.run(Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("2s6h8h9sQh")),  Arrays.asList(Card.str2Cards("")), GameMode.GAME_MODE_REGULAR, 1, "HeroName", /*60*/tsec*1000, 1700000, null);
 		System.out.println(Utils.getTime() - timeBefore);
 		System.out.println(decision.toString());
@@ -799,7 +800,7 @@ public class OfcMctsTest {
 
 		System.out.println(game);
 
-		boolean isSimple = false;
+		boolean isSimple = true;
 
 		if (isSimple) {
 			Config.DEBUG_PRINT = true;
@@ -879,8 +880,8 @@ public class OfcMctsTest {
 //		Config.NUMBER_OF_ITERATIONS = 20000;
 //		Config.EXPLORATION_PARAMETER = 30;
 
-//		test.testNotLikeAI7();
-		test.testNotLikeAI7FullCalculate();
+		test.testNotLikeAI7();
+//		test.testNotLikeAI7FullCalculate();
     	
 //    	LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
 //    	OfcMctsSimpleRunner.numberTakesOfNatureSimulations.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
