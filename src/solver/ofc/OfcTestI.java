@@ -594,8 +594,57 @@ public class OfcTestI {
         System.out.println(String.format("MCTS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
     }
 
+    public static void test10() throws Exception {
+/*
+http://13.49.160.164:8000/bestmove?hero=Th%2F4d+5h+4s%2F8d+9c+Ts&newCards=3s+5s+7d&opp=Ac+Ad%2F4c+2d+5d%2F6h+6d+6c+Kd%09Qs+8s%2F7h+8h+Ah+4h%2F3d+Jd+Jc&dead=3h&button=0&table=test&rules=progressive16_refant14_nojokers&account=pid7568847&appName=Ppp&clubId=3109882&stakes=0.50&price=0.001USD&gameId=221106145621-52798420-0000004-1&timeLimit=15&fastObvious&partner=altai-zxgsejynkd
+Th / 4d 5h 4s 5s / 8d 9c Ts 7d
+
+http://nsk.convexbytes.com:15273/bestmove?hero=Th%2F4d+5h+4s%2F8d+9c+Ts&newCards=3s+5s+7d&opp=Ac+Ad%2F4c+2d+5d%2F6h+6d+6c+Kd%09Qs+8s%2F7h+8h+Ah+4h%2F3d+Jd+Jc&dead=3h&button=0&table=test&rules=progressive16_refant14_nojokers&account=pid7568847&appName=Ppp&clubId=3109882&stakes=0.50&price=0.001USD&gameId=221106145621-52798420-0000004-1&timeLimit=15&fastObvious&partner=altai-zxgsejynkd
+Th / 4d 5h 4s 5s / 8d 9c Ts 7d
+
+http://10.211.59.133:8089/bestmove?hero=Th%2F4d+5h+4s%2F8d+9c+Ts&newCards=3s+5s+7d&opp=Ac+Ad%2F4c+2d+5d%2F6h+6d+6c+Kd%09Qs+8s%2F7h+8h+Ah+4h%2F3d+Jd+Jc&dead=3h&button=0&table=test&rules=progressive16_refant14_nojokers&account=pid7568847&appName=Ppp&clubId=3109882&stakes=0.50&price=0.001USD&gameId=221106145621-52798420-0000004-1&timeLimit=15&fastObvious&partner=altai-zxgsejynkd
+Th / 4d 5h 4s 5s 7d / 8d 9c Ts
+*/
+        GameOfc game = new GameOfc(Game.Nw.Spartan, 100);
+        game.id = "415446897";
+        game.addPlayer(new PlayerOfc("opp1", 1520));
+        game.addPlayer(new PlayerOfc("opp2", 1520));
+        game.addPlayer(new PlayerOfc("hero", 1520));
+        game.heroName = "hero";
+        game.initButtonName("hero");
+        game.gameMode = GameOfc.GameMode.GAME_MODE_REGULAR;
+
+        List<Card> emptyList = new ArrayList<>();
+
+        game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("AcAd")), Card.cards2Mask(Card.str2Cards("4c2d5d")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+        game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp2", Card.cards2Mask(Card.str2Cards("Qs8s")), Card.cards2Mask(Card.str2Cards("7h8hAh")), Card.cards2Mask(Card.str2Cards("")), emptyList));
+        game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("Th4d5h4s8d"))));
+        game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("Th")), Card.cards2Mask(Card.str2Cards("4d5h4s")), Card.cards2Mask(Card.str2Cards("8d")), emptyList));
+
+        game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6h6d")), emptyList));
+        game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp2", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("4h")), Card.cards2Mask(Card.str2Cards("3d")), emptyList));
+        game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("9cTs3h"))));
+        game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, game.heroName, Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("9cTs")), Arrays.asList(Card.str2Cards("3h"))));
+
+        game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp1", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("6cKd")), emptyList));
+        game.procEvent(new EventOfc(EventOfc.PUT_CARDS_TO_BOXES, "opp2", Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("")), Card.cards2Mask(Card.str2Cards("JdJc")), emptyList));
+        game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("3s5s7d"))));
+
+        System.out.println(game);
+
+        Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
+        Config.DEBUG_PRINT = true;
+        Config.FANTASY_SCORE = 7;
+        Config.FAIL_PENALTY = -3;
+
+        long timeBefore = Utils.getTime();
+        EventOfc result = EurekaRunner.run(game, 0, 18000);
+
+        System.out.println(String.format("MCTS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
+    }
+
     public static void main(String[] args) throws Exception {
-        test9();
+        test10();
     }
 
 }
