@@ -1,6 +1,7 @@
 package solver.ofc;
 
 import game.*;
+import solver.ofc.mcs.Mcs;
 import solver.ofc.mcts.Mcts;
 import util.Misc;
 
@@ -643,8 +644,68 @@ Th / 4d 5h 4s 5s 7d / 8d 9c Ts
         System.out.println(String.format("MCTS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
     }
 
+    public static void test11() throws Exception {
+/*
+1)
+Oleg
+http://13.49.160.164:8000/bestmove?hero=%2F%2F&newCards=Qh+5h+Kc+9d+Js&opp=%2F%2F&dead=&button=1&table=test&rules=classic&account=pid7568847&appName=Ppp&clubId=3109882&stakes=0.50&price=0.001USD&gameId=221106145621-52798420-0000004-1&timeLimit=15&fastObvious&partner=altai-zxgsejynkd
+ / 5h / Js Kc 9d Qh
+ / 5h / Js Kc 9d Qh
+
+Yakov
+http://nsk.convexbytes.com:15273/bestmove?hero=%2F%2F&newCards=Qh+5h+Kc+9d+Js&opp=%2F%2F&dead=&button=1&table=test&rules=classic&account=pid7568847&appName=Ppp&clubId=3109882&stakes=0.50&price=0.001USD&gameId=221106145621-52798420-0000004-1&timeLimit=15&fastObvious&partner=altai-zxgsejynkd
+Kc / 9d Js / Qh 5h
+Kc / 9d Js / Qh 5h
+
+Eureka
+http://10.211.59.133:8089/bestmove?hero=%2F%2F&newCards=Qh+5h+Kc+9d+Js&opp=%2F%2F&dead=&button=1&table=test&rules=classic&account=pid7568847&appName=Ppp&clubId=3109882&stakes=0.50&price=0.001USD&gameId=221106145621-52798420-0000004-1&timeLimit=15&fastObvious&partner=altai-zxgsejynkd
+Qh / 9d Js Kc / 5h
+Js Qh / 5h Kc / 9d
+
+*/
+        GameOfc game = new GameOfc(Game.Nw.Spartan, 100);
+        game.id = "414965543";
+        game.addPlayer(new PlayerOfc("opp1", 1520));
+        game.addPlayer(new PlayerOfc("hero", 1520));
+        game.heroName = "hero";
+        game.initButtonName("opp1");
+        game.gameMode = GameOfc.GameMode.GAME_MODE_REGULAR;
+
+        List<Card> emptyList = new ArrayList<>();
+
+        game.procEvent(new EventOfc(EventOfc.TYPE_DEAL_CARDS, game.heroName, Card.cards2Mask(Card.str2Cards("Qh5hKc9dJs"))));
+
+        System.out.println(game);
+
+        Config.EvaluationMethod = Config.EvaluationMethodKind.SINGLE_HERO;
+        Config.DEBUG_PRINT = false;
+        Config.FANTASY_SCORE = 7;
+        Config.FAIL_PENALTY = -3;
+
+        long timeBefore = Utils.getTime();
+//        EventOfc result = EurekaRunner.run(game, 0, 8000);
+
+        Config cfg = new Config();
+        cfg.EXPLORATION_PARAMETER = 21;
+        cfg.TIME_LIMIT_MS = Integer.MAX_VALUE;
+        cfg.NOT_SAMPLED_DEADS = false;
+        cfg.NUMBER_OF_ITERATIONS = 20000;
+        cfg.RANDOM_DEAL_COUNT = cfg.NUMBER_OF_ITERATIONS;
+
+        EurekaRunner runner = new EurekaRunner(game.getPlayer(game.heroName).boxFront.toList(), game.getPlayer(game.heroName).boxMiddle.toList(), game.getPlayer(game.heroName).boxBack.toList(),
+                game.getPlayer(game.heroName).cardsToBeBoxed, GameOfcMctsSimple.mergeToOther(game), game.gameMode, game.getRound() == 1, game.heroName, cfg);
+        EventOfc result = runner.runMcts(0);
+
+//        NatureSpace ns = new NatureSpace(game.getPlayer(game.heroName).boxFront.toList(), game.getPlayer(game.heroName).boxMiddle.toList(), game.getPlayer(game.heroName).boxBack.toList(),
+//                game.getPlayer(game.heroName).cardsToBeBoxed, GameOfcMctsSimple.mergeToOther(game), game.gameMode, game.getRound() == 1, game.heroName, cfg);
+//        EventOfc result = Mcs.monteCarloSimulation(new GameOfcMctsSimple(game.getPlayer(game.heroName).boxFront.toList(), game.getPlayer(game.heroName).boxMiddle.toList(), game.getPlayer(game.heroName).boxBack.toList(),
+//                game.getPlayer(game.heroName).cardsToBeBoxed, GameOfcMctsSimple.mergeToOther(game), game.gameMode, game.getRound() == 1, game.heroName, ns, cfg), 0, Config.CPU_NUM).toEventOfc(game.heroName);
+
+        System.out.println(String.format("MCTS decision in %d ms: \n%s", Utils.getTime() - timeBefore, result.toString()));
+    }
+
     public static void main(String[] args) throws Exception {
-        test10();
+        test11();
     }
 
 }

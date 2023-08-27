@@ -28,7 +28,6 @@ public class EurekaRunner {
 	public EurekaRunner(List<Card> front, List<Card> middle, List<Card> back, List<Card> toBeBoxed, List<Card> otherOpenedCard, 
 			GameMode aGameMode, boolean aIsFirstRound, String aHeroName, Config aCfg) {
 		cfg = aCfg;
-		cfg.NOT_SAMPLED_DEADS = aIsFirstRound; // for first not sampled deads; it's inexplicable, but the result is better
 		natureSpace = new NatureSpace(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aIsFirstRound, aHeroName, cfg);
     	stateSimple = new GameOfcMctsSimple(front, middle, back, toBeBoxed, otherOpenedCard, aGameMode, aIsFirstRound, aHeroName, natureSpace, cfg);
 	}
