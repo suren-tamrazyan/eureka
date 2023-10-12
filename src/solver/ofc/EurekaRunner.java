@@ -1,18 +1,15 @@
 package solver.ofc;
 
-import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import org.paukov.combinatorics3.Generator;
 
 import game.Card;
 import game.EventOfc;
 import game.GameOfc;
 import game.GameOfc.GameMode;
 import solver.ofc.mcs.Mcs;
-import solver.ofc.mcts.Mcts;
-import solver.ofc.mcts.MctsCallback;
+import solver.mcts.Mcts;
+import solver.mcts.MctsCallback;
 
 public class EurekaRunner {
 	private GameOfcMctsSimple stateSimple;

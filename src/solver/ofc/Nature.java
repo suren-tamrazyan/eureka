@@ -1,6 +1,6 @@
 package solver.ofc;
 
-import solver.ofc.mcts.MctsDomainAgent;
+import solver.mcts.MctsDomainAgent;
 
 public class Nature extends AgentOfcMcts implements MctsDomainAgent<GameOfcMcts> {
 

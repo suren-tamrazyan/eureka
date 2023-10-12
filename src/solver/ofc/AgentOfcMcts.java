@@ -1,6 +1,5 @@
 package solver.ofc;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -11,10 +10,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 
 import game.Card;
-import game.GameException;
 import game.GameOfc;
 import game.PlayerOfc;
-import solver.ofc.mcts.MctsDomainAgent;
+import solver.mcts.MctsDomainAgent;
 
 public class AgentOfcMcts  implements MctsDomainAgent<GameOfcMcts> {
 	

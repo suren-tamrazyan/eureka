@@ -1,4 +1,4 @@
-package solver.ofc.mcts;
+package solver.mcts;
 
 import java.util.List;
 

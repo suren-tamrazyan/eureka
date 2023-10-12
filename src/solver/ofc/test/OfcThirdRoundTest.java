@@ -1,8 +1,9 @@
-package solver.ofc;
+package solver.ofc.test;
 
 import game.*;
+import solver.ofc.*;
 import solver.ofc.mcs.Mcs;
-import solver.ofc.mcts.Mcts;
+import solver.mcts.Mcts;
 import util.Misc;
 
 import java.util.ArrayList;

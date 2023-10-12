@@ -1,4 +1,4 @@
-package solver.ofc;
+package solver.ofc.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +10,7 @@ import game.GameOfc;
 import game.PlayerOfc;
 import game.Game.Nw;
 import game.GameOfc.GameMode;
+import solver.ofc.*;
 import solver.ofc.mcs.Mcs;
 
 public class OfcMcsTest {

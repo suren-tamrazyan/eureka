@@ -1,4 +1,4 @@
-package solver.ofc;
+package solver.ofc.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,8 +7,9 @@ import java.util.List;
 import game.*;
 import game.Game.Nw;
 import game.GameOfc.GameMode;
+import solver.ofc.*;
 import solver.ofc.mcs.FullTraversal;
-import solver.ofc.mcts.Mcts;
+import solver.mcts.Mcts;
 import util.Misc;
 
 public class OfcMctsTest {

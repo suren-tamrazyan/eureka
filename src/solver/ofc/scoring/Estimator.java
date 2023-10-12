@@ -29,7 +29,7 @@ import game.Game.Nw;
 import game.GameOfc;
 import game.GameOfc.GameMode;
 import solver.ofc.*;
-import solver.ofc.mcts.Mcts;
+import solver.mcts.Mcts;
 import util.Misc;
 import game.PlayerOfc;
 

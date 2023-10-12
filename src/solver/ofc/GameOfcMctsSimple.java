@@ -11,7 +11,7 @@ import game.EventOfc;
 import game.GameOfc;
 import game.PlayerOfc;
 import game.GameOfc.GameMode;
-import solver.ofc.mcts.MctsDomainState;
+import solver.mcts.MctsDomainState;
 
 public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, AgentOfcMctsSimple> {
 	public List<Card> boxFront = new ArrayList<Card>(3);

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import game.*;
 import org.paukov.combinatorics3.Generator;
 
-import solver.ofc.mcts.MctsDomainState;
+import solver.mcts.MctsDomainState;
 
 public class GameOfcMcts extends GameOfc implements MctsDomainState<EventOfcMcts, AgentOfcMcts> {
 	private static final long serialVersionUID = 1L;

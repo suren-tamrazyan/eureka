@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import game.Card;
-import solver.ofc.mcts.MctsDomainAgent;
+import solver.mcts.MctsDomainAgent;
 
 public class AgentOfcMctsSimple implements MctsDomainAgent<GameOfcMctsSimple> {
 

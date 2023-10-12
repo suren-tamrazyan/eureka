@@ -1,4 +1,4 @@
-package solver.ofc.mcts;
+package solver.mcts;
 
 public interface MctsCallback {
 	public void onEndSearch(MctsTreeNode<?, ?, ?> root);

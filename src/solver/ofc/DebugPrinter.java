@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import solver.ofc.mcts.MctsCallback;
-import solver.ofc.mcts.MctsTreeNode;
+import solver.mcts.MctsCallback;
+import solver.mcts.MctsTreeNode;
 
 public class DebugPrinter implements MctsCallback {
 	private List<String> csv = new ArrayList<>();  

@@ -1,4 +1,4 @@
-package solver.ofc.mcts;
+package solver.mcts;
 
 public interface MctsDomainAgent<StateT extends MctsDomainState> {
 

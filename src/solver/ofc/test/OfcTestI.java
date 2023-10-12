@@ -1,9 +1,10 @@
-package solver.ofc;
+package solver.ofc.test;
 
 import game.*;
-import solver.ofc.mcs.Mcs;
-import solver.ofc.mcts.Mcts;
-import util.Misc;
+import solver.ofc.Config;
+import solver.ofc.EurekaRunner;
+import solver.ofc.GameOfcMctsSimple;
+import solver.ofc.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
