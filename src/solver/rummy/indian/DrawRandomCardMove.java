@@ -5,9 +5,9 @@ import game.Card;
 import java.util.Objects;
 
 public class DrawRandomCardMove extends Action {
-    public Card drawRandomCard;
+    public DeckCard drawRandomCard;
 
-    public DrawRandomCardMove(Card drawRandomCard) {
+    public DrawRandomCardMove(DeckCard drawRandomCard) {
         this.drawRandomCard = drawRandomCard;
     }
 
@@ -16,7 +16,6 @@ public class DrawRandomCardMove extends Action {
         return "Draw Card " + drawRandomCard;
     }
 
-    // commented because can be double card
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

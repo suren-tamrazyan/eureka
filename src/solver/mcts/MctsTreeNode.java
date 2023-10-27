@@ -103,7 +103,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
 
     protected ActionT getRandomActionFromUntriedActions() {
     	List<ActionT> availableActions = representedState.getAvailableActionsForCurrentAgent();
-        boolean useListForCalcUntriedActions = true;
+        boolean useListForCalcUntriedActions = false;
         if (useListForCalcUntriedActions && !this.representedStateCurrentAgentActionsIsOrderedMode()) {
             List<ActionT> untriedActions = new ArrayList<>(availableActions);
             List<ActionT> triedActions = getTriedActionsForCurrentAgent();

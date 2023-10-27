@@ -5,9 +5,9 @@ import game.Card;
 import java.util.Objects;
 
 public class DiscardMove extends Action {
-    public Card discard;
+    public DeckCard discard;
 
-    public DiscardMove(Card discardCard) {
+    public DiscardMove(DeckCard discardCard) {
         discard = discardCard;
     }
 
@@ -17,10 +17,9 @@ public class DiscardMove extends Action {
     }
 
     public boolean isJoker(int wildcardRank) {
-        return discard.getIndex() == 52 || discard.getIndex() == 53 || discard.getRank() == wildcardRank;
+        return discard.card.getIndex() == 52 || discard.card.getIndex() == 53 || discard.card.getRank() == wildcardRank;
     }
 
-    // commented because can be double card
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

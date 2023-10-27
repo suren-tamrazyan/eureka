@@ -16,11 +16,11 @@ public class State implements MctsDomainState<Action, Agent> {
     public static Agent agent = new Agent();
 //    public int DECK_COUNT;
     public int round;
-    public List<Card> heroHand;
-    public List<Card> knownDiscardedCards;
-    public ArrayList<Card> deck;
+    public List<DeckCard> heroHand;
+    public List<DeckCard> knownDiscardedCards;
+    public ArrayList<DeckCard> deck;
     public int wildcardRank;
-    public Card topDiscardPile; // contain in knownDiscardedCards
+    public DeckCard topDiscardPile; // contain in knownDiscardedCards
     public boolean isOriginal; // true - state from game, false - state from simulation process; can mean as isRoot
     public DecisionPhase phase;
     public boolean isCompletable() {
@@ -32,24 +32,37 @@ public class State implements MctsDomainState<Action, Agent> {
 
 
     public void init(Collection<Card> heroHand, Collection<Card> knownDiscardedCards, int round, int wildcardRank, Card topDiscardPile, DecisionPhase phase, int DECK_COUNT) {
-        this.heroHand = new ArrayList<>(heroHand);
-        this.knownDiscardedCards = new ArrayList<>(knownDiscardedCards);
         this.round = round;
         this.wildcardRank = wildcardRank;
-        this.topDiscardPile = topDiscardPile;
+        this.topDiscardPile = null;
         this.deck = new ArrayList<>();
         this.isOriginal = true;
         this.phase = phase;
-        List<Card> allKnownCards = new ArrayList<>(this.heroHand);
-        allKnownCards.addAll(this.knownDiscardedCards);
+        this.heroHand = new ArrayList<>(heroHand.size());
+        this.knownDiscardedCards = new ArrayList<>(knownDiscardedCards.size());
+        List<Card> tmpHeroHand = new ArrayList<>(heroHand);
+        List<Card> tmpKnownDiscardedCards = new ArrayList<>(knownDiscardedCards);
         for (int i = 0; i < DECK_COUNT; i++) {
             for (int j = 0; j < DECK_SIZE; j++) {
-                if (!allKnownCards.remove(Card.getCard(j)))
-                    this.deck.add(Card.getCard(j));
+                DeckCard deckCard = new DeckCard(i, Card.getCard(j));
+                if (this.topDiscardPile == null && deckCard.card.equals(topDiscardPile)) {
+                    this.topDiscardPile = deckCard;
+                }
+                if (tmpHeroHand.remove(deckCard.card)) {
+                    this.heroHand.add(deckCard);
+                } else if (tmpKnownDiscardedCards.remove(deckCard.card)) {
+                    this.knownDiscardedCards.add(deckCard);
+                } else {
+                    this.deck.add(deckCard);
+                }
             }
         }
         Collections.shuffle(this.deck);
         this.buildMeldsTree();
+        if (!tmpHeroHand.isEmpty())
+            throw new IllegalArgumentException("Invalid hero hand: has excess cards " + tmpHeroHand);
+        if (!tmpKnownDiscardedCards.isEmpty())
+            throw new IllegalArgumentException("Invalid KnownDiscardedCards: has excess cards " + tmpKnownDiscardedCards);
     }
 
     @Override
@@ -67,12 +80,12 @@ public class State implements MctsDomainState<Action, Agent> {
         return result;
     }
 
-    public Card pickCard() {
+    public DeckCard pickCard() {
 //        if (deck.size() == 0) {
 //            reshuffleDeck();
 //        }
         int randomIndex = ThreadLocalRandom.current().nextInt(deck.size());
-        Card result = deck.get(randomIndex);
+        DeckCard result = deck.get(randomIndex);
         deck.set(randomIndex, deck.get(deck.size() - 1));
         deck.remove(deck.size() - 1);
         return result;
@@ -80,7 +93,7 @@ public class State implements MctsDomainState<Action, Agent> {
 
     public void drawCard(DrawMove action) {
         assert phase == DecisionPhase.DRAW;
-        Card drawnCard;
+        DeckCard drawnCard;
         if (action.drawFromDiscardPile) {
             drawnCard = topDiscardPile;
             topDiscardPile = null;
@@ -111,7 +124,7 @@ public class State implements MctsDomainState<Action, Agent> {
 
     public void buildMeldsTree() {
 //        if (rootMeldsTree != null) return;
-        rootMeldsTree = new MeldNode(heroHand);
+        rootMeldsTree = new MeldNode(heroHand.stream().map(dc -> dc.card).collect(Collectors.toList()));
         solution = rootMeldsTree.depthFirstSearch(wildcardRank);
     }
 
