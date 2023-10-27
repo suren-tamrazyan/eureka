@@ -10,6 +10,7 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     private final int numberOfIterations;
     private int iterationsCount;
     private double explorationParameter;
+    private boolean useDynamicExplorationParameter;
     private final Cloner cloner;
     
     private MctsCallback callback;
@@ -20,13 +21,19 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     }
 
     public static<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent<StateT>>
-        Mcts<StateT, ActionT, AgentT> initializeIterations(int numberOfIterations, MctsCallback callback, MctsCallback callbackDebug) {
-            Cloner cloner = new Cloner();
-            return new Mcts<>(numberOfIterations, cloner, callback, callbackDebug);
+    Mcts<StateT, ActionT, AgentT> initializeIterations(int numberOfIterations, MctsCallback callback, MctsCallback callbackDebug) {
+        return initializeIterations(numberOfIterations, callback, callbackDebug, false);
     }
 
-    private Mcts(int numberOfIterations, Cloner cloner, MctsCallback callback, MctsCallback callbackDebug) {
+    public static<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent<StateT>>
+        Mcts<StateT, ActionT, AgentT> initializeIterations(int numberOfIterations, MctsCallback callback, MctsCallback callbackDebug, boolean useDynamicExplorationParameter) {
+            Cloner cloner = new Cloner();
+            return new Mcts<>(numberOfIterations, useDynamicExplorationParameter, cloner, callback, callbackDebug);
+    }
+
+    private Mcts(int numberOfIterations, boolean useDynamicExplorationParameter, Cloner cloner, MctsCallback callback, MctsCallback callbackDebug) {
         this.numberOfIterations = numberOfIterations;
+        this.useDynamicExplorationParameter = useDynamicExplorationParameter;
         this.cloner = cloner;
         this.callback = callback;
         this.callbackDebug = callbackDebug;
@@ -119,7 +126,10 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
 
     private MctsTreeNode<StateT, ActionT, AgentT> getNodesBestChild(MctsTreeNode<StateT, ActionT, AgentT> node) {
         validateBestChildComputable(node);
-        return getNodesBestChildConfidentlyWithExploration(node, explorationParameter);
+        double lExplorationParameter = explorationParameter;
+        if (useDynamicExplorationParameter)
+            lExplorationParameter = node.getExplorationParameter();
+        return getNodesBestChildConfidentlyWithExploration(node, lExplorationParameter);
     }
 
     private void validateBestChildComputable(MctsTreeNode<StateT, ActionT, AgentT> node) {

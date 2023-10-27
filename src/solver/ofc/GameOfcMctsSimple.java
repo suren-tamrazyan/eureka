@@ -124,6 +124,11 @@ public class GameOfcMctsSimple implements MctsDomainState<EventOfcMctsSimple, Ag
 		resetCache();
 	}
 
+	@Override
+	public double getExplorationParameter() {
+		return 0;
+	}
+
 //	public List<Card> getAvailableCards() {
 //		List<Card> result = new ArrayList<>(this.deck);
 //		result.removeAll(boxBack);

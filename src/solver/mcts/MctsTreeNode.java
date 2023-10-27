@@ -103,23 +103,31 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
 
     protected ActionT getRandomActionFromUntriedActions() {
     	List<ActionT> availableActions = representedState.getAvailableActionsForCurrentAgent();
-    	Set<ActionT> triedActions = new HashSet<>(getTriedActionsForCurrentAgent());
-    	if (this.representedStateCurrentAgentActionsIsOrderedMode()) {
-    		for (ActionT act : availableActions)
-    			if (!triedActions.contains(act))
-    				return act;
-    	} else {
-    		Set<ActionT> untriedActions = new HashSet<>(availableActions);
-    		untriedActions.removeAll(triedActions);
-    		
-            int idx = 0;
-            int rnd = ThreadLocalRandom.current().nextInt(untriedActions.size());
-            for (ActionT act : untriedActions) {
-            	if (idx == rnd)
-            		return act;
-            	idx++;
+        boolean useListForCalcUntriedActions = true;
+        if (useListForCalcUntriedActions && !this.representedStateCurrentAgentActionsIsOrderedMode()) {
+            List<ActionT> untriedActions = new ArrayList<>(availableActions);
+            List<ActionT> triedActions = getTriedActionsForCurrentAgent();
+            untriedActions.removeAll(triedActions);
+            return untriedActions.get(ThreadLocalRandom.current().nextInt(untriedActions.size()));
+        } else {
+            Set<ActionT> triedActions = new HashSet<>(getTriedActionsForCurrentAgent());
+            if (this.representedStateCurrentAgentActionsIsOrderedMode()) {
+                for (ActionT act : availableActions)
+                    if (!triedActions.contains(act))
+                        return act;
+            } else {
+                Set<ActionT> untriedActions = new HashSet<>(availableActions);
+                untriedActions.removeAll(triedActions);
+
+                int idx = 0;
+                int rnd = ThreadLocalRandom.current().nextInt(untriedActions.size());
+                for (ActionT act : untriedActions) {
+                    if (idx == rnd)
+                        return act;
+                    idx++;
+                }
             }
-    	}
+        }
     	System.out.println("the end");
     	return null;
     }
@@ -193,7 +201,11 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
     public boolean representedStateCurrentAgentActionsIsOrderedMode() {
     	return representedState.currentAgentActionsIsOrderedMode();
     }
-    
+
+    public double getExplorationParameter() {
+        return representedState.getExplorationParameter();
+    }
+
 //    public double getTotalReward() {
 //    	return totalReward;
 //    }

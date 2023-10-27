@@ -28,6 +28,7 @@ public class State implements MctsDomainState<Action, Agent> {
     };
     public MeldNode rootMeldsTree;
     public MeldNode solution;
+    public List<Action> availableActionsForAgent; // cash
 
 
     public void init(Collection<Card> heroHand, Collection<Card> knownDiscardedCards, int round, int wildcardRank, Card topDiscardPile, DecisionPhase phase, int DECK_COUNT) {
@@ -84,8 +85,17 @@ public class State implements MctsDomainState<Action, Agent> {
             drawnCard = topDiscardPile;
             topDiscardPile = null;
         } else
-            drawnCard= pickCard();
+            drawnCard = pickCard();
         heroHand.add(drawnCard);
+        phase = DecisionPhase.DISCARD;
+        round++;
+        buildMeldsTree();
+    }
+
+    public void drawCard(DrawRandomCardMove action) {
+        assert phase == DecisionPhase.DRAW;
+        deck.remove(action.drawRandomCard);
+        heroHand.add(action.drawRandomCard);
         phase = DecisionPhase.DISCARD;
         round++;
         buildMeldsTree();
@@ -98,10 +108,6 @@ public class State implements MctsDomainState<Action, Agent> {
         knownDiscardedCards.add(action.discard);
         phase = DecisionPhase.DRAW;
     }
-//    public void applyAction(Action action) {
-//        isOriginal = false;
-//        buildMeldsForest();
-//    }
 
     public void buildMeldsTree() {
 //        if (rootMeldsTree != null) return;
@@ -124,13 +130,56 @@ public class State implements MctsDomainState<Action, Agent> {
         return agent;
     }
 
+/*
+    @Override
+    public int getNumberOfAvailableActionsForCurrentAgent() {
+//        if (availableActionsForAgent == null) {
+            if (phase == DecisionPhase.DRAW) {
+                if (isOriginal)
+                    return 2;
+                else
+                    return 1;
+            }
+            if (phase == DecisionPhase.DISCARD) return heroHand.size();
+            assert false;
+            return 0;
+//        } else
+//            return availableActionsForAgent.size();
+    }
+
+    @Override
+    public List<Action> getAvailableActionsForCurrentAgent() {
+//        if (availableActionsForAgent == null) {
+//            if (phase == DecisionPhase.DRAW) {
+//                if (isOriginal)
+//                    availableActionsForAgent = Arrays.asList(new DrawMove(true), new DrawMove(false));
+//                else
+//                    availableActionsForAgent = Collections.singletonList(new DrawMove(false));
+//            }
+//            if (phase == DecisionPhase.DISCARD)
+//                availableActionsForAgent = heroHand.stream().map(DiscardMove::new).collect(Collectors.toList());
+//        }
+//        return availableActionsForAgent;
+
+        if (phase == DecisionPhase.DRAW) {
+            if (isOriginal)
+                return Arrays.asList(new DrawMove(true), new DrawMove(false));
+            else
+                return Collections.singletonList(new DrawMove(false));
+        }
+        if (phase == DecisionPhase.DISCARD) return heroHand.stream().map(DiscardMove::new).collect(Collectors.toList());
+        assert false;
+        return null;
+    }
+*/
+
     @Override
     public int getNumberOfAvailableActionsForCurrentAgent() {
         if (phase == DecisionPhase.DRAW) {
             if (isOriginal)
                 return 2;
             else
-                return 1;
+                return deck.size();
         }
         if (phase == DecisionPhase.DISCARD) return heroHand.size();
         assert false;
@@ -143,7 +192,7 @@ public class State implements MctsDomainState<Action, Agent> {
             if (isOriginal)
                 return Arrays.asList(new DrawMove(true), new DrawMove(false));
             else
-                return Collections.singletonList(new DrawMove(false));
+                return deck.stream().map(DrawRandomCardMove::new).collect(Collectors.toList());
         }
         if (phase == DecisionPhase.DISCARD) return heroHand.stream().map(DiscardMove::new).collect(Collectors.toList());
         assert false;
@@ -154,7 +203,10 @@ public class State implements MctsDomainState<Action, Agent> {
     public MctsDomainState performActionForCurrentAgent(Action action) {
         switch (phase) {
             case DRAW:
-                drawCard((DrawMove) action);
+                if (isOriginal)
+                    drawCard((DrawMove) action);
+                else
+                    drawCard((DrawRandomCardMove) action);
                 break;
             case DISCARD:
                 discard((DiscardMove) action);
@@ -177,5 +229,17 @@ public class State implements MctsDomainState<Action, Agent> {
     @Override
     public void beforeCloning() {
 
+    }
+
+    @Override
+    public double getExplorationParameter() {
+        switch (phase) {
+            case DRAW:
+                return 1000; // random
+            case DISCARD:
+                return Config.EXPLORATION_PARAMETER;
+        }
+        assert false;
+        return 1.41;
     }
 }

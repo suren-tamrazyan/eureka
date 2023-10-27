@@ -15,4 +15,6 @@ public interface MctsDomainState<ActionT, AgentT extends MctsDomainAgent> {
     boolean currentAgentActionsIsOrderedMode();
     
     void beforeCloning();
+
+    double getExplorationParameter();
 }

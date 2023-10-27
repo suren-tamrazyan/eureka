@@ -2,6 +2,7 @@ package solver.rummy.indian.test;
 
 import game.Card;
 import solver.rummy.indian.*;
+import util.Misc;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,10 +15,19 @@ public class Test1 {
         List<Card> knownDiscardedCards = Arrays.asList(Card.str2Cards("4d"));
         int round = 1;
         DecisionPhase phase = DecisionPhase.DRAW;
-        int DECK_COUNT = 2;
+        int DECK_COUNT = 1;
 
-        Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
-        System.out.println(decision);
+        int pileCnt = 0, deckCnt = 0;
+        for (int i = 0; i < 10; i++) {
+            long timeBefore = Misc.getTime();
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            if (((DrawMove)decision).drawFromDiscardPile)
+                pileCnt++;
+            else
+                deckCnt++;
+            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+        }
+        System.out.println(String.format("pileCnt = %d, deckCnt = %d", pileCnt, deckCnt));
     }
 
     public static void test2() {
@@ -32,12 +42,13 @@ public class Test1 {
 
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
+            long timeBefore = Misc.getTime();
             Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
             if (((DrawMove)decision).drawFromDiscardPile)
                 pileCnt++;
             else
                 deckCnt++;
-            System.out.println(decision);
+            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
         }
         System.out.println(String.format("pileCnt = %d, deckCnt = %d", pileCnt, deckCnt));
     }
@@ -53,8 +64,9 @@ public class Test1 {
 
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
+            long timeBefore = Misc.getTime();
             Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
-            System.out.println(decision);
+            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
         }
         // TS
     }
@@ -92,8 +104,9 @@ public class Test1 {
 
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
+            long timeBefore = Misc.getTime();
             Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
-            System.out.println(decision);
+            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
         }
         // Qh
     }

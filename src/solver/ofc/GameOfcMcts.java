@@ -99,6 +99,11 @@ public class GameOfcMcts extends GameOfc implements MctsDomainState<EventOfcMcts
 		resetCache();
 	}
 
+	@Override
+	public double getExplorationParameter() {
+		return 0;
+	}
+
 	public List<Card> getAvailableCards() {
 		int deckSize = (gameMode == GameMode.GAME_MODE_OFC_WILD_CARD_REGULAR || gameMode == GameMode.GAME_MODE_OFC_WILD_CARD_PROGRESSIVE || gameMode == GameMode.GAME_MODE_OFC_WILD_CARD_ULTIMATE) ? 54 : 52;
 		List<Card> deck = new ArrayList<>(deckSize);

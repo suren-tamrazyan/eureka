@@ -15,7 +15,7 @@ public class Runner {
         int timeDurationMs = 0;
         MctsCallback callback = null;
         MctsCallback callbackDebug = null;//Config.DEBUG_PRINT ? new DebugPrinter() : null;
-        Mcts<State, Action, Agent> mcts = Mcts.initializeIterations(Config.NUMBER_OF_ITERATIONS, callback, callbackDebug);
+        Mcts<State, Action, Agent> mcts = Mcts.initializeIterations(Config.NUMBER_OF_ITERATIONS, callback, callbackDebug, true);
         mcts.dontClone(Agent.class, MeldNode.class);
         State state = new State();
         state.init(heroHand, knownDiscardedCards, round, wildcard.getRank(), topDiscardPile, phase, deckCount);
