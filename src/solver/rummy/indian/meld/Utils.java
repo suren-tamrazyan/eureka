@@ -109,7 +109,7 @@ public class Utils {
                 } else {
                     fillEndsByJokers(currentSequence, jokers);
                     if (currentSequence.size() >= 3)
-                        largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal).sorted(Comparator.comparing(Card::getRank)).collect(Collectors.toList())));
+                        largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList())));
                     currentSequence.clear();
                     jokers.clear();
                     jokers.addAll(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList()));
@@ -118,7 +118,7 @@ public class Utils {
             }
             fillEndsByJokers(currentSequence, jokers);
             if (currentSequence.size() >= 3)
-                largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal).sorted(Comparator.comparing(Card::getRank)).collect(Collectors.toList())));
+                largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList())));
         }
 
         for (List<Card> sequence : largestSequences) {
@@ -206,12 +206,29 @@ public class Utils {
         }
     }
 
+    public static boolean isJoker(Card card, int wildcardRank) {
+        return card.getIndex() == 52 || card.getIndex() == 53 || card.getRank() == wildcardRank;
+    }
+
+    public static int value(Card card, int wildcardRank) {
+        if (isJoker(card, wildcardRank)) // don't count joker
+            return 0;
+        if (card.getRank() >= 9) // Ace, King, Queen and Jack each hold 10 points.
+            return 10;
+        else
+            return card.getRank() + 2; // The other remaining cards have value equal to their face value
+    }
 
     public static void main(String[] args) {
+        List<Card> lst = new ArrayList<>();
+//        lst.addAll(Arrays.asList(Card.str2Cards("4s 8d 9d Td Qd Ad Xr")));
+        lst.addAll(Arrays.asList(Card.str2Cards("8d 9d Td 4s Qd Xr Ad")));
+        List<List<Card>> subsec = findSubsequences(lst);
+        System.out.println(subsec);
         List<Card> hand = new ArrayList<>();
 //        hand.addAll(Arrays.asList(Card.str2Cards("2c 3c 4c 5s 6c Kd Qc Ac Jd 5d Kc 5d Qd")));
 //        hand.addAll(Arrays.asList(Card.str2Cards("3s 3c 5s 5c Ks Kd Qc Xr Jd 5d Kc 5c Kh")));
-        hand.addAll(Arrays.asList(Card.str2Cards("2c 3s 4c 5c 6c Kd Qc Ac Jd 5d Kc 5c Qd")));
+        hand.addAll(Arrays.asList(Card.str2Cards("3s 8d 9d Td Qd Ad Ac Xr")));
         int wildcardRank = 2;
         Collection<Collection<Card>> pureSequences = findPureSequences(hand);
         Collection<Collection<Card>> impureSequences = findImpureSequences(hand, wildcardRank);
@@ -228,8 +245,8 @@ public class Utils {
             System.out.println("Impure Set: " + set);
         }
 
-//        for (int i = 0; i < 52; i++) {
-//            System.out.println(Card.getCard(i) + " " + Card.getCard(i).getRank());
-//        }
+        for (int i = 0; i < 52; i++) {
+            System.out.println(Card.getCard(i) + " " + Card.getCard(i).getRank());
+        }
     }
 }

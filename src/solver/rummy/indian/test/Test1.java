@@ -2,6 +2,7 @@ package solver.rummy.indian.test;
 
 import game.Card;
 import solver.rummy.indian.*;
+import solver.rummy.indian.meld.MeldNode;
 import util.Misc;
 
 import java.util.Arrays;
@@ -111,7 +112,66 @@ public class Test1 {
         // Qh
     }
 
+    public static void test6() {
+        List<Card> hand = Arrays.asList(Card.str2Cards("Jh 3h Ah 4s 8d Qh 4c 9d 4h Td 4d 6d 3d 5h"));
+        Card wildcard = Card.getCard("3s");
+        Card topDiscardPile = Card.getCard("9h");
+        List<Card> knownDiscardedCards = Arrays.asList(Card.str2Cards("5s Ts Qd Kd 8h Ad Jc Th 9h"));
+        int round = 1;
+        DecisionPhase phase = DecisionPhase.DISCARD;
+        int DECK_COUNT = 1;
+
+        int pileCnt = 0, deckCnt = 0;
+        for (int i = 0; i < 1; i++) {
+            long timeBefore = Misc.getTime();
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+        }
+    }
+
+    public static void test7() {
+        List<Card> hand = Arrays.asList(Card.str2Cards("Jh 3h Ah 4s 8d Qh 4c 9d 4h Td 4d 3d 5h"));
+        Card wildcard = Card.getCard("3s");
+
+        for (int i = 0; i < 1; i++) {
+            long timeBefore = Misc.getTime();
+            MeldNode minleaf = Runner.getMinvalueLeaf(hand, wildcard);
+            System.out.println("time:  " + (Misc.getTime() - timeBefore));
+            System.out.println("Melds: " + minleaf.gatherMelds());
+            System.out.println("MinValue: " + minleaf.unassembledCards + " " + minleaf.value(wildcard.getRank()));
+        }
+    }
+
+    public static void test8() {
+        List<Card> hand = Arrays.asList(Card.str2Cards("8d 3d Qd 9d Td 9s Xr Ad 4s 3s Ac Js Ts"));
+        Card wildcard = Card.getCard("4d");
+
+        for (int i = 0; i < 1; i++) {
+            long timeBefore = Misc.getTime();
+            MeldNode minleaf = Runner.getMinvalueLeaf(hand, wildcard);
+            System.out.println("time:  " + (Misc.getTime() - timeBefore));
+            System.out.println("Melds: " + minleaf.gatherMelds());
+            System.out.println("MinValue: " + minleaf.unassembledCards + " " + minleaf.value(wildcard.getRank()));
+        }
+    }
+
+    public static void test9() {
+        List<Card> hand = Arrays.asList(Card.str2Cards("8d 3d Qd 9d Td 9s Xr Ad 4s 3s Ac Js Ts 5d"));
+        Card wildcard = Card.getCard("4d");
+        Card topDiscardPile = Card.getCard("Kc");
+        List<Card> knownDiscardedCards = Arrays.asList(Card.str2Cards("Kc"));
+        int round = 1;
+        DecisionPhase phase = DecisionPhase.DISCARD;
+        int DECK_COUNT = 1;
+
+        for (int i = 0; i < 1; i++) {
+            long timeBefore = Misc.getTime();
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+        }
+    }
+
     public static void main(String[] args) {
-        test5();
+        test8();
     }
 }

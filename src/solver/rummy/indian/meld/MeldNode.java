@@ -122,6 +122,32 @@ public class MeldNode {
         return result;
     }
 
+    public int value(int wildcardRank) {
+        return unassembledCards.stream().mapToInt(card -> Utils.value(card, wildcardRank)).sum();
+    }
+
+    public MeldNode findMinValueLeaf(int wildcardRank) {
+        if (this.children == null || this.children.isEmpty()) {
+            return this;
+        }
+
+        MeldNode minLeaf = null;
+        int minValue = Integer.MAX_VALUE;
+
+        for (MeldNode child : this.children) {
+            MeldNode leaf = child.findMinValueLeaf(wildcardRank);
+            int childValue = leaf.value(wildcardRank);
+
+            if (childValue < minValue) {
+                minValue = childValue;
+                minLeaf = leaf;
+            }
+        }
+
+        return minLeaf;
+    }
+
+
     public static void main(String[] args) {
         List<Card> hand = Arrays.asList(Card.str2Cards("2c 3s 4c 5c 6c Kd Qc Ac Jd 5d Kc 5c Qd"));
         int wildcardRank = 2;
@@ -129,5 +155,8 @@ public class MeldNode {
         MeldNode solution = rootMeldsTree.depthFirstSearch(wildcardRank);
         if (solution != null)
             System.out.println(solution.gatherMelds());
+        MeldNode minleaf = rootMeldsTree.findMinValueLeaf(wildcardRank);
+        System.out.println(minleaf.gatherMelds());
+        System.out.println("value: " + minleaf.value(wildcardRank));
     }
 }

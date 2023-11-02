@@ -1,13 +1,11 @@
 package solver.rummy.indian;
 
-import com.rits.cloning.IFastCloner;
 import solver.mcts.MctsDomainAgent;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 public class Agent implements MctsDomainAgent<State> {
     @Override
@@ -57,7 +55,7 @@ public class Agent implements MctsDomainAgent<State> {
     @Override
     public double getRewardFromTerminalState(State terminalState) {
         if (terminalState.solution == null) {
-            System.out.println("terminalState.solution == null");
+//            System.out.println("terminalState.solution == null");
             return -terminalState.round * 2;
         }
         return -terminalState.round;
