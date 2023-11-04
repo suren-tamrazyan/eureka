@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Test1 {
+    public final static int timems = 10000;
     public static void test1() {
         List<Card> hand = Arrays.asList(Card.str2Cards("Jc 3d Th 8c Qs 5s Kd 9c 4c As 6s 4s Ad"));
         Card wildcard = Card.getCard("2d");
@@ -21,7 +22,7 @@ public class Test1 {
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
             if (((DrawMove)decision).drawFromDiscardPile)
                 pileCnt++;
             else
@@ -44,7 +45,7 @@ public class Test1 {
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
             if (((DrawMove)decision).drawFromDiscardPile)
                 pileCnt++;
             else
@@ -66,7 +67,7 @@ public class Test1 {
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
             System.out.println(decision + " " + (Misc.getTime() - timeBefore));
         }
         // TS
@@ -83,7 +84,7 @@ public class Test1 {
 
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
-            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
             if (((DrawMove)decision).drawFromDiscardPile)
                 pileCnt++;
             else
@@ -106,7 +107,7 @@ public class Test1 {
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
             System.out.println(decision + " " + (Misc.getTime() - timeBefore));
         }
         // Qh
@@ -124,7 +125,7 @@ public class Test1 {
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 1; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
             System.out.println(decision + " " + (Misc.getTime() - timeBefore));
         }
     }
@@ -166,12 +167,12 @@ public class Test1 {
 
         for (int i = 0; i < 1; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT);
+            Action decision = Runner.run(hand, knownDiscardedCards, round, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
             System.out.println(decision + " " + (Misc.getTime() - timeBefore));
         }
     }
 
     public static void main(String[] args) {
-        test8();
+        test3();
     }
 }

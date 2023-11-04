@@ -124,7 +124,13 @@ public class State implements MctsDomainState<Action, Agent> {
 
     public void buildMeldsTree() {
 //        if (rootMeldsTree != null) return;
-        rootMeldsTree = new MeldNode(heroHand.stream().map(dc -> dc.card).collect(Collectors.toList()));
+//        rootMeldsTree = new MeldNode(heroHand.stream().map(dc -> dc.card).collect(Collectors.toList()));
+        // replaced stream to loop
+        List<Card> cards = new ArrayList<>(heroHand.size());
+        for (DeckCard dc : heroHand) {
+            cards.add(dc.card);
+        }
+        rootMeldsTree = new MeldNode(cards);
         solution = rootMeldsTree.depthFirstSearch(wildcardRank);
     }
 
@@ -204,10 +210,25 @@ public class State implements MctsDomainState<Action, Agent> {
         if (phase == DecisionPhase.DRAW) {
             if (isOriginal)
                 return Arrays.asList(new DrawMove(true), new DrawMove(false));
-            else
-                return deck.stream().map(DrawRandomCardMove::new).collect(Collectors.toList());
+            else {
+//                return deck.stream().map(DrawRandomCardMove::new).collect(Collectors.toList());
+                // replaced stream to loop
+                List<Action> moves = new ArrayList<>(deck.size());
+                for (DeckCard card : deck) {
+                    moves.add(new DrawRandomCardMove(card));
+                }
+                return moves;
+            }
         }
-        if (phase == DecisionPhase.DISCARD) return heroHand.stream().map(DiscardMove::new).collect(Collectors.toList());
+        if (phase == DecisionPhase.DISCARD) {
+//            return heroHand.stream().map(DiscardMove::new).collect(Collectors.toList());
+            // replaced stream to loop
+            List<Action> moves = new ArrayList<>(heroHand.size());
+            for (DeckCard card : heroHand) {
+                moves.add(new DiscardMove(card));
+            }
+            return moves;
+        }
         assert false;
         return null;
     }

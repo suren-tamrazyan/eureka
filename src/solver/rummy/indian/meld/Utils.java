@@ -12,7 +12,7 @@ public class Utils {
         int n = sequence.size();
         for (int len = 3; len <= n; len++) {
             for (int start = 0; start <= n - len; start++) {
-                List<Card> subsequence = new ArrayList<>();
+                List<Card> subsequence = new ArrayList<>(len);
                 for (int i = start; i < start + len; i++) {
                     subsequence.add(sequence.get(i));
                 }
@@ -84,7 +84,11 @@ public class Utils {
         for (List<Card> suitCards : suitMap.values()) {
             suitCards.sort(Comparator.comparing(Card::getRank));
             List<CardEx> currentSequence = new ArrayList<>();
-            List<CardEx> jokers = new ArrayList<>(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList()));
+//            List<CardEx> jokers = new ArrayList<>(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList())); replaced stream to loop
+            List<CardEx> jokers = new ArrayList<>(jokersFirst.size());
+            for (Card jokerCard : jokersFirst)
+                jokers.add(new CardEx(jokerCard));
+
             for (Card card : suitCards) {
                 if (currentSequence.isEmpty() && card.getRank() == 0 && suitCards.get(suitCards.size() - 1).getRank() == 12) { // Ace can be as first and last
                     currentSequence.add(new CardEx(suitCards.get(suitCards.size() - 1)));
@@ -108,17 +112,30 @@ public class Utils {
                         jokers.remove(new CardEx(card));
                 } else {
                     fillEndsByJokers(currentSequence, jokers);
-                    if (currentSequence.size() >= 3)
-                        largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList())));
+                    if (currentSequence.size() >= 3) {
+//                        largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList()))); replaced stream to loop
+                        List<Card> newLargestSequence = new ArrayList<>(currentSequence.size());
+                        for (CardEx cardEx : currentSequence)
+                            newLargestSequence.add(cardEx.getOriginal());
+                        largestSequences.add(newLargestSequence);
+                    }
                     currentSequence.clear();
                     jokers.clear();
-                    jokers.addAll(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList()));
+//                    jokers.addAll(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList())); replaced stream to loop
+                    for (Card jokerCard : jokersFirst)
+                        jokers.add(new CardEx(jokerCard));
+
                     currentSequence.add(new CardEx(card));
                 }
             }
             fillEndsByJokers(currentSequence, jokers);
-            if (currentSequence.size() >= 3)
-                largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList())));
+            if (currentSequence.size() >= 3) {
+//                largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList()))); replaced stream to loop
+                List<Card> newLargestSequence = new ArrayList<>(currentSequence.size());
+                for (CardEx cardEx : currentSequence)
+                    newLargestSequence.add(cardEx.getOriginal());
+                largestSequences.add(newLargestSequence);
+            }
         }
 
         for (List<Card> sequence : largestSequences) {
@@ -158,7 +175,7 @@ public class Utils {
                 if (set.size() > 3) {
                     impureSets.add(new ArrayList<>(set.subList(0, 3)));
                     impureSets.add(new ArrayList<>(set.subList(1, 4)));
-                    List tmp = new ArrayList<>(set.subList(2, 4));
+                    List<Card> tmp = new ArrayList<>(set.subList(2, 4));
                     tmp.add(set.get(0));
                     impureSets.add(tmp);
                 }

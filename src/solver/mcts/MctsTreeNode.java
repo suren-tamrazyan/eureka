@@ -75,8 +75,15 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
     }
 
     protected boolean hasUnvisitedChild () {
-        return childNodes.stream()
-                .anyMatch(MctsTreeNode::isUnvisited);
+//        return childNodes.stream()
+//                .anyMatch(MctsTreeNode::isUnvisited);
+        // replaced stream to loop
+        for (MctsTreeNode childNode : childNodes) {
+            if (childNode.isUnvisited()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isUnvisited() {
@@ -97,8 +104,15 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
     }
 
     private boolean isUntriedAction(ActionT action) {
-//        return getUntriedActionsForCurrentAgent().contains(action);
-    	return childNodes.stream().map(MctsTreeNode::getIncomingAction).noneMatch(act -> act.equals(action));
+////        return getUntriedActionsForCurrentAgent().contains(action);
+//    	return childNodes.stream().map(MctsTreeNode::getIncomingAction).noneMatch(act -> act.equals(action));
+        // replaced stream to loop
+        for (MctsTreeNode childNode : childNodes) {
+            if (childNode.getIncomingAction().equals(action)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     protected ActionT getRandomActionFromUntriedActions() {
@@ -159,9 +173,15 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
     }
 
     private List<ActionT> getTriedActionsForCurrentAgent() {
-        return childNodes.stream()
-                .map(MctsTreeNode::getIncomingAction)
-                .collect(Collectors.toList());
+//        return childNodes.stream()
+//                .map(MctsTreeNode::getIncomingAction)
+//                .collect(Collectors.toList());
+        // replaced stream to loop
+        List<ActionT> actions = new ArrayList<>(childNodes.size());
+        for (MctsTreeNode childNode : childNodes) {
+            actions.add((ActionT) childNode.getIncomingAction());
+        }
+        return actions;
     }
 
     private MctsTreeNode<StateT, ActionT, AgentT> addNewChildFromUntriedAction(ActionT incomingAction) {

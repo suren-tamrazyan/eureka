@@ -123,7 +123,13 @@ public class MeldNode {
     }
 
     public int value(int wildcardRank) {
-        return unassembledCards.stream().mapToInt(card -> Utils.value(card, wildcardRank)).sum();
+//        return unassembledCards.stream().mapToInt(card -> Utils.value(card, wildcardRank)).sum();
+        // replaced stream to loop
+        int sum = 0;
+        for (Card card : unassembledCards) {
+            sum += Utils.value(card, wildcardRank);
+        }
+        return sum;
     }
 
     public MeldNode findMinValueLeaf(int wildcardRank) {

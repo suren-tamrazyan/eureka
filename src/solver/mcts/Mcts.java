@@ -151,10 +151,21 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
 
     private MctsTreeNode<StateT, ActionT, AgentT> getNodesBestChildConfidentlyWithExploration(
             MctsTreeNode<StateT, ActionT, AgentT> node, double explorationParameter) {
-        return node.getChildNodes().stream()
-                .max((node1, node2) -> Double.compare(
-                        calculateUctValue(node1, explorationParameter),
-                        calculateUctValue(node2, explorationParameter))).get();
+//        return node.getChildNodes().stream()
+//                .max((node1, node2) -> Double.compare(
+//                        calculateUctValue(node1, explorationParameter),
+//                        calculateUctValue(node2, explorationParameter))).get();
+        // replaced stream to loop
+        MctsTreeNode maxNode = null;
+        double maxValue = Double.NEGATIVE_INFINITY;
+        for (MctsTreeNode childNode : node.getChildNodes()) {
+            double uctValue = calculateUctValue(childNode, explorationParameter);
+            if (uctValue > maxValue) {
+                maxValue = uctValue;
+                maxNode = childNode;
+            }
+        }
+        return maxNode;
     }
 
     private double calculateUctValue(MctsTreeNode<StateT, ActionT, AgentT> node, double explorationParameter) {
