@@ -1,6 +1,7 @@
 package solver.rummy.indian.meld;
 
 import game.Card;
+import solver.rummy.indian.Config;
 
 import java.util.*;
 
@@ -17,7 +18,8 @@ public class MeldNode {
     public MeldType type;
     public MeldNode parent;
     public List<MeldNode> children;
-    int level;
+    public int level;
+    public int minValue;
 
     public MeldNode(Collection<Card> meld, MeldType meldType, MeldNode parent) {
         this.unassembledCards = new ArrayList<>(parent.unassembledCards);
@@ -33,6 +35,7 @@ public class MeldNode {
         this.statistics = new ArrayList<>(Collections.nCopies(this.unassembledCards.size(), 0));
         meld = Collections.emptyList();
         level = LEVEL_ROOT;
+        minValue = Integer.MAX_VALUE;
     }
 
     public void expand(int wildcardRank) {
@@ -73,19 +76,25 @@ public class MeldNode {
 
         for (MeldNode child : children) {
             MeldNode leaf = child.depthFirstSearch(wildcardRank);
-            if (leaf != null)
+            if (leaf != null) {
+                updateStatistics(wildcardRank);
                 return leaf;
+            }
         }
 
-        updateStatistics();
+        updateStatistics(wildcardRank);
         return null;
     }
 
-    private void updateStatistics() {
+    private void updateStatistics(int wildcardRank) {
         MeldNode root = getRoot();
         for (Card card : this.unassembledCards) {
             int index = root.unassembledCards.indexOf(card);
             root.statistics.set(index, root.statistics.get(index) + 1);
+        }
+        if (Config.GOAL != Config.Goal.COMPLETABLE_DISTANCE) {
+            if (value(wildcardRank) < root.minValue)
+                root.minValue = value(wildcardRank);
         }
     }
 

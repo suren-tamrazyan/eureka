@@ -3,11 +3,9 @@ package solver.rummy.indian;
 import game.Card;
 import solver.mcts.MctsDomainState;
 import solver.rummy.indian.meld.MeldNode;
-import util.Misc;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 public class State implements MctsDomainState<Action, Agent> {
     public static final int HAND_SIZE = 13;
@@ -28,11 +26,13 @@ public class State implements MctsDomainState<Action, Agent> {
     };
     public MeldNode rootMeldsTree;
     public MeldNode solution;
+    public int sumMinValueOfPath;
+    public int sumDeltaMinValueOfPath;
     public List<Action> availableActionsForAgent; // cash
 
 
-    public void init(Collection<Card> heroHand, Collection<Card> knownDiscardedCards, int round, int wildcardRank, Card topDiscardPile, DecisionPhase phase, int DECK_COUNT) {
-        this.round = round;
+    public void init(Collection<Card> heroHand, Collection<Card> knownDiscardedCards, int wildcardRank, Card topDiscardPile, DecisionPhase phase, int DECK_COUNT) {
+        this.round = 1;
         this.wildcardRank = wildcardRank;
         this.topDiscardPile = null;
         this.deck = new ArrayList<>();
@@ -77,6 +77,7 @@ public class State implements MctsDomainState<Action, Agent> {
 //        result.DECK_COUNT = DECK_COUNT;
         result.isOriginal = isOriginal;
         result.phase = phase;
+        result.sumMinValueOfPath = sumMinValueOfPath;
         return result;
     }
 
@@ -130,13 +131,30 @@ public class State implements MctsDomainState<Action, Agent> {
         for (DeckCard dc : heroHand) {
             cards.add(dc.card);
         }
+        int prevMinVal = 0;
+        if (rootMeldsTree != null)
+            prevMinVal = rootMeldsTree.minValue;
         rootMeldsTree = new MeldNode(cards);
         solution = rootMeldsTree.depthFirstSearch(wildcardRank);
+        sumMinValueOfPath += rootMeldsTree.minValue;
+        sumDeltaMinValueOfPath = rootMeldsTree.minValue - prevMinVal;
     }
 
     @Override
     public boolean isTerminal() {
-        return isCompletable() || this.deck.size() == 0;
+        switch (Config.GOAL) {
+            case COMPLETABLE_DISTANCE:
+                return isCompletable() || this.deck.size() == 0;
+            case MIN_LEAF_VALUE:
+                return this.round > Config.DEPTH_OF_SEARCH;
+            case SUM_MIN_VALUE_OF_PATH:
+            case SUM_DELTA_MIN_VALUE_OF_PATH:
+                if (Config.DEPTH_OF_SEARCH > 0)
+                    return this.round > Config.DEPTH_OF_SEARCH;
+                else
+                    return isCompletable() || this.deck.size() == 0;
+        }
+        return false;
     }
 
     @Override

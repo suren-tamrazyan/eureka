@@ -20,8 +20,34 @@ public class Agent implements MctsDomainAgent<State> {
     private Action getBiasedOrRandomActionFromStatesAvailableActions(State state) {
         List<Action> availableActions = state.getAvailableActionsForCurrentAgent();//.stream().filter(action -> action instanceof DrawMove || !((DiscardMove)action).isJoker(state.wildcardRank)).collect(Collectors.toList());
         int index = ThreadLocalRandom.current().nextInt(availableActions.size());
-        if (state.phase == DecisionPhase.DISCARD)
-            index = max(state.rootMeldsTree.statistics);;//softmax(state.rootMeldsTree.statistics);
+        if (state.phase == DecisionPhase.DISCARD) {
+            index = max(state.rootMeldsTree.statistics); //softmax(state.rootMeldsTree.statistics);
+//            switch (Config.GOAL) {
+//                case COMPLETABLE_DISTANCE:
+//                    index = max(state.rootMeldsTree.statistics); //softmax(state.rootMeldsTree.statistics);
+//                    break;
+//                case MIN_LEAF_VALUE: {
+//                    int minval = Integer.MAX_VALUE;
+//                    for (int i = 0; i < availableActions.size(); i++) {
+//                        State state1 = state.clone();
+//                        state1.performActionForCurrentAgent(availableActions.get(i));
+//                        state1.buildMeldsTree();
+//                        if (state1.rootMeldsTree.minValue < minval) {
+//                            minval = state1.rootMeldsTree.minValue;
+//                            index = i;
+//                        }
+//                    }
+//                }
+//                case COMBINATION:
+//                    List<Integer> production = new ArrayList<>(state.rootMeldsTree.statistics.size());
+//                    for (int i = 0; i < state.rootMeldsTree.statistics.size(); i++) {
+//                        production.add(state.rootMeldsTree.statistics.get(i) * Utils.value(state.rootMeldsTree.unassembledCards.get(i), state.wildcardRank));
+//                    }
+//                    index = softmax(production);
+//                    break;
+//            }
+
+        }
         return availableActions.get(index);
     }
 
@@ -54,10 +80,25 @@ public class Agent implements MctsDomainAgent<State> {
 
     @Override
     public double getRewardFromTerminalState(State terminalState) {
-        if (terminalState.solution == null) {
-//            System.out.println("terminalState.solution == null");
-            return -terminalState.round * 2;
+        switch (Config.GOAL) {
+            case COMPLETABLE_DISTANCE:
+                if (terminalState.solution == null) {
+                    return -terminalState.round * 2;
+                }
+                return -terminalState.round;
+            case MIN_LEAF_VALUE:
+                return -terminalState.rootMeldsTree.minValue;
+            case SUM_MIN_VALUE_OF_PATH:
+                if (terminalState.solution == null) {
+                    return -terminalState.sumMinValueOfPath * 2;
+                }
+                return -terminalState.sumMinValueOfPath;
+            case SUM_DELTA_MIN_VALUE_OF_PATH:
+                if (terminalState.solution == null) {
+                    return -terminalState.sumDeltaMinValueOfPath * 2;
+                }
+                return -terminalState.sumDeltaMinValueOfPath;
         }
-        return -terminalState.round;
+        return 0;
     }
 }
