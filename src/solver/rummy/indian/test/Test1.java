@@ -180,14 +180,35 @@ public class Test1 {
         }
     }
 
+    public static void test11() {
+        List<Card> hand = Arrays.asList(Card.str2Cards("3h 4h 5h Jh Qh Kh 5d 8c Tc 2s 6s 8s Xr"));
+        Card wildcard = Card.getCard("9d");
+        Card topDiscardPile = Card.getCard("Th");
+        List<Card> knownDiscardedCards = Arrays.asList(Card.str2Cards("2d, Kd, Ah, Ks Th Js"));
+        DecisionPhase phase = DecisionPhase.DRAW;
+        int DECK_COUNT = 1;
+
+        int pileCnt = 0, deckCnt = 0;
+        for (int i = 0; i < 10; i++) {
+            long timeBefore = Misc.getTime();
+            Action decision = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
+            if (((DrawMove)decision).drawFromDiscardPile)
+                pileCnt++;
+            else
+                deckCnt++;
+            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+        }
+        System.out.println(String.format("pileCnt = %d, deckCnt = %d", pileCnt, deckCnt));
+    }
+
     public static void main(String[] args) {
-//        timems = 5000;
-//        test1();
-        System.out.println("test10");
-        test10();
-        System.out.println("test3");
-        test3();
-        System.out.println("test5");
-        test5();
+        timems = 5000;
+        test11();
+//        System.out.println("test3");
+//        test3();
+//        System.out.println("test5");
+//        test5();
+//        System.out.println("test10");
+//        test10();
     }
 }

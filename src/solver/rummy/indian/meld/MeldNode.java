@@ -123,6 +123,8 @@ public class MeldNode {
 
     public List<List<Card>> gatherMelds() {
         List<List<Card>> result = new ArrayList<>();
+        if (!unassembledCards.isEmpty())
+            result.add(new ArrayList<>(unassembledCards));
         MeldNode current = this;
         while (current != null && current.level > LEVEL_ROOT) {
             result.add(current.meld);
