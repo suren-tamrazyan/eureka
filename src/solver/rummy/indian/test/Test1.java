@@ -202,13 +202,13 @@ public class Test1 {
     }
 
     public static void main(String[] args) {
-        timems = 5000;
-        test11();
-//        System.out.println("test3");
-//        test3();
-//        System.out.println("test5");
-//        test5();
-//        System.out.println("test10");
-//        test10();
+//        timems = 5000;
+//        test11();
+        System.out.println("test3");
+        test3();
+        System.out.println("test5");
+        test5();
+        System.out.println("test10");
+        test10();
     }
 }

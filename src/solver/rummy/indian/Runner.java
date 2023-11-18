@@ -6,6 +6,7 @@ import solver.mcts.MctsCallback;
 import solver.rummy.indian.meld.MeldNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,5 +40,12 @@ public class Runner {
         if (solution != null && 1!=1)
             System.out.println(solution.gatherMelds());
         return rootMeldsTree.findMinValueLeaf(wildcardRank);
+    }
+    
+    public static void main(String[] atgs) {
+    	List<Card> hand = Arrays.asList(Card.str2Cards("Kc 5s 2c 8d Ks Qc 6s 8s 3d 7s 3h 7c Kd"));
+    	Card wildcard = Card.getCard("Qd");
+    	MeldNode minleaf = Runner.getMinvalueLeaf(hand, wildcard);
+    	System.out.println(minleaf.gatherMelds());
     }
 }

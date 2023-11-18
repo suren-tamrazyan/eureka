@@ -106,7 +106,16 @@ public class Utils {
                         currentSequence.add(jokerAsCard);
                     }
                 }
-                if (currentSequence.isEmpty() || (currentSequence.get(currentSequence.size() - 1).getRank() + 1 == card.getRank())) {
+                boolean cardExistsInSequenceAsJoker = false;
+                if (card.getRank() == wildcardRank) {
+                    for (CardEx cardEx : currentSequence) {
+                        if (cardEx.getOriginal().getIndex() == card.getIndex()) {
+                            cardExistsInSequenceAsJoker = true;
+                            break;
+                        }
+                    }
+                }
+                if (currentSequence.isEmpty() || (currentSequence.get(currentSequence.size() - 1).getRank() + 1 == card.getRank() && !cardExistsInSequenceAsJoker)) {
                     currentSequence.add(new CardEx(card));
                     if (card.getRank() == wildcardRank)
                         jokers.remove(new CardEx(card));
@@ -207,7 +216,15 @@ public class Utils {
             if (lastRank < 12) {
                 CardEx jokerAsCard = jokers.remove(jokers.size() - 1);
                 jokerAsCard.setJokerRole(currentSequence.get(0).getOriginal().getSuit(), lastRank + 1);
-                currentSequence.add(jokerAsCard);
+                boolean jokerCardExistsInSeq = false;
+                for (CardEx cardEx : currentSequence) {
+                    if (cardEx.getOriginal().getIndex() == jokerAsCard.getOriginal().getIndex()) {
+                        jokerCardExistsInSeq = true;
+                        break;
+                    }
+                }
+                if (!jokerCardExistsInSeq)
+                    currentSequence.add(jokerAsCard);
             } else
                 break;
         }
@@ -217,7 +234,15 @@ public class Utils {
             if (firstRank > 2) {
                 CardEx jokerAsCard = jokers.remove(jokers.size() - 1);
                 jokerAsCard.setJokerRole(currentSequence.get(0).getOriginal().getSuit(), firstRank - 1);
-                currentSequence.add(0, jokerAsCard);
+                boolean jokerCardExistsInSeq = false;
+                for (CardEx cardEx : currentSequence) {
+                    if (cardEx.getOriginal().getIndex() == jokerAsCard.getOriginal().getIndex()) {
+                        jokerCardExistsInSeq = true;
+                        break;
+                    }
+                }
+                if (!jokerCardExistsInSeq)
+                    currentSequence.add(0, jokerAsCard);
             } else
                 break;
         }
