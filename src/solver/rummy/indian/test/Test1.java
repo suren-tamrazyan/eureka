@@ -201,14 +201,35 @@ public class Test1 {
         System.out.println(String.format("pileCnt = %d, deckCnt = %d", pileCnt, deckCnt));
     }
 
+    public static void test12() {
+        List<Card> hand = Arrays.asList(Card.str2Cards("9d, 8d, 5c, 6s, 8h, As, 2s, Qc, Qs, 9s, 5h, Th, 9h"));
+        Card wildcard = Card.getCard("6d");
+        Card topDiscardPile = Card.getCard("Qh");
+        List<Card> knownDiscardedCards = Arrays.asList(Card.str2Cards("Qh, 8c, Kd"));
+        DecisionPhase phase = DecisionPhase.DRAW;
+        int DECK_COUNT = 1;
+
+        int pileCnt = 0, deckCnt = 0;
+        for (int i = 0; i < 10; i++) {
+            long timeBefore = Misc.getTime();
+            Action decision = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
+            if (((DrawMove)decision).drawFromDiscardPile)
+                pileCnt++;
+            else
+                deckCnt++;
+            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+        }
+        System.out.println(String.format("pileCnt = %d, deckCnt = %d", pileCnt, deckCnt));
+    }
+
     public static void main(String[] args) {
-//        timems = 5000;
-//        test11();
-        System.out.println("test3");
-        test3();
-        System.out.println("test5");
-        test5();
-        System.out.println("test10");
-        test10();
+        timems = 5000;
+        test12();
+//        System.out.println("test3");
+//        test3();
+//        System.out.println("test5");
+//        test5();
+//        System.out.println("test10");
+//        test10();
     }
 }
