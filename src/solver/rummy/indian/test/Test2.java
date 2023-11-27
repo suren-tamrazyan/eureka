@@ -13,10 +13,10 @@ import java.util.List;
 public class Test2 {
     public static void draw() {
         int times = 5000;
-        List<Card> hand = Arrays.asList(Card.str2Cards("2s, As, Ah, Ad, Jc, Ks, 2h, Js, Th, 5d, 6d, Qs, 3d"));
-        Card wildcard = Card.getCard("Ts");
-        Card topDiscardPile = Card.getCard("2d");
-        List<Card> knownDiscardedCards = Arrays.asList(Card.str2Cards("5s, 7c, 8s, 9h, 9c, Kd, Kc, 2d"));
+        List<Card> hand = Arrays.asList(Card.str2Cards("Ah, Tc, Js, Ad, 6h, 5d, Qs, Kd, Kc, 4s, 7c, 8h, 3s"));
+        Card wildcard = Card.getCard("Qh");
+        Card topDiscardPile = Card.getCard("3h");
+        List<Card> knownDiscardedCards = Arrays.asList(Card.str2Cards("3h"));
         DecisionPhase phase = DecisionPhase.DRAW;
         int DECK_COUNT = 1;
 
@@ -51,8 +51,8 @@ public class Test2 {
     }
 
     public static void main(String[] args) {
-//        draw();
-        discard();
+        draw();
+//        discard();
     }
 
 }

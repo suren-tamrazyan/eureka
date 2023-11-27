@@ -43,9 +43,14 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
         cloner.dontClone(classes);
     }
 
+    private MctsTreeNode<StateT, ActionT, AgentT> rootNode;
+    public MctsTreeNode<StateT, ActionT, AgentT> getRootNode() {
+        return rootNode;
+    }
     public ActionT uctSearchWithExploration(StateT state, double explorationParameter, long timeDurationMs, long timeLimitMs) {
         setExplorationForSearch(explorationParameter);
-        MctsTreeNode<StateT, ActionT, AgentT> rootNode = new MctsTreeNode<>(state, cloner);
+//        MctsTreeNode<StateT, ActionT, AgentT> rootNode = new MctsTreeNode<>(state, cloner);
+        rootNode = new MctsTreeNode<>(state, cloner);
         long timeDurationNano = timeDurationMs * 1000000;
         long timeLimitNano = timeLimitMs * 1000000;
         long time = 0;

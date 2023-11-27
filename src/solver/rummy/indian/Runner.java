@@ -28,6 +28,8 @@ public class Runner {
         Action decision = mcts.uctSearchWithExploration(state, Config.EXPLORATION_PARAMETER, timeDurationMs, TIME_LIMIT_MS);
         if (decision instanceof DiscardMove)
             decision = new DiscardMoveResult(((DiscardMove)decision).discard.card, false);
+        if (decision instanceof DrawMove)
+            decision = new DrawMoveResult(((DrawMove)decision).drawFromDiscardPile, mcts.getRootNode().getDomainTheoreticValue());
         System.out.println(String.format("best mcts.iterationCount = %d", mcts.getIterationsCount()));
         return decision;
     }
