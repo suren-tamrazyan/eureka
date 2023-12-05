@@ -45,15 +45,17 @@ public class State implements MctsDomainState<Action, Agent> {
         for (int i = 0; i < DECK_COUNT; i++) {
             for (int j = 0; j < DECK_SIZE; j++) {
                 DeckCard deckCard = new DeckCard(i, Card.getCard(j));
-                if (this.topDiscardPile == null && deckCard.card.equals(topDiscardPile)) {
-                    this.topDiscardPile = deckCard;
-                }
                 if (tmpHeroHand.remove(deckCard.card)) {
                     this.heroHand.add(deckCard);
-                } else if (tmpKnownDiscardedCards.remove(deckCard.card)) {
-                    this.knownDiscardedCards.add(deckCard);
                 } else {
-                    this.deck.add(deckCard);
+                    if (this.topDiscardPile == null && deckCard.card.equals(topDiscardPile)) {
+                        this.topDiscardPile = deckCard;
+                    }
+                    if (tmpKnownDiscardedCards.remove(deckCard.card)) {
+                        this.knownDiscardedCards.add(deckCard);
+                    } else {
+                        this.deck.add(deckCard);
+                    }
                 }
             }
         }
