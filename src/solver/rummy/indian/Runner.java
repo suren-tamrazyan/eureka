@@ -12,6 +12,9 @@ import java.util.List;
 
 public class Runner {
     public static Action run(Collection<Card> heroHand, Collection<Card> knownDiscardedCards, Card wildcard, Card topDiscardPile, DecisionPhase phase, int deckCount, int timeDurationMs) {
+        return run(heroHand, knownDiscardedCards, wildcard, topDiscardPile, phase, deckCount, timeDurationMs, null);
+    }
+    public static Action run(Collection<Card> heroHand, Collection<Card> knownDiscardedCards, Card wildcard, Card topDiscardPile, DecisionPhase phase, int deckCount, int timeDurationMs, Card hiddenCard) {
 //        final int NUMBER_OF_ITERATIONS = 100000;
 //        final double EXPLORATION_PARAMETER = 1.41;
         final int TIME_LIMIT_MS = Integer.MAX_VALUE;
@@ -20,7 +23,7 @@ public class Runner {
         Mcts<State, Action, Agent> mcts = Mcts.initializeIterations(Config.NUMBER_OF_ITERATIONS, callback, callbackDebug, true);
         mcts.dontClone(Agent.class, MeldNode.class);
         State state = new State();
-        state.init(heroHand, knownDiscardedCards, wildcard.getRank(), topDiscardPile, phase, deckCount);
+        state.init(heroHand, knownDiscardedCards, wildcard.getRank(), topDiscardPile, phase, deckCount, hiddenCard);
         if (phase == DecisionPhase.DISCARD && state.solution != null && state.solution.unassembledCards.size() == 1) { // unassembledCards.size() == 0 need deep figure out
             Card discard = state.solution.unassembledCards.get(0);
             return new DiscardMoveResult(discard, true);

@@ -223,8 +223,8 @@ public class Test1 {
     }
 
     public static void main(String[] args) {
-        timems = 5000;
-//        test12();
+//        timems = 5000;
+        test12();
         System.out.println("test3");
         test3();
         System.out.println("test5");

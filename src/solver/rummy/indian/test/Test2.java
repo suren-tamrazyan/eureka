@@ -1,10 +1,7 @@
 package solver.rummy.indian.test;
 
 import game.Card;
-import solver.rummy.indian.Action;
-import solver.rummy.indian.DecisionPhase;
-import solver.rummy.indian.DrawMove;
-import solver.rummy.indian.Runner;
+import solver.rummy.indian.*;
 import util.Misc;
 
 import java.util.Arrays;
@@ -36,10 +33,11 @@ public class Test2 {
 
     public static void discard() {
         int times = 10000;
-        List<Card> hand = Arrays.asList(Card.str2Cards("2s, As, Ah, Ad, Jc, Ks, 2h, Js, Th, 5d, 6d, Qs, 3d, 2d"));
-        Card wildcard = Card.getCard("Ts");
-        Card topDiscardPile = Card.getCard("2d");
-        List<Card> knownDiscardedCards = Arrays.asList(Card.str2Cards("5s, 9h, 7c, 8s, 9c, Kd, Kc"));
+//        Config.DEPTH_OF_SEARCH = 2;
+        List<Card> hand = Arrays.asList(Card.str2Cards("3h, 7h, 7c, Xr, 7s, Kd, 8s, 4h, 7d, Ad, Qd, 2d, 3c, 5s"));
+        Card wildcard = Card.getCard("Jc");
+        Card topDiscardPile = null;//Card.getCard("");
+        List<Card> knownDiscardedCards = Arrays.asList(Card.str2Cards("5d 8c 6c Ac As 3s Kc Td Jh"));
         DecisionPhase phase = DecisionPhase.DISCARD;
         int DECK_COUNT = 1;
 
@@ -51,8 +49,8 @@ public class Test2 {
     }
 
     public static void main(String[] args) {
-        draw();
-//        discard();
+//        draw();
+        discard();
     }
 
 }

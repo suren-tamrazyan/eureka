@@ -19,6 +19,7 @@ public class State implements MctsDomainState<Action, Agent> {
     public ArrayList<DeckCard> deck;
     public int wildcardRank;
     public DeckCard topDiscardPile; // contain in knownDiscardedCards
+    public DeckCard hiddenCard; // for KickRummy we know hiddenCard
     public boolean isOriginal; // true - state from game, false - state from simulation process; can mean as isRoot
     public DecisionPhase phase;
     public boolean isCompletable() {
@@ -31,10 +32,11 @@ public class State implements MctsDomainState<Action, Agent> {
     public List<Action> availableActionsForAgent; // cash
 
 
-    public void init(Collection<Card> heroHand, Collection<Card> knownDiscardedCards, int wildcardRank, Card topDiscardPile, DecisionPhase phase, int DECK_COUNT) {
+    public void init(Collection<Card> heroHand, Collection<Card> knownDiscardedCards, int wildcardRank, Card topDiscardPile, DecisionPhase phase, int DECK_COUNT, Card hiddenCard) {
         this.round = 1;
         this.wildcardRank = wildcardRank;
         this.topDiscardPile = null;
+        this.hiddenCard = null;
         this.deck = new ArrayList<>();
         this.isOriginal = true;
         this.phase = phase;
@@ -50,6 +52,9 @@ public class State implements MctsDomainState<Action, Agent> {
                 } else {
                     if (this.topDiscardPile == null && deckCard.card.equals(topDiscardPile)) {
                         this.topDiscardPile = deckCard;
+                    }
+                    if (this.hiddenCard == null && deckCard.card.equals(hiddenCard)) {
+                        this.hiddenCard = deckCard;
                     }
                     if (tmpKnownDiscardedCards.remove(deckCard.card)) {
                         this.knownDiscardedCards.add(deckCard);
@@ -76,6 +81,7 @@ public class State implements MctsDomainState<Action, Agent> {
         result.round = round;
         result.wildcardRank = wildcardRank;
         result.topDiscardPile = topDiscardPile;
+        result.hiddenCard = hiddenCard;
 //        result.DECK_COUNT = DECK_COUNT;
         result.isOriginal = isOriginal;
         result.phase = phase;
@@ -100,8 +106,14 @@ public class State implements MctsDomainState<Action, Agent> {
         if (action.drawFromDiscardPile) {
             drawnCard = topDiscardPile;
             topDiscardPile = null;
-        } else
-            drawnCard = pickCard();
+        } else {
+            if (hiddenCard != null) {
+                drawnCard = hiddenCard;
+                hiddenCard = null;
+                deck.remove(drawnCard);
+            } else
+                drawnCard = pickCard();
+        }
         heroHand.add(drawnCard);
         phase = DecisionPhase.DISCARD;
         round++;
