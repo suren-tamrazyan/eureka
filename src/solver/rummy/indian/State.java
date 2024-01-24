@@ -164,7 +164,7 @@ public class State implements MctsDomainState<Action, Agent> {
             case SUM_MIN_VALUE_OF_PATH:
             case SUM_DELTA_MIN_VALUE_OF_PATH:
                 if (Config.DEPTH_OF_SEARCH > 0)
-                    return this.round > Config.DEPTH_OF_SEARCH;
+                    return this.round > Config.DEPTH_OF_SEARCH || (solution != null && phase == DecisionPhase.DISCARD && solution.unassembledCards.size() <= 1);
                 else
                     return isCompletable() || this.deck.size() == 0;
         }
