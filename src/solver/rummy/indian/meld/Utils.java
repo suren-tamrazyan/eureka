@@ -89,62 +89,79 @@ public class Utils {
             for (Card jokerCard : jokersFirst)
                 jokers.add(new CardEx(jokerCard));
 
-            for (Card card : suitCards) {
-                if (currentSequence.isEmpty() && card.getRank() == 0 && suitCards.get(suitCards.size() - 1).getRank() == 12) { // Ace can be as first and last
-                    currentSequence.add(new CardEx(suitCards.get(suitCards.size() - 1)));
-                    currentSequence.add(new CardEx(card));
-                }
-                if (!currentSequence.isEmpty() && currentSequence.get(currentSequence.size() - 1).getOriginal().getRank() == card.getRank()) // if two or more same card from different deck
-                    continue;
-//                if (currentSequence.isEmpty() && card.getRank() == wildcardRank)
-//                    continue;
-                while (!(currentSequence.isEmpty() || (currentSequence.get(currentSequence.size() - 1).getRank() + 1 == card.getRank())) && jokers.size() > 0) {
-                    int lastRank = currentSequence.get(currentSequence.size() - 1).getRank();
-                    CardEx jokerAsCard = jokers.remove(jokers.size() - 1);
-                    if (lastRank < 12) {
-                        jokerAsCard.setJokerRole(card.getSuit(), lastRank + 1);
-                        currentSequence.add(jokerAsCard);
+            boolean useJokerInMiddle;
+            int startIndex = 0;
+            do {
+                useJokerInMiddle = false;
+                for (int i = startIndex; i < suitCards.size(); i++) {
+                    Card card = suitCards.get(i);
+
+                    if (currentSequence.isEmpty() && card.getRank() == 0 && suitCards.get(suitCards.size() - 1).getRank() == 12) { // Ace can be as first and last
+                        currentSequence.add(new CardEx(suitCards.get(suitCards.size() - 1)));
+                        currentSequence.add(new CardEx(card));
                     }
-                }
-                boolean cardExistsInSequenceAsJoker = false;
-                if (card.getRank() == wildcardRank) {
-                    for (CardEx cardEx : currentSequence) {
-                        if (cardEx.getOriginal().getIndex() == card.getIndex()) {
-                            cardExistsInSequenceAsJoker = true;
-                            break;
+                    if (!currentSequence.isEmpty() && currentSequence.get(currentSequence.size() - 1).getOriginal().getRank() == card.getRank()) // if two or more same card from different deck
+                        continue;
+    //                if (currentSequence.isEmpty() && card.getRank() == wildcardRank)
+    //                    continue;
+                    while (!(currentSequence.isEmpty() || (currentSequence.get(currentSequence.size() - 1).getRank() + 1 == card.getRank())) && jokers.size() > 0) {
+                        int lastRank = currentSequence.get(currentSequence.size() - 1).getRank();
+                        CardEx jokerAsCard = jokers.remove(jokers.size() - 1);
+                        if (lastRank < 12) {
+                            jokerAsCard.setJokerRole(card.getSuit(), lastRank + 1);
+                            currentSequence.add(jokerAsCard);
+                            startIndex = i;
+                            useJokerInMiddle = true;
                         }
                     }
-                }
-                if (currentSequence.isEmpty() || (currentSequence.get(currentSequence.size() - 1).getRank() + 1 == card.getRank() && !cardExistsInSequenceAsJoker)) {
-                    currentSequence.add(new CardEx(card));
-                    if (card.getRank() == wildcardRank)
-                        jokers.remove(new CardEx(card));
-                } else {
-                    fillEndsByJokers(currentSequence, jokers);
-                    if (currentSequence.size() >= 3) {
-//                        largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList()))); replaced stream to loop
-                        List<Card> newLargestSequence = new ArrayList<>(currentSequence.size());
-                        for (CardEx cardEx : currentSequence)
-                            newLargestSequence.add(cardEx.getOriginal());
-                        largestSequences.add(newLargestSequence);
+                    boolean cardExistsInSequenceAsJoker = false;
+                    if (card.getRank() == wildcardRank) {
+                        for (CardEx cardEx : currentSequence) {
+                            if (cardEx.getOriginal().getIndex() == card.getIndex()) {
+                                cardExistsInSequenceAsJoker = true;
+                                break;
+                            }
+                        }
                     }
-                    currentSequence.clear();
-                    jokers.clear();
-//                    jokers.addAll(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList())); replaced stream to loop
-                    for (Card jokerCard : jokersFirst)
-                        jokers.add(new CardEx(jokerCard));
+                    if (currentSequence.isEmpty() || (currentSequence.get(currentSequence.size() - 1).getRank() + 1 == card.getRank() && !cardExistsInSequenceAsJoker)) {
+                        currentSequence.add(new CardEx(card));
+                        if (card.getRank() == wildcardRank)
+                            jokers.remove(new CardEx(card));
+                    } else {
+                        fillEndsByJokers(currentSequence, jokers);
+                        if (currentSequence.size() >= 3) {
+    //                        largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList()))); replaced stream to loop
+                            List<Card> newLargestSequence = new ArrayList<>(currentSequence.size());
+                            for (CardEx cardEx : currentSequence)
+                                newLargestSequence.add(cardEx.getOriginal());
+                            largestSequences.add(newLargestSequence);
+                        }
+                        currentSequence.clear();
+                        jokers.clear();
+    //                    jokers.addAll(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList())); replaced stream to loop
+                        for (Card jokerCard : jokersFirst)
+                            jokers.add(new CardEx(jokerCard));
 
-                    currentSequence.add(new CardEx(card));
+                        currentSequence.add(new CardEx(card));
+                    }
                 }
-            }
-            fillEndsByJokers(currentSequence, jokers);
-            if (currentSequence.size() >= 3) {
+
+                fillEndsByJokers(currentSequence, jokers);
+                if (currentSequence.size() >= 3) {
 //                largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList()))); replaced stream to loop
-                List<Card> newLargestSequence = new ArrayList<>(currentSequence.size());
-                for (CardEx cardEx : currentSequence)
-                    newLargestSequence.add(cardEx.getOriginal());
-                largestSequences.add(newLargestSequence);
-            }
+                    List<Card> newLargestSequence = new ArrayList<>(currentSequence.size());
+                    for (CardEx cardEx : currentSequence)
+                        newLargestSequence.add(cardEx.getOriginal());
+                    largestSequences.add(newLargestSequence);
+                }
+
+                currentSequence.clear();
+                jokers.clear();
+                //                    jokers.addAll(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList())); replaced stream to loop
+                for (Card jokerCard : jokersFirst)
+                    jokers.add(new CardEx(jokerCard));
+
+            } while (useJokerInMiddle);
         }
 
         for (List<Card> sequence : largestSequences) {
@@ -268,12 +285,13 @@ public class Utils {
         List<List<Card>> subsec = findSubsequences(lst);
         System.out.println(subsec);
         List<Card> hand = new ArrayList<>();
-//        hand.addAll(Arrays.asList(Card.str2Cards("2c 3c 4c 5s 6c Kd Qc Ac Jd 5d Kc 5d Qd")));
+//        hand.addAll(Arrays.asList(Card.str2Cards("2c 3c 4c 5s 6c Kd Qc Ac Jd 5d Kc 5d Qd Xr")));
 //        hand.addAll(Arrays.asList(Card.str2Cards("3s 3c 5s 5c Ks Kd Qc Xr Jd 5d Kc 5c Kh")));
         hand.addAll(Arrays.asList(Card.str2Cards("3s 8d 9d Td Qd Ad Ac Xr")));
         int wildcardRank = 2;
         Collection<Collection<Card>> pureSequences = findPureSequences(hand);
         Collection<Collection<Card>> impureSequences = findImpureSequences(hand, wildcardRank);
+        Collection<Collection<Card>> old_impureSequences = old_findImpureSequences(hand, wildcardRank);
         Collection<Collection<Card>> impureSets = findImpureSets(hand, wildcardRank);
         for (Collection<Card> sequence : pureSequences) {
             System.out.println("Pure Sequence: " + sequence);
@@ -281,6 +299,10 @@ public class Utils {
         System.out.println();
         for (Collection<Card> sequence : impureSequences) {
             System.out.println("Impure Sequence: " + sequence);
+        }
+        System.out.println();
+        for (Collection<Card> sequence : old_impureSequences) {
+            System.out.println("Old Impure Sequence: " + sequence);
         }
         System.out.println();
         for (Collection<Card> set : impureSets) {
@@ -291,4 +313,96 @@ public class Utils {
             System.out.println(Card.getCard(i) + " " + Card.getCard(i).getRank());
         }
     }
+
+    public static Collection<Collection<Card>> old_findImpureSequences(List<Card> hand, int wildcardRank) {
+        Map<Integer, List<Card>> suitMap = new HashMap<>();
+        List<Card> jokersFirst = new ArrayList<>();
+        for (Card card : hand) {
+            if (card.getIndex() == 52 || card.getIndex() == 53) {
+                jokersFirst.add(card);
+                continue;
+            }
+            if (card.getRank() == wildcardRank) {
+                jokersFirst.add(card);
+            }
+            suitMap.computeIfAbsent(card.getSuit(), k -> new ArrayList<>()).add(card);
+        }
+
+        Collection<Collection<Card>> impureSequences = new HashSet<>();
+        List<List<Card>> largestSequences = new ArrayList<>();
+
+        for (List<Card> suitCards : suitMap.values()) {
+            suitCards.sort(Comparator.comparing(Card::getRank));
+            List<CardEx> currentSequence = new ArrayList<>();
+//            List<CardEx> jokers = new ArrayList<>(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList())); replaced stream to loop
+            List<CardEx> jokers = new ArrayList<>(jokersFirst.size());
+            for (Card jokerCard : jokersFirst)
+                jokers.add(new CardEx(jokerCard));
+
+            for (Card card : suitCards) {
+                if (currentSequence.isEmpty() && card.getRank() == 0 && suitCards.get(suitCards.size() - 1).getRank() == 12) { // Ace can be as first and last
+                    currentSequence.add(new CardEx(suitCards.get(suitCards.size() - 1)));
+                    currentSequence.add(new CardEx(card));
+                }
+                if (!currentSequence.isEmpty() && currentSequence.get(currentSequence.size() - 1).getOriginal().getRank() == card.getRank()) // if two or more same card from different deck
+                    continue;
+//                if (currentSequence.isEmpty() && card.getRank() == wildcardRank)
+//                    continue;
+                while (!(currentSequence.isEmpty() || (currentSequence.get(currentSequence.size() - 1).getRank() + 1 == card.getRank())) && jokers.size() > 0) {
+                    int lastRank = currentSequence.get(currentSequence.size() - 1).getRank();
+                    CardEx jokerAsCard = jokers.remove(jokers.size() - 1);
+                    if (lastRank < 12) {
+                        jokerAsCard.setJokerRole(card.getSuit(), lastRank + 1);
+                        currentSequence.add(jokerAsCard);
+                    }
+                }
+                boolean cardExistsInSequenceAsJoker = false;
+                if (card.getRank() == wildcardRank) {
+                    for (CardEx cardEx : currentSequence) {
+                        if (cardEx.getOriginal().getIndex() == card.getIndex()) {
+                            cardExistsInSequenceAsJoker = true;
+                            break;
+                        }
+                    }
+                }
+                if (currentSequence.isEmpty() || (currentSequence.get(currentSequence.size() - 1).getRank() + 1 == card.getRank() && !cardExistsInSequenceAsJoker)) {
+                    currentSequence.add(new CardEx(card));
+                    if (card.getRank() == wildcardRank)
+                        jokers.remove(new CardEx(card));
+                } else {
+                    fillEndsByJokers(currentSequence, jokers);
+                    if (currentSequence.size() >= 3) {
+//                        largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList()))); replaced stream to loop
+                        List<Card> newLargestSequence = new ArrayList<>(currentSequence.size());
+                        for (CardEx cardEx : currentSequence)
+                            newLargestSequence.add(cardEx.getOriginal());
+                        largestSequences.add(newLargestSequence);
+                    }
+                    currentSequence.clear();
+                    jokers.clear();
+//                    jokers.addAll(jokersFirst.stream().map(CardEx::new).collect(Collectors.toList())); replaced stream to loop
+                    for (Card jokerCard : jokersFirst)
+                        jokers.add(new CardEx(jokerCard));
+
+                    currentSequence.add(new CardEx(card));
+                }
+            }
+            fillEndsByJokers(currentSequence, jokers);
+            if (currentSequence.size() >= 3) {
+//                largestSequences.add(new ArrayList<>(currentSequence.stream().map(CardEx::getOriginal)./*sorted(Comparator.comparing(Card::getRank)).jokers disorder*/collect(Collectors.toList()))); replaced stream to loop
+                List<Card> newLargestSequence = new ArrayList<>(currentSequence.size());
+                for (CardEx cardEx : currentSequence)
+                    newLargestSequence.add(cardEx.getOriginal());
+                largestSequences.add(newLargestSequence);
+            }
+        }
+
+        for (List<Card> sequence : largestSequences) {
+            if (sequence.size() >= 3)
+                impureSequences.addAll(findSubsequences(sequence));
+        }
+
+        return impureSequences;
+    }
+
 }
