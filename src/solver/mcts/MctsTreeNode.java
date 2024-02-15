@@ -38,7 +38,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
         return parentNode;
     }
 
-    protected ActionT getIncomingAction() {
+    public ActionT getIncomingAction() {
         return incomingAction;
     }
 

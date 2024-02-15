@@ -1,10 +1,7 @@
 package solver.rummy.indian.test;
 
 import game.Card;
-import solver.rummy.indian.Action;
-import solver.rummy.indian.DecisionPhase;
-import solver.rummy.indian.DrawMove;
-import solver.rummy.indian.Runner;
+import solver.rummy.indian.*;
 import solver.rummy.indian.meld.MeldNode;
 import util.Misc;
 
@@ -25,12 +22,13 @@ public class HiddenCardTest1 {
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
-            if (((DrawMove)decision).drawFromDiscardPile)
+            RunResult result = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems);
+            if (((DrawMove)result.decision).drawFromDiscardPile)
                 pileCnt++;
             else
                 deckCnt++;
-            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+            System.out.println(result.decision + " " + (Misc.getTime() - timeBefore));
+            System.out.println(result.description);
         }
         System.out.println(String.format("pileCnt = %d, deckCnt = %d", pileCnt, deckCnt));
     }
@@ -48,12 +46,13 @@ public class HiddenCardTest1 {
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems, hiddenCard);
-            if (((DrawMove)decision).drawFromDiscardPile)
+            RunResult result = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems, hiddenCard);
+            if (((DrawMove)result.decision).drawFromDiscardPile)
                 pileCnt++;
             else
                 deckCnt++;
-            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+            System.out.println(result.decision + " " + (Misc.getTime() - timeBefore));
+            System.out.println(result.description);
         }
         System.out.println(String.format("pileCnt = %d, deckCnt = %d", pileCnt, deckCnt));
 
@@ -74,12 +73,13 @@ public class HiddenCardTest1 {
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems, hiddenCard);
-            if (((DrawMove)decision).drawFromDiscardPile)
+            RunResult result = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems, hiddenCard);
+            if (((DrawMove)result.decision).drawFromDiscardPile)
                 pileCnt++;
             else
                 deckCnt++;
-            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+            System.out.println(result.decision + " " + (Misc.getTime() - timeBefore));
+            System.out.println(result.description);
         }
         System.out.println(String.format("pileCnt = %d, deckCnt = %d", pileCnt, deckCnt));
 
@@ -100,12 +100,13 @@ public class HiddenCardTest1 {
         int pileCnt = 0, deckCnt = 0;
         for (int i = 0; i < 10; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems, hiddenCard);
-            if (((DrawMove)decision).drawFromDiscardPile)
+            RunResult result = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems, hiddenCard);
+            if (((DrawMove)result.decision).drawFromDiscardPile)
                 pileCnt++;
             else
                 deckCnt++;
-            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+            System.out.println(result.decision + " " + (Misc.getTime() - timeBefore));
+            System.out.println(result.description);
         }
         System.out.println(String.format("pileCnt = %d, deckCnt = %d", pileCnt, deckCnt));
 
@@ -125,8 +126,9 @@ public class HiddenCardTest1 {
 
         for (int i = 0; i < 1; i++) {
             long timeBefore = Misc.getTime();
-            Action decision = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems, hiddenCard);
-            System.out.println(decision + " " + (Misc.getTime() - timeBefore));
+            RunResult result = Runner.run(hand, knownDiscardedCards, wildcard, topDiscardPile, phase, DECK_COUNT, timems, hiddenCard);
+            System.out.println(result.decision + " " + (Misc.getTime() - timeBefore));
+            System.out.println(result.description);
         }
 
         MeldNode minleaf = Runner.getMinvalueLeaf(hand, wildcard);
