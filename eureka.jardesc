@@ -11,7 +11,9 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=eureka/src&lt;util"/>
         <javaElement handleIdentifier="=eureka/src&lt;solver.rummy.indian.meld"/>
+        <javaElement handleIdentifier="=eureka/src&lt;game"/>
         <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Flushes.java"/>
         <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Deck.java"/>
         <javaElement handleIdentifier="=eureka/src&lt;solver.ofc.evaluator{Evaluator.java"/>
