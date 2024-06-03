@@ -196,6 +196,40 @@ public class Solver {
 		}
 	}
 
+	public static EventOfcMctsSimple pusoyCompletionSync(List<Card> front, List<Card> middle, List<Card> back, Collection<Card> toBeBoxed) {
+
+		TreeSet<AsHand> treeBack = new TreeSet<>(Generator.combination(toBeBoxed).simple(5 - back.size()).stream().map(x -> new AsHand(x, back)).collect(Collectors.toList()));
+		TreeSet<AsHand> treeMiddle = new TreeSet<>(Generator.combination(toBeBoxed).simple(5 - middle.size()).stream().map(x -> new AsHand(x, middle)).collect(Collectors.toList()));
+		TreeSet<AsHand> treeFront = new TreeSet<>(Generator.combination(toBeBoxed).simple(3 - front.size()).stream().map(x -> new AsHand(x, front)).collect(Collectors.toList()));
+
+		Trinity best = null;
+
+		for (AsHand hFront : treeFront) {
+			for (AsHand hMiddle : treeMiddle) {
+				//preventive check for overlap cards
+				if (hMiddle.isOverlay(hFront))
+					continue;
+
+				for (AsHand hBack : treeBack) { //TreeSet are safe when read, even concurrently, by multiple threads.
+					Trinity current = new Trinity(hFront, hMiddle, hBack);
+					if (current.isValid()) {
+						if (best == null)
+							best = current;
+						boolean fouled = (hFront.getEval() < hMiddle.getEval() || hMiddle.getEval() < hBack.getEval());
+						if (!fouled) {
+							if (current.compareTo(best) <= 0)
+								continue;
+							if (current.compareTo(best) > 0)
+								best = current;
+						}
+					}
+				}
+			}
+		}
+
+		return best.toEventOfcMctsSimple(toBeBoxed);
+	}
+
 	public static EventOfcMctsSimple pusoyCompletion(Collection<Card> toBeBoxed, long timeLimitMs) {
 		Completor completor = new Completor();
 		return completor.pusoyCompletion(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), toBeBoxed, timeLimitMs);
@@ -205,7 +239,36 @@ public class Solver {
 		long time = Utils.getTime();
 //		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("TdThAh6d6c2h2c9c3c3d3s4c4d")), 10000).toEventOfc("hero"));
 //		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("AhAdAs6d7h8d9dTd4c5c7c9cQc7s9s")), 20000).toEventOfc("hero"));
-		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("TdTsKh8d8h6d6c7dAdAcAhQh9s")), 10000).toEventOfc("hero"));
+//		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("TdTsKh8d8h6d6c7dAdAcAhQh9s")), 10000).toEventOfc("hero"));
+//		System.out.println(pusoyCompletion(Arrays.asList(Card.str2Cards("2h 2s 3s 4h 5h 5c 5s 7d 9s Th Ts Qh Ac")), 10000).toEventOfc("hero"));
+		System.out.println(pusoyCompletionSync(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(Card.str2Cards("9h Js Qc Kc Ah 4h 4s Th 5d 6s 7c 2d 7d"))).toEventOfc("hero"));
 		System.out.println(String.format("time = %d", Utils.getTime() - time));
+
+		testCompare(Arrays.asList(Card.str2Cards("2d 4h 4s")), Arrays.asList(Card.str2Cards("5d 6s 7d 7c Ah")), Arrays.asList(Card.str2Cards("9h Th Js Qc Kc")),
+				Arrays.asList(Card.str2Cards("5d 6s 9h")), Arrays.asList(Card.str2Cards("2d 4h 4s 7d 7c")), Arrays.asList(Card.str2Cards("Th Js Qc Kc Ah")),
+				Arrays.asList(Card.str2Cards("2d 5d Ah")), Arrays.asList(Card.str2Cards("4h 4s 6s 7d 7c")), Arrays.asList(Card.str2Cards("9h Th Js Qc Kc")));
+
+		testCompare(Arrays.asList(Card.str2Cards("9h 9s Qc")), Arrays.asList(Card.str2Cards("8c Th Jh Jd Kc")), Arrays.asList(Card.str2Cards("2d 3d 3c 5h 5s")),
+				Arrays.asList(Card.str2Cards("8c 9h Jh")), Arrays.asList(Card.str2Cards("2d 3d 3c 5h 5s")), Arrays.asList(Card.str2Cards("9s Th Jd Qc Kc")),
+				Arrays.asList(Card.str2Cards("9h Jh Kc")), Arrays.asList(Card.str2Cards("2d 3d 3c 5h 5s")), Arrays.asList(Card.str2Cards("8c 9s Th Jd Qc")));
+
+		testCompare(Arrays.asList(Card.str2Cards("7d Td Kh")), Arrays.asList(Card.str2Cards("2d 8d Jh Jc Qh")), Arrays.asList(Card.str2Cards("4c 5h 6s 7s 8s")),
+				Arrays.asList(Card.str2Cards("7d Td Kh")), Arrays.asList(Card.str2Cards("2d 8d Jh Jc Qh")), Arrays.asList(Card.str2Cards("4c 5h 6s 7s 8s")),
+				Arrays.asList(Card.str2Cards("Td Qh Kh")), Arrays.asList(Card.str2Cards("2d 7d 8d Jh Jc")), Arrays.asList(Card.str2Cards("4c 5h 6s 7s 8s")));
+
+//		testCompare(Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")),
+//				Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")),
+//				Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")), Arrays.asList(Card.str2Cards("")));
+	}
+
+	public static void testCompare(List<Card> frontOur1, List<Card> middleOur1, List<Card> backOur1, List<Card> frontOur2, List<Card> middleOur2, List<Card> backOur2, List<Card> frontForeign, List<Card> middleForeign, List<Card> backForeign) {
+		double evalOur1 = solver.pusoy.Evaluator.evaluate(frontOur1, middleOur1, backOur1);
+		double evalOur2 = solver.pusoy.Evaluator.evaluate(frontOur2, middleOur2, backOur2);
+		double evalForeign = solver.pusoy.Evaluator.evaluate(frontForeign, middleForeign, backForeign);
+		System.out.println(String.format("evalOur1 = %f; evalOur2 = %f; evalForeign = %f", evalOur1, evalOur2, evalForeign));
+		System.out.println(String.format("compare our1 and foreign = %d", solver.pusoy.Evaluator.compare(frontOur1, middleOur1, backOur1, frontForeign, middleForeign, backForeign)));
+		System.out.println(String.format("compare our2 and foreign = %d", solver.pusoy.Evaluator.compare(frontOur2, middleOur2, backOur2, frontForeign, middleForeign, backForeign)));
+		System.out.println(String.format("compare our2 and our1 = %d", solver.pusoy.Evaluator.compare(frontOur2, middleOur2, backOur2, frontOur1, middleOur1, backOur1)));
+		System.out.println();
 	}
 }
